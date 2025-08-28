@@ -1,0 +1,174 @@
+import { Form, Formik, FormikProps } from 'formik';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+
+import Dropdown from '@/components/atoms/Dropdown/Dropdown';
+import CheckboxInput from '@/components/atoms/form-elements/CheckboxInput/CheckboxInput';
+import FormDirtyStateWatcher from '@/components/atoms/form-elements/FormStateWatcher/FormDirtyStateWatcher';
+import FormStateWatcher from '@/components/atoms/form-elements/FormStateWatcher/FormStateWatcher';
+import NumberInput from '@/components/atoms/form-elements/NumberInput/NumberInput';
+import TextInput from '@/components/atoms/form-elements/TextInput/TextInput';
+import TagsSelector from '@/components/molecules/TagsSelector/TagsSelector';
+import { Currency, IRC, ITag } from '@/types';
+import { updateRC } from '@/utils/api';
+
+import { validationSchema } from './validation-schema';
+
+interface IProps {
+  accountId: number;
+  rc: IRC;
+  toggleIsDisabled: (value: boolean) => void;
+  callback: () => void;
+}
+
+export interface EditFormRef {
+  submitForm: () => void;
+}
+
+interface FormValues {
+  name: string;
+  monthlyPayment: number;
+  currency: Currency;
+  description?: string;
+  approximatelyPaymentDay: number;
+  tags: ITag[];
+  isPermanentAmount: boolean;
+}
+
+const EditForm = forwardRef<EditFormRef, IProps>(
+  ({ toggleIsDisabled, rc, callback, accountId }, ref) => {
+    const formikRef = useRef<FormikProps<FormValues> | null>(null);
+    const [isDisabled, setIsDisabled] = useState(true);
+    const [isDirty, setIsDirty] = useState(false);
+    const [currency, setCurrency] = useState<Currency>(rc.currency);
+    const [requestErr, setRequestErr] = useState('');
+
+    useImperativeHandle(ref, () => ({
+      submitForm: () => {
+        formikRef.current?.handleSubmit();
+      },
+    }));
+
+    const initialValues: FormValues = {
+      name: rc.name,
+      monthlyPayment: rc.monthlyPayment,
+      currency: rc.currency,
+      description: rc.description ?? '',
+      approximatelyPaymentDay: rc.approximatelyPaymentDay,
+      tags: rc.tags || [],
+      isPermanentAmount: rc.isPermanentAmount,
+    };
+
+    useEffect(() => {
+      if (!formikRef.current) return;
+      toggleIsDisabled(!isDirty || isDisabled);
+    }, [isDirty, isDisabled, toggleIsDisabled]);
+
+    return (
+      <Formik
+        innerRef={formikRef}
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={async (
+          {
+            monthlyPayment,
+            name,
+            currency,
+            description,
+            approximatelyPaymentDay,
+            tags,
+            isPermanentAmount,
+          },
+          actions,
+        ) => {
+          const res = await updateRC(rc.id, {
+            monthlyPayment,
+            name,
+            currency,
+            description,
+            approximatelyPaymentDay,
+            isPermanentAmount,
+            tags: tags.map((tag) => tag.id),
+          });
+
+          if (res.data) {
+            actions.resetForm();
+            setRequestErr('');
+            callback();
+          } else if (res.message) {
+            setRequestErr(res.message || 'Server error');
+          }
+          actions.setSubmitting(false);
+        }}
+      >
+        {({ errors, touched, setFieldValue, values }) => (
+          <>
+            <FormDirtyStateWatcher setIsDirty={setIsDirty} />
+            <FormStateWatcher setIsDisabled={setIsDisabled} />
+            <Form onChange={() => setRequestErr('')}>
+              <TextInput
+                isError={Boolean(errors.name || requestErr)}
+                isTouched={Boolean(touched.name)}
+                placeholder="Netflix subscription"
+                title="Cost name"
+                name="name"
+                errorText={errors.name}
+              />
+              <TextInput
+                isError={Boolean(errors.description || requestErr)}
+                isTouched={Boolean(touched.description)}
+                placeholder="Description"
+                title="Description"
+                name="description"
+                errorText={errors.description}
+              />
+              <NumberInput
+                name="monthlyPayment"
+                placeholder="2000"
+                title="Monthly payment"
+                isError={Boolean(errors.monthlyPayment || requestErr)}
+                isTouched={Boolean(touched.monthlyPayment)}
+                errorText={errors.monthlyPayment}
+              />
+              <NumberInput
+                name="approximatelyPaymentDay"
+                placeholder="10"
+                title="Payment Day (1–28)"
+                isError={Boolean(errors.approximatelyPaymentDay || requestErr)}
+                isTouched={Boolean(touched.approximatelyPaymentDay)}
+                errorText={errors.approximatelyPaymentDay}
+              />
+              <Dropdown
+                title="Select currency"
+                selectedItem={{ id: currency, label: currency.toUpperCase() }}
+                items={Object.values(Currency).map((item) => ({
+                  id: item,
+                  label: item.toUpperCase(),
+                }))}
+                onSelect={(item) => {
+                  setCurrency(item.id as Currency);
+                  setFieldValue('currency', item.id);
+                }}
+              />
+              <CheckboxInput
+                name="isPermanentAmount"
+                label="Permanent Amount?"
+                checked={values.isPermanentAmount}
+                onChange={(checked) => setFieldValue('isPermanentAmount', checked)}
+              />
+              <TagsSelector
+                accountId={accountId}
+                selected={values.tags}
+                onChange={(tags) => setFieldValue('tags', tags)}
+              />
+              {requestErr !== '' && <p className="text-sm font-bold text-red-400">{requestErr}</p>}
+            </Form>
+          </>
+        )}
+      </Formik>
+    );
+  },
+);
+
+EditForm.displayName = 'EditForm';
+
+export default EditForm;
