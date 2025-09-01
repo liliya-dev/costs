@@ -41,6 +41,13 @@ export class PBIEntity extends PaymentEntity {
   @Column({ type: 'integer', nullable: false })
   numberOfPayments: number;
 
+  @ApiProperty({
+    example: 10,
+    description: 'Number of downpayments',
+  })
+  @Column({ type: 'integer', nullable: false, default: 0 })
+  numberOfDownpayments: number;
+
   @ManyToMany(() => TagEntity)
   @JoinTable({
     name: 'pbi_tags',

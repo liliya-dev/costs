@@ -67,6 +67,13 @@ export class CreatePBIDto {
   @IsInt()
   numberOfPayments: number;
 
+  @ApiProperty({ example: 1 })
+  @Type(() => Number)
+  @Min(1)
+  @IsInt()
+  @IsOptional()
+  numberOfDownpayments: number;
+
   @ApiProperty({ example: [] })
   @IsArray()
   @IsOptional()
@@ -118,6 +125,13 @@ export class UpdatePBIDto {
   @Min(1)
   @IsInt()
   numberOfPayments: number;
+
+  @ApiProperty({ example: 10 })
+  @Type(() => Number)
+  @IsOptional()
+  @Min(1)
+  @IsInt()
+  numberOfDownpayments: number;
 
   @ApiProperty({ example: [] })
   @IsArray()

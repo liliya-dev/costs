@@ -47,3 +47,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 13. Don't show paused customers
 14. Payments by installments do payments several
 15. Add downpayment for pbi
+16 show normall err text

@@ -32,6 +32,7 @@ interface FormValues {
   approximatelyPaymentDay: number;
   tags: ITag[];
   numberOfPayments: number;
+  numberOfDownpayments?: number;
 }
 
 const EditForm = forwardRef<EditFormRef, IProps>(
@@ -56,6 +57,7 @@ const EditForm = forwardRef<EditFormRef, IProps>(
       approximatelyPaymentDay: pbi.approximatelyPaymentDay,
       tags: pbi.tags || [],
       numberOfPayments: pbi.numberOfPayments,
+      numberOfDownpayments: pbi.numberOfDownpayments,
     };
 
     useEffect(() => {
@@ -67,7 +69,7 @@ const EditForm = forwardRef<EditFormRef, IProps>(
       <Formik
         innerRef={formikRef}
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        validationSchema={validationSchema(pbi.transactions.length)}
         onSubmit={async (
           {
             monthlyPayment,
@@ -77,6 +79,7 @@ const EditForm = forwardRef<EditFormRef, IProps>(
             approximatelyPaymentDay,
             tags,
             numberOfPayments,
+            numberOfDownpayments,
           },
           actions,
         ) => {
@@ -86,6 +89,7 @@ const EditForm = forwardRef<EditFormRef, IProps>(
             currency,
             description,
             approximatelyPaymentDay,
+            numberOfDownpayments,
             numberOfPayments,
             tags: tags.map((tag) => tag.id),
           });
@@ -146,6 +150,14 @@ const EditForm = forwardRef<EditFormRef, IProps>(
                 isTouched={Boolean(touched.numberOfPayments)}
                 errorText={errors.numberOfPayments}
                 disabled={arePaymentFieldsDisabled}
+              />
+              <NumberInput
+                name="numberOfDownpayments"
+                title="Number of downpayments"
+                placeholder="5"
+                isError={Boolean(errors.numberOfDownpayments || requestErr)}
+                isTouched={Boolean(touched.numberOfDownpayments)}
+                errorText={errors.numberOfDownpayments}
               />
               <Dropdown
                 title="Select currency"

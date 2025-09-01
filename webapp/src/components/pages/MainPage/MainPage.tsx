@@ -29,7 +29,7 @@ const MainPage = () => {
   }, []);
 
   return (
-    <div className='p-12'>
+    <div className="p-12">
       <Text text="Available accounts:" color="DARK" size="XL" />
       <div className="my-8" />
       {isAddFormVisible && (

@@ -24,8 +24,8 @@ services:
         NODE_ENV: ${NODE_ENV}
     container_name: apiapp
     volumes:
-      - .apiapp:/apiapp
-      - /apiapp/node_modules
+      - ./apiapp:/app 
+      - /app/node_modules   
     ports:
       - "${API_PORT}:4000"
     env_file:

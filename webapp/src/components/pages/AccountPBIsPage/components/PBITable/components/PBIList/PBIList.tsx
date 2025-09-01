@@ -34,6 +34,7 @@ const PBIList = ({
             isFullyPaid,
             numberOfPayments,
             transactions,
+            numberOfDownpayments,
             id,
           },
           index,
@@ -62,7 +63,7 @@ const PBIList = ({
                 {monthlyPayment} {currencySymbols[currency]}
               </TableRow>
               <TableRow>
-                {transactions.length} / {numberOfPayments}
+                {transactions.length + numberOfDownpayments} / {numberOfPayments}
               </TableRow>
               <TableRow>{approximatelyPaymentDay}</TableRow>
             </Link>

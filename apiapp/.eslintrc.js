@@ -31,9 +31,11 @@ module.exports = {
       },
     ],
   },
-  settings: {
+ settings: {
     'import/resolver': {
-      typescript: {},
+      typescript: {
+        project: './tsconfig.json',
+      },
     },
   },
 };

@@ -62,6 +62,7 @@ export interface CreatePBIDto {
   description?: string;
   approximatelyPaymentDay: number;
   numberOfPayments: number;
+  numberOfDownpayments?: number;
   tags?: number[];
 }
 

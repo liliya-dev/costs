@@ -28,6 +28,7 @@ interface FormValues {
   currency: Currency;
   approximatelyPaymentDay: number;
   numberOfPayments: number;
+  numberOfDownpayments?: number;
   tags: number[];
   description?: string;
 }
@@ -70,7 +71,7 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
     toggleIsDisabled(!isDirty || isDisabled);
   }, [isDirty, isDisabled]);
 
-  console.log({isDirty, isDisabled})
+  console.log({ isDirty, isDisabled });
 
   return (
     <Formik
@@ -86,6 +87,7 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
           tags,
           numberOfPayments,
           description,
+          numberOfDownpayments,
         },
         actions,
       ) => {
@@ -99,6 +101,7 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
           tags,
           isFullyPaid: false,
           numberOfPayments,
+          numberOfDownpayments,
         });
 
         if (res.data) {
@@ -110,73 +113,81 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
         }
       }}
     >
-      {({ errors, touched, setFieldValue, isValid }) => {
-        console.log(errors, isValid)
+      {({ errors, touched, setFieldValue }) => {
         return (
-        <>
-          <FormDirtyStateWatcher setIsDirty={setIsDirty} />
-          <FormStateWatcher setIsDisabled={setIsDisabled} />
-          <Form onChange={() => setRequestErr('')}>
-            <TextInput
-              name="name"
-              title="Payment name"
-              placeholder="Iphone"
-              isError={Boolean(errors.name || requestErr)}
-              isTouched={Boolean(touched.name)}
-              errorText={errors.name}
-            />
-            <TextInput
-              isError={Boolean(errors.description || requestErr)}
-              isTouched={Boolean(touched.description)}
-              placeholder="Description"
-              title="Description"
-              name="description"
-              errorText={errors.description}
-            />
-            <NumberInput
-              name="monthlyPayment"
-              title="Monthly Payment"
-              placeholder="1500"
-              isError={Boolean(errors.monthlyPayment || requestErr)}
-              isTouched={Boolean(touched.monthlyPayment)}
-              errorText={errors.monthlyPayment}
-            />
-            <NumberInput
-              name="approximatelyPaymentDay"
-              title="Payment Day (1–28)"
-              placeholder="5"
-              isError={Boolean(errors.approximatelyPaymentDay || requestErr)}
-              isTouched={Boolean(touched.approximatelyPaymentDay)}
-              errorText={errors.approximatelyPaymentDay}
-            />
-            <NumberInput
-              name="numberOfPayments"
-              title="Number of payments"
-              placeholder="5"
-              isError={Boolean(errors.numberOfPayments || requestErr)}
-              isTouched={Boolean(touched.numberOfPayments)}
-              errorText={errors.numberOfPayments}
-            />
-            <Dropdown
-              title="Select Currency"
-              selectedItem={{ id: currency, label: currency.toUpperCase() }}
-              items={Object.values(Currency).map((item) => ({
-                id: item,
-                label: item.toUpperCase(),
-              }))}
-              onSelect={(item) => {
-                setCurrency(item.id as Currency);
-                setFieldValue('currency', item.id);
-              }}
-            />
-            <TagsSelector
-              accountId={accountId}
-              onChange={(tags) => handleUpdateSelectedTags(tags, setFieldValue)}
-            />
-            {requestErr && <p className="text-sm font-bold text-red-400">{requestErr}</p>}
-          </Form>
-        </>
-      )}}
+          <>
+            <FormDirtyStateWatcher setIsDirty={setIsDirty} />
+            <FormStateWatcher setIsDisabled={setIsDisabled} />
+            <Form onChange={() => setRequestErr('')}>
+              <TextInput
+                name="name"
+                title="Payment name"
+                placeholder="Iphone"
+                isError={Boolean(errors.name || requestErr)}
+                isTouched={Boolean(touched.name)}
+                errorText={errors.name}
+              />
+              <TextInput
+                isError={Boolean(errors.description || requestErr)}
+                isTouched={Boolean(touched.description)}
+                placeholder="Description"
+                title="Description"
+                name="description"
+                errorText={errors.description}
+              />
+              <NumberInput
+                name="monthlyPayment"
+                title="Monthly Payment"
+                placeholder="1500"
+                isError={Boolean(errors.monthlyPayment || requestErr)}
+                isTouched={Boolean(touched.monthlyPayment)}
+                errorText={errors.monthlyPayment}
+              />
+              <NumberInput
+                name="approximatelyPaymentDay"
+                title="Payment Day (1–28)"
+                placeholder="5"
+                isError={Boolean(errors.approximatelyPaymentDay || requestErr)}
+                isTouched={Boolean(touched.approximatelyPaymentDay)}
+                errorText={errors.approximatelyPaymentDay}
+              />
+              <NumberInput
+                name="numberOfPayments"
+                title="Number of payments"
+                placeholder="5"
+                isError={Boolean(errors.numberOfPayments || requestErr)}
+                isTouched={Boolean(touched.numberOfPayments)}
+                errorText={errors.numberOfPayments}
+              />
+              <NumberInput
+                name="numberOfDownpayments"
+                title="Number of downpayments"
+                placeholder="5"
+                isError={Boolean(errors.numberOfDownpayments || requestErr)}
+                isTouched={Boolean(touched.numberOfDownpayments)}
+                errorText={errors.numberOfDownpayments}
+              />
+              <Dropdown
+                title="Select Currency"
+                selectedItem={{ id: currency, label: currency.toUpperCase() }}
+                items={Object.values(Currency).map((item) => ({
+                  id: item,
+                  label: item.toUpperCase(),
+                }))}
+                onSelect={(item) => {
+                  setCurrency(item.id as Currency);
+                  setFieldValue('currency', item.id);
+                }}
+              />
+              <TagsSelector
+                accountId={accountId}
+                onChange={(tags) => handleUpdateSelectedTags(tags, setFieldValue)}
+              />
+              {requestErr && <p className="text-sm font-bold text-red-400">{requestErr}</p>}
+            </Form>
+          </>
+        );
+      }}
     </Formik>
   );
 });
