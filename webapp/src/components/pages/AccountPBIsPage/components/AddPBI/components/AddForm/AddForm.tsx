@@ -71,8 +71,6 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
     toggleIsDisabled(!isDirty || isDisabled);
   }, [isDirty, isDisabled]);
 
-  console.log({ isDirty, isDisabled });
-
   return (
     <Formik
       innerRef={formikRef}
