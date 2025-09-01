@@ -6,6 +6,7 @@ import Text from '@/components/atoms/Text/Text';
 import FullScreenModal from '@/components/molecules/FullScreenModal/FullScreenModal';
 import { IAccount } from '@/types';
 import { deleteAccount } from '@/utils/api';
+import IconButton from '@/components/atoms/IconButton/IconButton';
 
 interface IProps {
   account: IAccount;
@@ -41,17 +42,20 @@ const AccountItem = ({ account, callback }: IProps) => {
           />
         </FullScreenModal>
       )}
-      <div className="relative flex items-center justify-between">
+      <div className="relative flex items-center justify-between mb-4 rounded-md bg-white transition-opacity duration-200 hover:opacity-80 px-5 py-3">
         <Link
           href={`account/${account.id}/incomes`}
-          className="mb-4 flex w-full items-center justify-between rounded-md bg-slate-200 px-8 py-5 hover:bg-sky-200 active:bg-sky-300"
+          className="flex w-3/5"
         >
           <Text text={account.name} color="DARK" size="L" />
         </Link>
-        <div className="absolute right-8 top-3 flex items-center">
-          {/* <Button type="LIGHT" title="Edit" onClick={() => {}} />
-          <div className="mx-2" /> */}
-          <Button type="DANGER" title="Delete" onClick={toggleApproveModal} />
+        <div className="flex items-center">
+          <IconButton
+            iconHeight={24}
+            iconColor="RED"
+            icon="Trash"
+            onClick={toggleApproveModal}
+          />
         </div>
       </div>
     </>

@@ -18,10 +18,5 @@ export const validationSchema = Yup.object({
 
   description: Yup.string().max(500, 'Description should be 500 characters or less').optional(),
 
-  tags: Yup.array().of(
-    Yup.object({
-      id: Yup.number().required(),
-      name: Yup.string().required(),
-    }),
-  ),
+   tags: Yup.array().of(Yup.number().typeError('Each tag must be a number')).optional(),
 });

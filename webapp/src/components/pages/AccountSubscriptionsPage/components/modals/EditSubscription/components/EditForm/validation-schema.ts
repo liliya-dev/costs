@@ -22,10 +22,5 @@ export const validationSchema = Yup.object({
     .max(28, 'Day cannot be more than 30')
     .required('Approximately payment day is required'),
 
-  tags: Yup.array().of(
-    Yup.object({
-      id: Yup.number().required(),
-      name: Yup.string().required(),
-    }),
-  ),
+   tags: Yup.array().of(Yup.number().typeError('Each tag must be a number')).optional(),
 });

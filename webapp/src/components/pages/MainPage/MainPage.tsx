@@ -29,8 +29,8 @@ const MainPage = () => {
   }, []);
 
   return (
-    <div>
-      <Text text="Available accounts:" color="DARK" size="XXL" />
+    <div className='p-12'>
+      <Text text="Available accounts:" color="DARK" size="XL" />
       <div className="my-8" />
       {isAddFormVisible && (
         <AddAccount callback={getData} handleToggleAddForm={handleToggleAddForm} />

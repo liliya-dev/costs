@@ -70,6 +70,8 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
     toggleIsDisabled(!isDirty || isDisabled);
   }, [isDirty, isDisabled]);
 
+  console.log({isDirty, isDisabled})
+
   return (
     <Formik
       innerRef={formikRef}
@@ -108,7 +110,9 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
         }
       }}
     >
-      {({ errors, touched, setFieldValue }) => (
+      {({ errors, touched, setFieldValue, isValid }) => {
+        console.log(errors, isValid)
+        return (
         <>
           <FormDirtyStateWatcher setIsDirty={setIsDirty} />
           <FormStateWatcher setIsDisabled={setIsDisabled} />
@@ -172,7 +176,7 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
             {requestErr && <p className="text-sm font-bold text-red-400">{requestErr}</p>}
           </Form>
         </>
-      )}
+      )}}
     </Formik>
   );
 });
