@@ -30,7 +30,7 @@ const CustomersTable = ({
   selectedCurrency,
   customers,
   handleDataReload,
-  accountId
+  accountId,
 }: IProps) => {
   const [selectedStatus, setSelectedStatus] = useState<Status | null>(null);
   const handleChangeStatus = (status: Status | null) => setSelectedStatus(status);

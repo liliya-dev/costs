@@ -1,10 +1,11 @@
+import Link from 'next/link';
+
 import IconButton from '@/components/atoms/IconButton/IconButton';
 import TableRow from '@/components/atoms/table/TableRow/TableRow';
 import { currencySymbols, StatusColors } from '@/constants';
 import { IIRP, Currency } from '@/types';
 import { convertAmountToCurrency } from '@/utils/helpers/convert-amount-to-currency.helper';
 import { formatDate } from '@/utils/helpers/format-date.helper';
-import Link from 'next/link';
 
 interface IProps {
   irps: IIRP[];
@@ -14,7 +15,13 @@ interface IProps {
   accountId: number;
 }
 
-const IRPsList = ({ irps, selectedCurrency, handleOpenDeleteIRP, handleOpenEditIRP, accountId }: IProps) => {
+const IRPsList = ({
+  irps,
+  selectedCurrency,
+  handleOpenDeleteIRP,
+  handleOpenEditIRP,
+  accountId,
+}: IProps) => {
   return (
     <>
       {irps.map(
@@ -28,12 +35,12 @@ const IRPsList = ({ irps, selectedCurrency, handleOpenDeleteIRP, handleOpenEditI
             dateShouldBePaid,
             status,
             customerName,
-            customerId
+            customerId,
           },
           index,
         ) => (
           <div
-            className={`grid grid-cols-3 sm:grid-cols-7 transition-opacity duration-200 hover:bg-gray-50 hover:opacity-80 dark:hover:bg-gray-800 ${
+            className={`grid grid-cols-3 transition-opacity duration-200 hover:bg-gray-50 hover:opacity-80 dark:hover:bg-gray-800 sm:grid-cols-7 ${
               index === irps.length - 1 ? '' : 'border-b border-stroke dark:border-dark-3'
             }`}
             key={index}
