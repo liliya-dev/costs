@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsDateString,
   IsInt,
   IsNotEmpty,
@@ -11,6 +12,8 @@ import {
 import { CreateOutgoingTransactionDto } from 'src/common/dtos/outgoing-transaction.dto';
 import { PaymentDto } from 'src/common/dtos/payments.dto';
 import { DateStatus, Status } from 'src/common/enums/status.enum';
+
+import { TagEntity } from '../tags/tag.entity';
 
 export class CreateRCTransactionDto extends CreateOutgoingTransactionDto {
   @ApiProperty({ example: 4 })
@@ -43,6 +46,11 @@ export class RCsDoneAndUpcomingDto extends PaymentDto {
   @IsNotEmpty()
   @IsString()
   status: Status;
+
+  @ApiProperty({ example: 12 })
+  @IsNotEmpty()
+  @IsArray()
+  rcTags: TagEntity[];
 }
 
 export class RCDatesDto {
