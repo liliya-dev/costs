@@ -2,12 +2,15 @@ interface IProps {
   label: string;
   color: string;
   onDismiss?: () => void;
+  onClick?: () => void;
 }
 
-const Tag = ({ label, color, onDismiss }: IProps) => (
+const Tag = ({ label, color, onDismiss, onClick }: IProps) => (
   <span
     className="m-1 inline-flex items-center rounded-full px-3 py-1 text-xs font-medium text-white"
     style={{ backgroundColor: color }}
+    onClick={onClick || onDismiss}
+    role="button"
   >
     {label}
     {onDismiss && (
