@@ -102,6 +102,7 @@ export const convertPBIsPaymentsToPaymentsPerPeriod = (
   pbiId: item.pbi.id,
   pbiName: item.pbi.name,
   isPaidInCurrentPeriod: checkIsDateInRange(startDate, endDate, item.datePaid),
+  pbiTags: item.pbi.tags,
   status:
     checkIsDateInRange(startDate, endDate, item.datePaid) &&
     checkIsDateInRange(startDate, endDate, item.dateShouldBePaid)
@@ -127,6 +128,7 @@ export const convertPBIToPaymentsPerPeriod = (
   pbiName: pbi.name,
   isPaidInCurrentPeriod: false,
   status: Status.NOT_PAID,
+  pbiTags: pbi.tags,
 });
 
 export const convertRcToPaymentsPerPeriod = (

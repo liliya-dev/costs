@@ -88,7 +88,7 @@ const AccountCostsPage = ({ id }: IProps) => {
   const handleCurrencyChange = (currency: Currency) => {
     setSelectedCurrency(currency);
   };
-
+console.log(pbiTransactions)
   return (
     <>
       {isLoading && <Loader />}

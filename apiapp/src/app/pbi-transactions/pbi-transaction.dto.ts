@@ -1,11 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsInt, IsNotEmpty, IsString, Min } from 'class-validator';
+import { IsArray, IsInt, IsNotEmpty, IsString, Min } from 'class-validator';
 import { Column } from 'typeorm';
 
 import { CreateOutgoingTransactionDto } from 'src/common/dtos/outgoing-transaction.dto';
 import { PaymentDto } from 'src/common/dtos/payments.dto';
 import { Status } from 'src/common/enums/status.enum';
+
+import { TagEntity } from '../tags/tag.entity';
 
 export class CreatePBITransactionDto extends CreateOutgoingTransactionDto {
   @ApiProperty({ example: 4 })
@@ -40,4 +42,9 @@ export class PBIsDoneAndUpcomingDto extends PaymentDto {
   @IsNotEmpty()
   @IsString()
   status: Status;
+
+  @ApiProperty({ example: 12 })
+  @IsNotEmpty()
+  @IsArray()
+  pbiTags: TagEntity[];
 }

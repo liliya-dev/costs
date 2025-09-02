@@ -85,7 +85,7 @@ export class PBITransactionsService {
       if (!isAccountExists)
         throw new HttpException('Account with this id does not exists', 400);
       const donePBIPayments = await this.pbitransactionsRepository.find({
-        relations: ['pbi', 'pbi.transactions'],
+        relations: ['pbi', 'pbi.transactions', 'pbi.tags'],
         where: {
           datePaid: Between(dto.startDate, dto.endDate),
           pbi: {
@@ -121,6 +121,7 @@ export class PBITransactionsService {
             dto.endDate,
           ),
         );
+
       const paymentsForThePeriodShouldBeDone: PBIsDoneAndUpcomingDto[] = [
         ...pbisNotFullyPaid,
         ...pbisFullyPaid,
