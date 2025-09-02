@@ -41,5 +41,10 @@ export const validationSchema = (transactionsLength: number) =>
         },
       ),
 
-    tags: Yup.array().of(Yup.number().typeError('Each tag must be a number')).optional(),
+    tags: Yup.array().of(
+      Yup.object({
+        id: Yup.number().required(),
+        name: Yup.string().required(),
+      }),
+    ),
   });

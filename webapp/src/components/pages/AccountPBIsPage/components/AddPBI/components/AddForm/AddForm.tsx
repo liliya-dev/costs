@@ -1,5 +1,5 @@
 import { Form, Formik, FormikProps } from 'formik';
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState, useCallback } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 import Dropdown from '@/components/atoms/Dropdown/Dropdown';
 import FormDirtyStateWatcher from '@/components/atoms/form-elements/FormStateWatcher/FormDirtyStateWatcher';
@@ -29,7 +29,7 @@ interface FormValues {
   approximatelyPaymentDay: number;
   numberOfPayments: number;
   numberOfDownpayments?: number;
-  tags: number[];
+  tags: ITag[];
   description?: string;
 }
 
@@ -39,16 +39,6 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
   const [isDirty, setIsDirty] = useState(false);
   const [currency, setCurrency] = useState(Currency.EUR);
   const [requestErr, setRequestErr] = useState('');
-
-  const handleUpdateSelectedTags = useCallback(
-    (tags: ITag[], setFieldValue: FormikProps<FormValues>['setFieldValue']) => {
-      setFieldValue(
-        'tags',
-        tags.map((tag) => tag.id),
-      );
-    },
-    [],
-  );
 
   useImperativeHandle(ref, () => ({
     submitForm: () => {
@@ -96,7 +86,7 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
           currency,
           approximatelyPaymentDay,
           accountId,
-          tags,
+          tags: tags.map((tag) => tag.id),
           isFullyPaid: false,
           numberOfPayments,
           numberOfDownpayments,
@@ -179,7 +169,7 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
               />
               <TagsSelector
                 accountId={accountId}
-                onChange={(tags) => handleUpdateSelectedTags(tags, setFieldValue)}
+                onChange={(tags) => setFieldValue('tags', tags)}
               />
               {requestErr && <p className="text-sm font-bold text-red-400">{requestErr}</p>}
             </Form>

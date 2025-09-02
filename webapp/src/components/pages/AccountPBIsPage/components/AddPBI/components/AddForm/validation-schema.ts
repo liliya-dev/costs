@@ -39,5 +39,10 @@ export const validationSchema = Yup.object({
     .min(1, 'Must be at least 1')
     .required('Number of payments is required'),
 
-  tags: Yup.array().of(Yup.number().typeError('Each tag must be a number')).optional(),
+  tags: Yup.array().of(
+    Yup.object({
+      id: Yup.number().required(),
+      name: Yup.string().required(),
+    }),
+  ),
 });
