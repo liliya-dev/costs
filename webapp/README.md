@@ -48,3 +48,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 14. Payments by installments do payments several
 15. Add downpayment for pbi
 16 show normall err text
+17. PBI pay one payment , or payoff
+18. Tags as filter

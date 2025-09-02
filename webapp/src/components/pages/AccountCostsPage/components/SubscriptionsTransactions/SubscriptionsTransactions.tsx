@@ -3,6 +3,7 @@ import Link from 'next/link';
 import TableHeader from '@/components/atoms/table/TableHeader/TableHeader';
 import TableRow from '@/components/atoms/table/TableRow/TableRow';
 import TableTitle from '@/components/atoms/table/TableTitle/TableTitle';
+import Tag from '@/components/atoms/Tag/Tag';
 import { currencySymbols, StatusColors } from '@/constants';
 import { ISubscriptionTransaction, Currency } from '@/types';
 import { convertAmountToCurrency } from '@/utils/helpers/convert-amount-to-currency.helper';
@@ -14,7 +15,7 @@ interface IProps {
   selectedCurrency: Currency;
 }
 
-const headers = ['Name', 'Amount', 'UAH-USD', 'UAH_EUR', 'Date should be paid'];
+const headers = ['Name', 'Amount', 'UAH-USD', 'UAH_EUR', 'Tags', 'Date should be paid'];
 
 const SubscriptionsTransactions = ({ subscriptions, accountId, selectedCurrency }: IProps) => {
   return (
@@ -24,7 +25,7 @@ const SubscriptionsTransactions = ({ subscriptions, accountId, selectedCurrency 
           <TableTitle title="Subscriptions payments" />
         </div>
         <div className="flex flex-col">
-          <div className="grid grid-cols-3 sm:grid-cols-5">
+          <div className="grid grid-cols-3 sm:grid-cols-6">
             {headers.map((item) => (
               <TableHeader
                 key={item}
@@ -45,6 +46,7 @@ const SubscriptionsTransactions = ({ subscriptions, accountId, selectedCurrency 
                 dateShouldBePaid,
                 subscriptionName,
                 subscriptionId,
+                subscriptionTags,
               },
               index,
             ) => (
@@ -54,7 +56,7 @@ const SubscriptionsTransactions = ({ subscriptions, accountId, selectedCurrency 
                 className="contents"
               >
                 <div
-                  className={`grid cursor-pointer grid-cols-3 transition-opacity duration-200 hover:bg-gray-50 hover:opacity-80 dark:hover:bg-gray-800 sm:grid-cols-5 ${
+                  className={`grid cursor-pointer grid-cols-3 transition-opacity duration-200 hover:bg-gray-50 hover:opacity-80 dark:hover:bg-gray-800 sm:grid-cols-6 ${
                     index === subscriptions.length - 1
                       ? ''
                       : 'border-b border-stroke dark:border-dark-3'
@@ -89,6 +91,11 @@ const SubscriptionsTransactions = ({ subscriptions, accountId, selectedCurrency 
                   </TableRow>
                   <TableRow>{rateUahToUsd}</TableRow>
                   <TableRow>{rateUahToEur}</TableRow>
+                  <TableRow>
+                    {subscriptionTags.map((item) => (
+                      <Tag key={item.id} label={item.name} color={item.color} />
+                    ))}
+                  </TableRow>
                   <TableRow>{formatDate(dateShouldBePaid)}</TableRow>
                 </div>
               </Link>
