@@ -1,5 +1,5 @@
 import { Form, Formik, FormikProps } from 'formik';
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState, useCallback } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 import Dropdown from '@/components/atoms/Dropdown/Dropdown';
 import CheckboxInput from '@/components/atoms/form-elements/CheckboxInput/CheckboxInput';
@@ -29,7 +29,7 @@ interface FormValues {
   currency: Currency;
   approximatelyPaymentDay: number;
   isPermanentAmount: boolean;
-  tags: number[];
+  tags: ITag[];
   description?: string;
 }
 
@@ -39,16 +39,6 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
   const [isDirty, setIsDirty] = useState(false);
   const [currency, setCurrency] = useState(Currency.EUR);
   const [requestErr, setRequestErr] = useState('');
-
-  const handleUpdateSelectedTags = useCallback(
-    (tags: ITag[], setFieldValue: FormikProps<FormValues>['setFieldValue']) => {
-      setFieldValue(
-        'tags',
-        tags.map((tag) => tag.id),
-      );
-    },
-    [],
-  );
 
   useImperativeHandle(ref, () => ({
     submitForm: () => {
@@ -95,7 +85,7 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
           currency,
           approximatelyPaymentDay,
           accountId,
-          tags,
+          tags: tags.map((tag) => tag.id),
           isPermanentAmount,
           isActive: true,
         });
@@ -164,10 +154,7 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
               checked={values.isPermanentAmount}
               onChange={(checked) => setFieldValue('isPermanentAmount', checked)}
             />
-            <TagsSelector
-              accountId={accountId}
-              onChange={(tags) => handleUpdateSelectedTags(tags, setFieldValue)}
-            />
+            <TagsSelector accountId={accountId} onChange={(tags) => setFieldValue('tags', tags)} />
             {requestErr && <p className="text-sm font-bold text-red-400">{requestErr}</p>}
           </Form>
         </>
