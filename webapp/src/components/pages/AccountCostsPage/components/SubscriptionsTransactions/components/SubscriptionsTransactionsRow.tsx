@@ -55,7 +55,6 @@ const SubscriptionsTransactionsRow = ({
             </p>
           </div>
         </TableRow>
-
         <TableRow>
           {convertAmountToCurrency({
             amount,
@@ -65,17 +64,14 @@ const SubscriptionsTransactionsRow = ({
             currency,
           })}
         </TableRow>
-
         <TableRow>{rateUahToUsd}</TableRow>
         <TableRow>{rateUahToEur}</TableRow>
-
+        <TableRow>{formatDate(dateShouldBePaid)}</TableRow>
         <TableRow>
           {subscriptionTags.map((item) => (
             <Tag key={item.id} label={item.name} color={item.color} />
           ))}
         </TableRow>
-
-        <TableRow>{formatDate(dateShouldBePaid)}</TableRow>
       </div>
     </Link>
   );

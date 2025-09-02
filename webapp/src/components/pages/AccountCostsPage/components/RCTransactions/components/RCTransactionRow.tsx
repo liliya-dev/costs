@@ -49,7 +49,6 @@ const RCTransactionRow = ({ transaction, accountId, isLast, selectedCurrency }: 
             </p>
           </div>
         </TableRow>
-
         <TableRow>
           {convertAmountToCurrency({
             amount,
@@ -59,18 +58,15 @@ const RCTransactionRow = ({ transaction, accountId, isLast, selectedCurrency }: 
             currency,
           })}
         </TableRow>
-
         <TableRow>{rateUahToUsd}</TableRow>
         <TableRow>{rateUahToEur}</TableRow>
-
+        <TableRow>{formatDate(dateShouldBePaid)}</TableRow>
+        <TableRow>{formatDate(datePaid)}</TableRow>
         <TableRow>
           {rcTags.map((tag) => (
             <Tag key={tag.id} label={tag.name} color={tag.color} />
           ))}
         </TableRow>
-
-        <TableRow>{formatDate(dateShouldBePaid)}</TableRow>
-        <TableRow>{formatDate(datePaid)}</TableRow>
       </div>
     </Link>
   );

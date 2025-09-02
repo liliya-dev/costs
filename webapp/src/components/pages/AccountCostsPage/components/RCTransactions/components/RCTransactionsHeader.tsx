@@ -7,9 +7,9 @@ const headers = [
   'Amount',
   'UAH-USD',
   'UAH-EUR',
-  'Tags',
   'Date should be paid',
   'Date paid',
+  'Tags',
 ];
 
 interface IProps {
