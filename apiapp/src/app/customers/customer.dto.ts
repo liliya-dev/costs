@@ -6,6 +6,7 @@ import {
   IsEnum,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Max,
   Min,
@@ -31,7 +32,8 @@ export class CustomerDto {
   @IsDefined()
   isCashless: boolean;
 
-  @ApiProperty({ example: false })
+  @ApiProperty({ example: false, default: false })
+  @IsOptional()
   @IsBoolean()
   isCancelled: boolean;
 

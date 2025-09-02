@@ -17,6 +17,7 @@ export const ArrowLefttIcon = ({ width = 32, height = 32, color = 'black' }: IPr
   );
 };
 
+
 export const ArrowRightIcon = ({ color = 'black', width = 32, height = 32 }: IProps) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" width={width} height={height}>
     <title>Artboard-34</title>

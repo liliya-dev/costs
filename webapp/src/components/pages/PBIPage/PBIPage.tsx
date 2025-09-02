@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 
 import Loader from '@/components/atoms/Loader/Loader';
 import TableTitle from '@/components/atoms/table/TableTitle/TableTitle';
+import { currencySymbols } from '@/constants';
 import { IPBI } from '@/types';
 import { getPBIById } from '@/utils/api';
 
@@ -37,6 +38,10 @@ const PBIPage = ({ pbiId }: IProps) => {
       {!isLoading && pbi && (
         <>
           <TableTitle title={`${pbi.name.replace(/^\s*\w/, (c) => c.toUpperCase())} payments`} />
+          <p className="mt-3">
+            Initial downpayment was {pbi.monthlyPayment * pbi.numberOfDownpayments}{' '}
+            {currencySymbols[pbi.currency]}
+          </p>
           <TransactionsTable transactions={pbi.transactions} />
         </>
       )}

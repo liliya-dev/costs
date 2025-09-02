@@ -34,7 +34,10 @@ const PayPBI = ({ pbi, handleClose, callback }: IProps) => {
       text={
         <>
           By clicking the button, you will be charged{' '}
-          <strong>{pbi.numberOfPayments - pbi.transactions.length}</strong> payments of{' '}
+          <strong>
+            {pbi.numberOfPayments - pbi.transactions.length - pbi.numberOfDownpayments}
+          </strong>{' '}
+          payments of{' '}
           <strong>
             {pbi.monthlyPayment} {currencySymbols[pbi.currency]}
           </strong>

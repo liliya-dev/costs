@@ -1,0 +1,12 @@
+{
+  "folders": [
+    { "path": "apiapp" },
+    { "path": "webapp" },
+    { "path": "." },
+  ],
+    "settings": {
+    "eslint.workingDirectories": [
+      { "mode": "auto" }
+    ]
+  }
+}

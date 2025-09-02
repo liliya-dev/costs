@@ -158,9 +158,11 @@ export class PBITransactionsService {
     id: number,
   ): Promise<AvailableDatesDto[]> {
     const pbi = await this.pbisService.getOne({ id });
-    const startDate = new Date(pbi.createdAt).toISOString();
+    const startDateInitialTime = new Date(pbi.createdAt);
+    startDateInitialTime.setHours(0, 0, 0, 0);
+    const startDate = startDateInitialTime.toISOString();
     const end = new Date(startDate);
-    end.setMonth(end.getMonth() + pbi.numberOfPayments + 1);
+    end.setMonth(end.getMonth() + pbi.numberOfPayments);
     const endDate = end.toISOString();
     const donePayments = await this.pbitransactionsRepository.find({
       where: {
@@ -190,7 +192,7 @@ export class PBITransactionsService {
         })),
       )
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-      .slice(0, pbi.numberOfPayments);
+      .slice(0, pbi.numberOfPayments - pbi.numberOfDownpayments);
     return allDatesWithTheStatus;
   }
 }

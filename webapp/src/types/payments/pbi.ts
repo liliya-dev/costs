@@ -12,6 +12,7 @@ export interface IPBITransaction extends BaseRegularPayment {
 export interface IPBI extends BaseEntityPaymentData {
   isFullyPaid: boolean;
   numberOfPayments: number;
+  numberOfDownpayments: number;
   description?: string;
   tags: ITag[];
   transactions: IPBITransaction[];

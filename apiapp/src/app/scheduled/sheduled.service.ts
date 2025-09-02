@@ -76,7 +76,10 @@ export class SheduledService {
           currency,
           dateShouldBePaid: today.toISOString(),
         });
-        if (transactions.length + 1 === pbi.numberOfPayments) {
+        if (
+          transactions.length + 1 ===
+          pbi.numberOfPayments - pbi.numberOfDownpayments
+        ) {
           await this.pbisService.update({ isFullyPaid: true }, id);
         }
         console.log(

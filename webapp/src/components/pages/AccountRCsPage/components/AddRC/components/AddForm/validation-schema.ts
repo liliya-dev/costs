@@ -22,5 +22,10 @@ export const validationSchema = Yup.object().shape({
 
   description: Yup.string().max(500, 'Description must be less than 500 characters').optional(),
 
-  tags: Yup.array().of(Yup.number().min(1, 'Invalid tag ID')).optional(),
+  tags: Yup.array().of(
+    Yup.object({
+      id: Yup.number().required(),
+      name: Yup.string().required(),
+    }),
+  ),
 });

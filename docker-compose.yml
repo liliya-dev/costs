@@ -8,7 +8,7 @@ services:
     env_file:
       - .env
     ports:
-      - "5432:5432"
+      - "${PG_PORT}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -23,8 +23,11 @@ services:
       args:
         NODE_ENV: ${NODE_ENV}
     container_name: apiapp
+    volumes:
+      - ./apiapp:/app 
+      - /app/node_modules   
     ports:
-      - "4000:4000"
+      - "${API_PORT}:4000"
     env_file:
       - .env
     depends_on:
@@ -37,8 +40,11 @@ services:
       args:
         NODE_ENV: ${NODE_ENV}
     container_name: webapp
+    volumes:
+      - ./webapp:/app       # mount local code
+      - /app/node_modules   # keep node_modules inside container
     ports:
-      - "3000:3000"
+      - "${WEB_PORT}:3000"
     env_file:
       - .env
     depends_on:

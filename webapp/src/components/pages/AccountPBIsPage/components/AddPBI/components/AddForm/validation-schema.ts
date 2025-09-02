@@ -22,6 +22,18 @@ export const validationSchema = Yup.object({
     .max(28, 'Day cannot be more than 28')
     .required('Payment day is required'),
 
+  numberOfDownpayments: Yup.number()
+    .typeError('Number of downpayments must be a number')
+    .min(1, 'Must be at least 1')
+    .test(
+      'downpayments-max',
+      'Number of downpayments cannot exceed number of payments',
+      function (value) {
+        const { numberOfPayments } = this.parent;
+        return value === undefined || value <= numberOfPayments;
+      },
+    ),
+
   numberOfPayments: Yup.number()
     .typeError('Number of payments must be a number')
     .min(1, 'Must be at least 1')

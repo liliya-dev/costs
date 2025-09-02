@@ -1,5 +1,5 @@
 import { Form, Formik, FormikProps } from 'formik';
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState, useCallback } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 import Dropdown from '@/components/atoms/Dropdown/Dropdown';
 import FormDirtyStateWatcher from '@/components/atoms/form-elements/FormStateWatcher/FormDirtyStateWatcher';
@@ -7,7 +7,7 @@ import FormStateWatcher from '@/components/atoms/form-elements/FormStateWatcher/
 import NumberInput from '@/components/atoms/form-elements/NumberInput/NumberInput';
 import TextInput from '@/components/atoms/form-elements/TextInput/TextInput';
 import TagsSelector from '@/components/molecules/TagsSelector/TagsSelector';
-import { CreateOTPDto, Currency, ITag } from '@/types';
+import { Currency, ITag } from '@/types';
 import { createOTP } from '@/utils/api';
 
 import { validationSchema } from './validation-schema';
@@ -22,7 +22,13 @@ export interface AddFormRef {
   submitForm: () => void;
 }
 
-type FormValues = Omit<CreateOTPDto, 'accountId'>;
+interface FormValues {
+  amount: number;
+  currency: Currency;
+  name: string;
+  description?: string;
+  tags: ITag[];
+}
 
 const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, callback }, ref) => {
   const formikRef = useRef<FormikProps<FormValues> | null>(null);
@@ -30,16 +36,6 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
   const [isDirty, setIsDirty] = useState(false);
   const [currency, setCurrency] = useState(Currency.EUR);
   const [requestErr, setRequestErr] = useState('');
-
-  const handleUpdateSelectedTags = useCallback(
-    (tags: ITag[], setFieldValue: FormikProps<FormValues>['setFieldValue']) => {
-      setFieldValue(
-        'tags',
-        tags.map((tag) => tag.id),
-      );
-    },
-    [],
-  );
 
   useImperativeHandle(ref, () => ({
     submitForm: () => {
@@ -72,7 +68,7 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
           currency,
           name,
           description,
-          tags,
+          tags: tags.map((tag) => tag.id),
         });
 
         if (res.data) {
@@ -125,10 +121,7 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
                 setFieldValue('currency', item.id);
               }}
             />
-            <TagsSelector
-              accountId={accountId}
-              onChange={(tags) => handleUpdateSelectedTags(tags, setFieldValue)}
-            />
+            <TagsSelector accountId={accountId} onChange={(tags) => setFieldValue('tags', tags)} />
             {requestErr && <p className="text-sm font-bold text-red-400">{requestErr}</p>}
           </Form>
         </>

@@ -91,17 +91,6 @@ const EditForm = forwardRef<EditFormRef, IProps>(
       selectedIrpDates,
     ]);
 
-    console.log(
-      isDisabled,
-      hasSomethingChanged,
-      formikRef.current?.values.numberOfPayments == selectedIrpDates.length,
-      !(
-        !isDisabled &&
-        hasSomethingChanged &&
-        formikRef.current?.values.numberOfPayments === selectedIrpDates.length
-      ),
-    );
-
     return (
       <Formik
         innerRef={formikRef}

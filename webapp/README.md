@@ -42,17 +42,11 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 
 
-1. Edit customer
-2. Delete customer
-3. Pause customer
-4. Customers page
-5. Unique customer page
-6. Add payment on the costs analyze page
-7. docker file correct
-8. push to git
-9. accounts page design
-10. change mail logo
 11. By clicking on tag show all transactions (or payment entities) for this tag
 12. Add tags for costs analyze page
 13. Don't show paused customers
-14. Make customers clickable on income payments page
+14. Payments by installments do payments several
+15. Add downpayment for pbi
+16 show normall err text
+17. PBI pay one payment , or payoff
+18. Tags as filter
