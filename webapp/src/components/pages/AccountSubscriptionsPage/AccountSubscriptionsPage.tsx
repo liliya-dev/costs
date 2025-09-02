@@ -13,7 +13,7 @@ interface IProps {
 }
 
 const AccountSubscriptionsPage = ({ accountId }: IProps) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [subscriptions, setSubscriptions] = useState<ISubscription[]>([]);
 
   const fetchSubscriptions = useCallback(async () => {

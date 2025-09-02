@@ -87,6 +87,7 @@ const SubscriptionsTable = ({ subscriptions, isLoading, callback, accountId }: I
             <Loader />
           ) : (
             <SubscriptionsList
+              isLoading={isLoading}
               subscriptions={subscriptions}
               accountId={accountId}
               handleOpenEditSubscription={handleOpenEditSubscription}

@@ -12,6 +12,7 @@ interface IProps {
   handleOpenDeleteSubscription: (subscription: ISubscription) => void;
   handleOpenPauseSubscription: (subscription: ISubscription) => void;
   accountId: number;
+  isLoading: boolean;
 }
 
 const SubscriptionsList = ({
@@ -20,6 +21,7 @@ const SubscriptionsList = ({
   handleOpenEditSubscription,
   handleOpenPauseSubscription,
   accountId,
+  isLoading,
 }: IProps) => {
   return (
     <>
@@ -97,7 +99,7 @@ const SubscriptionsList = ({
           </div>
         ),
       )}
-      {!subscriptions.length && (
+      {!subscriptions.length && !isLoading && (
         <div className="bg-white px-6 py-12">
           <p className="text-center text-lg">There are no subscriptions yet</p>
         </div>
