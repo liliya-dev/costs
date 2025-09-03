@@ -93,3 +93,8 @@ export interface CreateRCTransactionDto {
   amount: number;
   currency: Currency;
 }
+
+export interface CreatePBIPaymentsDto {
+  pbiId: number;
+  datesShouldBePaid: string[];
+}

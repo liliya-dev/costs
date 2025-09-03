@@ -1,5 +1,5 @@
 import TableTitle from '@/components/atoms/table/TableTitle/TableTitle';
-import { RCTransaction, Currency } from '@/types';
+import { RCTransaction, Currency, ITag } from '@/types';
 
 import RCTransactionRow from './components/RCTransactionRow';
 import RCTransactionsEmpty from './components/RCTransactionsEmpty';
@@ -9,9 +9,10 @@ interface IProps {
   accountId: number;
   transactions: RCTransaction[];
   selectedCurrency: Currency;
+  onTagClick: (tag: ITag) => void;
 }
 
-const RCTransactions = ({ transactions, accountId, selectedCurrency }: IProps) => {
+const RCTransactions = ({ transactions, accountId, selectedCurrency, onTagClick }: IProps) => {
   return (
     <div>
       <div className="mt-12 rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card">
@@ -29,6 +30,7 @@ const RCTransactions = ({ transactions, accountId, selectedCurrency }: IProps) =
               accountId={accountId}
               isLast={index === transactions.length - 1}
               selectedCurrency={selectedCurrency}
+              onTagClick={onTagClick}
             />
           ))
         ) : (

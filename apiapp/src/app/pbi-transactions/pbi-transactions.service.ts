@@ -14,12 +14,12 @@ import { getRates } from 'src/common/helpers/get-rates.helper';
 import { HttpPrivatBankService } from 'src/common/http/http-privat-bank.service';
 
 import { AccountsService } from '../accounts/accounts.service';
-import { PBIEntity } from '../pbi/pbi.entity';
 import { PBIsService } from '../pbi/pbis.service';
 
 import {
   CreatePBITransactionDto,
   PBIsDoneAndUpcomingDto,
+  PBIsPaySpecificNumberDto,
 } from './pbi-transaction.dto';
 import { PBITransactionEntity } from './pbi-transaction.entity';
 import { PBITransactionsRepository } from './pbi-transactions.repository';
@@ -33,25 +33,6 @@ export class PBITransactionsService {
     private readonly httpPrivatBankService: HttpPrivatBankService,
     private readonly accountsService: AccountsService,
   ) {}
-
-  async payOff(id: number): Promise<PBIEntity> {
-    const pbi = await this.pbisService.getOne({ id });
-    if (!pbi) throw new HttpException('PBI with this id does not exists', 400);
-    const dates = await this.getPaymentDatesAvailableForThePeriod(id);
-    const filteredDates = dates.filter(
-      (date) => date.status === DateStatus.NOT_PAID,
-    );
-
-    for (let i = 0; i < filteredDates.length; i++) {
-      await this.create({
-        pbiId: id,
-        amount: pbi.monthlyPayment,
-        currency: pbi.currency,
-        dateShouldBePaid: filteredDates[i].date,
-      });
-    }
-    return await this.pbisService.update({ isFullyPaid: true }, id);
-  }
 
   async create(
     createDto: CreatePBITransactionDto,
@@ -195,5 +176,33 @@ export class PBITransactionsService {
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
       .slice(0, pbi.numberOfPayments - pbi.numberOfDownpayments);
     return allDatesWithTheStatus;
+  }
+
+  async createPayments({
+    datesShouldBePaid,
+    pbiId,
+  }: PBIsPaySpecificNumberDto): Promise<void> {
+    const pbi = await this.pbisService.getOne({ id: pbiId });
+    if (!pbi) throw new HttpException('PBI with this id does not exists', 400);
+    const { numberOfDownpayments, numberOfPayments, transactions } = pbi;
+    const maximumNumberOfPayments =
+      numberOfPayments - numberOfDownpayments - transactions.length;
+    console.log(maximumNumberOfPayments, datesShouldBePaid);
+    if (maximumNumberOfPayments < datesShouldBePaid.length)
+      throw new HttpException(
+        'You passed number of payments , more than left to pay in this PBI',
+        400,
+      );
+    for (let i = 0; i < datesShouldBePaid.length; i++) {
+      await this.create({
+        pbiId,
+        amount: pbi.monthlyPayment,
+        currency: pbi.currency,
+        dateShouldBePaid: datesShouldBePaid[i],
+      });
+    }
+    if (maximumNumberOfPayments === datesShouldBePaid.length) {
+      await this.pbisService.update({ isFullyPaid: true }, pbiId);
+    }
   }
 }

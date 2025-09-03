@@ -3,7 +3,7 @@ import Link from 'next/link';
 import TableRow from '@/components/atoms/table/TableRow/TableRow';
 import Tag from '@/components/atoms/Tag/Tag';
 import { currencySymbols, StatusColors } from '@/constants';
-import { RCTransaction, Currency } from '@/types';
+import { RCTransaction, Currency, ITag } from '@/types';
 import { convertAmountToCurrency } from '@/utils/helpers/convert-amount-to-currency.helper';
 import { formatDate } from '@/utils/helpers/format-date.helper';
 
@@ -12,9 +12,16 @@ interface IProps {
   accountId: number;
   isLast: boolean;
   selectedCurrency: Currency;
+  onTagClick: (tag: ITag) => void;
 }
 
-const RCTransactionRow = ({ transaction, accountId, isLast, selectedCurrency }: IProps) => {
+const RCTransactionRow = ({
+  transaction,
+  accountId,
+  isLast,
+  selectedCurrency,
+  onTagClick,
+}: IProps) => {
   const {
     amount,
     currency,
@@ -29,11 +36,14 @@ const RCTransactionRow = ({ transaction, accountId, isLast, selectedCurrency }: 
   } = transaction;
 
   return (
-    <Link href={`/account/${accountId}/costs/regular/${rcId}`} className="contents">
-      <div
-        className={`grid cursor-pointer grid-cols-3 transition-opacity duration-200 hover:bg-gray-50 hover:opacity-80 dark:hover:bg-gray-800 sm:grid-cols-7 ${
-          isLast ? '' : 'border-b border-stroke dark:border-dark-3'
-        }`}
+    <div
+      className={`grid grid-cols-3 transition-opacity duration-200 hover:bg-gray-50 hover:opacity-80 dark:hover:bg-gray-800 sm:grid-cols-7 ${
+        isLast ? '' : 'border-b border-stroke dark:border-dark-3'
+      }`}
+    >
+      <Link
+        href={`/account/${accountId}/costs/regular/${rcId}`}
+        className="col-span-3 contents sm:col-span-6"
       >
         <TableRow>
           <div className="flex">
@@ -62,13 +72,14 @@ const RCTransactionRow = ({ transaction, accountId, isLast, selectedCurrency }: 
         <TableRow>{rateUahToEur}</TableRow>
         <TableRow>{formatDate(dateShouldBePaid)}</TableRow>
         <TableRow>{formatDate(datePaid)}</TableRow>
-        <TableRow>
-          {rcTags.map((tag) => (
-            <Tag key={tag.id} label={tag.name} color={tag.color} />
-          ))}
-        </TableRow>
-      </div>
-    </Link>
+      </Link>
+
+      <TableRow>
+        {rcTags.map((tag) => (
+          <Tag key={tag.id} label={tag.name} color={tag.color} onClick={() => onTagClick(tag)} />
+        ))}
+      </TableRow>
+    </div>
   );
 };
 

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import TableRow from '@/components/atoms/table/TableRow/TableRow';
 import Tag from '@/components/atoms/Tag/Tag';
 import { currencySymbols, StatusColors } from '@/constants';
-import { Currency, ISubscriptionTransaction } from '@/types';
+import { Currency, ISubscriptionTransaction, ITag } from '@/types';
 import { convertAmountToCurrency } from '@/utils/helpers/convert-amount-to-currency.helper';
 import { formatDate } from '@/utils/helpers/format-date.helper';
 
@@ -12,6 +12,7 @@ interface IProps {
   subscription: ISubscriptionTransaction;
   isLast: boolean;
   selectedCurrency: Currency;
+  onTagClick: (tag: ITag) => void;
 }
 
 const SubscriptionsTransactionsRow = ({
@@ -19,6 +20,7 @@ const SubscriptionsTransactionsRow = ({
   accountId,
   isLast,
   selectedCurrency,
+  onTagClick,
 }: IProps) => {
   const {
     amount,
@@ -33,11 +35,14 @@ const SubscriptionsTransactionsRow = ({
   } = subscription;
 
   return (
-    <Link href={`/account/${accountId}/costs/subscriptions/${subscriptionId}`} className="contents">
-      <div
-        className={`grid cursor-pointer grid-cols-3 transition-opacity duration-200 hover:bg-gray-50 hover:opacity-80 dark:hover:bg-gray-800 sm:grid-cols-6 ${
-          isLast ? '' : 'border-b border-stroke dark:border-dark-3'
-        }`}
+    <div
+      className={`grid grid-cols-3 transition-opacity duration-200 hover:bg-gray-50 hover:opacity-80 dark:hover:bg-gray-800 sm:grid-cols-6 ${
+        isLast ? '' : 'border-b border-stroke dark:border-dark-3'
+      }`}
+    >
+      <Link
+        href={`/account/${accountId}/costs/subscriptions/${subscriptionId}`}
+        className="col-span-3 contents sm:col-span-5"
       >
         <TableRow>
           <div className="flex">
@@ -67,13 +72,14 @@ const SubscriptionsTransactionsRow = ({
         <TableRow>{rateUahToUsd}</TableRow>
         <TableRow>{rateUahToEur}</TableRow>
         <TableRow>{formatDate(dateShouldBePaid)}</TableRow>
-        <TableRow>
-          {subscriptionTags.map((item) => (
-            <Tag key={item.id} label={item.name} color={item.color} />
-          ))}
-        </TableRow>
-      </div>
-    </Link>
+      </Link>
+
+      <TableRow>
+        {subscriptionTags.map((tag) => (
+          <Tag key={tag.id} label={tag.name} color={tag.color} onClick={() => onTagClick(tag)} />
+        ))}
+      </TableRow>
+    </div>
   );
 };
 
