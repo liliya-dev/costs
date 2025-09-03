@@ -30,7 +30,7 @@ export const validationSchema = (transactionsLength: number) =>
 
     numberOfDownpayments: Yup.number()
       .typeError('Number of downpayments must be a number')
-      .min(1, 'Must be at least 1')
+      .min(0, 'Must be at least 1')
       .test(
         'downpayments-limit',
         'Total downpayments plus existing transactions cannot exceed number of payments',
