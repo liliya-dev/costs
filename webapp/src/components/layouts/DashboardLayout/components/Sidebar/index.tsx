@@ -19,6 +19,11 @@ const menuGroups = [
     menuItems: [
       {
         icon: <IconType.Income />,
+        label: 'Account details',
+        route: '/account/[id]/details',
+      },
+      {
+        icon: <IconType.Income />,
         label: 'Income payments',
         route: '/account/[id]/incomes',
       },
@@ -48,6 +53,11 @@ const menuGroups = [
             route: '/account/[id]/costs/one-time',
           },
         ],
+      },
+      {
+        icon: <IconType.Income />,
+        label: 'Balance overview',
+        route: '/account/[id]/balance',
       },
       {
         icon: <IconType.Income />,

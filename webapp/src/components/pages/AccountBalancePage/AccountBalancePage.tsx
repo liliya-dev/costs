@@ -4,26 +4,40 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
 import Loader from '@/components/atoms/Loader/Loader';
-import CustomersTable from '@/components/pages/AccountIncomesPage/components/CustomersTable/CustomersTable';
-import { Currency, IAccount, IIRP, IOTI } from '@/types';
-import { getAccount, getIrps, getOtis } from '@/utils/api';
+import TableTitle from '@/components/atoms/table/TableTitle/TableTitle';
+import {
+  Currency,
+  IAccount,
+  IIRP,
+  IOTI,
+  IOTP,
+  IPBITransaction,
+  ISubscriptionTransaction,
+  RCTransaction,
+} from '@/types';
+import {
+  getAccount,
+  getIrps,
+  getOtis,
+  getSubscriptionsTransactions,
+  getRCTransactions,
+  getPBITransactions,
+  getOTPTransactions,
+} from '@/utils/api';
 import { convertAmountToCurrency } from '@/utils/helpers/convert-amount-to-currency.helper';
 import { getBillingPeriod } from '@/utils/helpers/get-billing-period.helper';
 
-import AddCustomerPayment from './components/AddCustomerPayment/AddCustomerPayment';
-import AddOneTimePayment from './components/AddOneTimePayment/AddOneTimePayment';
-import BillingPeriod from './components/BillingPeriod/BillingPeriod';
-import CurrencySwitcher from './components/CurrencySwitcher/CurrencySwitcher';
-import IncomesStats from './components/IncomesStats/IncomesStats';
-import OtiTable from './components/OtiTable/OtiTable';
-import StatsChart from './components/StatsChart/StatsChart';
-import Tabs from './components/Tabs/Tabs';
+import BillingPeriod from '../AccountIncomesPage/components/BillingPeriod/BillingPeriod';
+import CurrencySwitcher from '../AccountIncomesPage/components/CurrencySwitcher/CurrencySwitcher';
+
+import ExpensesStats from './components/ExpensesStats';
+import IncomesStats from './components/IncomesStats';
 
 interface IProps {
   id: number;
 }
 
-const AccountIncomesPage = ({ id }: IProps) => {
+const AccountBalancePage = ({ id }: IProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -33,10 +47,15 @@ const AccountIncomesPage = ({ id }: IProps) => {
   const [end, setEnd] = useState(initialPeriod.endDate);
   const [account, setAccount] = useState<IAccount>();
   const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
-  const [isIrpLoading, setIsIrpLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [irps, setIrps] = useState<IIRP[]>([]);
   const [selectedCurrency, setSelectedCurrency] = useState<Currency>(Currency.EUR);
   const [otis, setOtis] = useState<IOTI[]>([]);
+
+  const [subscriptions, setSubscriptions] = useState<ISubscriptionTransaction[]>([]);
+  const [rcTransactions, setRCTransactions] = useState<RCTransaction[]>([]);
+  const [pbiTransactions, setPBITransactions] = useState<IPBITransaction[]>([]);
+  const [otpTransactions, setOTPTransactions] = useState<IOTP[]>([]);
 
   const getData = async () => {
     const res = await getAccount(id);
@@ -61,35 +80,28 @@ const AccountIncomesPage = ({ id }: IProps) => {
   );
 
   const getOtisData = async (start: string, end: string) => {
-    setIsIrpLoading(true);
+    setIsLoading(true);
     const res = await getOtis(id, start, end);
     if (res.data) {
       setOtis(res.data);
     }
-    setIsIrpLoading(false);
+    setIsLoading(false);
   };
 
   const getIrpsData = async (start: string, end: string) => {
-    setIsIrpLoading(true);
+    setIsLoading(true);
     const res = await getIrps(id, start, end);
     if (res.data) {
       setIrps(res.data);
     }
-    setIsIrpLoading(false);
+    setIsLoading(false);
   };
-
-  const reAskIrps = useCallback(() => {
-    return getIrpsData(start, end);
-  }, [start, end]);
-
-  const reAskOtis = useCallback(() => {
-    return getOtisData(start, end);
-  }, [start, end]);
 
   useEffect(() => {
     const { startDate, endDate } = getBillingPeriod(new Date(), skip);
     setEnd(endDate);
     setStart(startDate);
+    fetchAllTransactions();
     getIrpsData(startDate, endDate);
     getOtisData(startDate, endDate);
     router.push(pathname + '?' + createQueryString('skip', `${skip}`));
@@ -103,9 +115,27 @@ const AccountIncomesPage = ({ id }: IProps) => {
     setSelectedCurrency(currency);
   }, []);
 
+  const fetchAllTransactions = async () => {
+    setIsLoading(true);
+
+    const [subs, rc, pbi, otp] = await Promise.all([
+      getSubscriptionsTransactions(id, start, end),
+      getRCTransactions(id, start, end),
+      getPBITransactions(id, start, end),
+      getOTPTransactions(id, start, end),
+    ]);
+
+    if (subs.data) setSubscriptions(subs.data);
+    if (rc.data) setRCTransactions(rc.data);
+    if (pbi.data) setPBITransactions(pbi.data);
+    if (otp.data) setOTPTransactions(otp.data);
+
+    setIsLoading(false);
+  };
+
   return (
     <>
-      {isInitialDataLoading && <Loader />}
+      {(isInitialDataLoading || isLoading) && <Loader />}
       {!isInitialDataLoading && account && (
         <div className="pb-12">
           <div className="flex justify-between">
@@ -115,7 +145,9 @@ const AccountIncomesPage = ({ id }: IProps) => {
               selectedCurrency={selectedCurrency}
             />
           </div>
-          <div className="my-6" />
+          <div className="my-8 flex justify-between">
+            <TableTitle title="Incomes for the selected period" />
+          </div>
           <IncomesStats
             irps={irps}
             selectedCurrency={selectedCurrency}
@@ -132,48 +164,20 @@ const AccountIncomesPage = ({ id }: IProps) => {
               0,
             )}
           />
-          <div className="my-8 grid grid-cols-12 gap-4 md:gap-6 2xl:gap-7.5">
-            <StatsChart irps={irps} selectedCurrency={selectedCurrency} />
-            <Tabs
-              items={[
-                {
-                  title: 'Customer payment',
-                  id: '1',
-                  component: (
-                    <AddCustomerPayment callback={reAskIrps} customers={account.customers || []} />
-                  ),
-                },
-                {
-                  title: 'One time payment',
-                  id: '2',
-                  component: <AddOneTimePayment callback={reAskOtis} accountId={account.id} />,
-                },
-              ]}
-            />
+          <div className="my-8 flex justify-between">
+            <TableTitle title="Expenses for the selected period" />
           </div>
-
-          <div className="col-span-12 xl:col-span-8">
-            <CustomersTable
-              selectedCurrency={selectedCurrency}
-              isLoading={isIrpLoading}
-              irps={irps}
-              customers={account.customers || []}
-              handleDataReload={reAskIrps}
-              accountId={id}
-            />
-          </div>
-          <div className="col-span-12 xl:col-span-8">
-            <OtiTable
-              selectedCurrency={selectedCurrency}
-              isLoading={isIrpLoading}
-              otis={otis}
-              handleDataReload={reAskOtis}
-            />
-          </div>
+          <ExpensesStats
+            selectedCurrency={selectedCurrency}
+            subscriptions={subscriptions}
+            rcTransactions={rcTransactions}
+            pbiTransactions={pbiTransactions}
+            otpTransactions={otpTransactions}
+          />
         </div>
       )}
     </>
   );
 };
 
-export default AccountIncomesPage;
+export default AccountBalancePage;
