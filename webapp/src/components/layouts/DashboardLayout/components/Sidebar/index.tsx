@@ -19,11 +19,6 @@ const menuGroups = [
     menuItems: [
       {
         icon: <IconType.Income />,
-        label: 'Account details',
-        route: '/account/[id]/details',
-      },
-      {
-        icon: <IconType.Income />,
         label: 'Income payments',
         route: '/account/[id]/incomes',
       },
@@ -63,6 +58,21 @@ const menuGroups = [
         icon: <IconType.Income />,
         label: 'Customers',
         route: '/account/[id]/customers',
+      },
+      {
+        icon: <IconType.Income />,
+        label: 'FOP',
+        route: '/account/[id]/details',
+        children: [
+          {
+            label: 'Account details',
+            route: '/account/[id]/details',
+          },
+          {
+            label: 'Customers',
+            route: '/account/[id]/fop/customers',
+          },
+        ],
       },
     ],
   },
