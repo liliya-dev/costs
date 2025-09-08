@@ -18,5 +18,4 @@ export const validationSchema = Yup.object({
   currency: Yup.mixed<Currency>()
     .oneOf(Object.values(Currency), 'Invalid currency')
     .required('Currency is required'),
-  isCashless: Yup.boolean(),
 });

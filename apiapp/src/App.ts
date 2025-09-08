@@ -1,4 +1,7 @@
+import { join } from 'path';
+
 import fastifyCompression from '@fastify/compress';
+import fastifyStatic from '@fastify/static';
 import {
   ClassSerializerInterceptor,
   INestApplication,
@@ -13,9 +16,18 @@ import {
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AccountEntity } from './app/accounts/accounts.entity';
+import { BankDetailsEntity } from './app/bank-details/bank-details.entity';
 import { CustomerDto } from './app/customers/customer.dto';
 import { CustomerEntity } from './app/customers/customer.entity';
+import {
+  CreateFOPCustomerDto,
+  FOPCustomerDto,
+  CreateBankDetailsDto,
+} from './app/fop-customers/fop-customer.dto';
+import { FOPCustomerEntity } from './app/fop-customers/fop-customer.entity';
 import { IncomeTransactionEntity } from './app/income-transactions/income-transaction.entity';
+import { InvoiceEntity } from './app/invoices/invoice.entity';
+import { CreateInvoiceDto } from './app/invoices/invoices.dto';
 import { IRPsDoneAndUpcomingDto, IRPCreateDto } from './app/irp/irps.dto';
 import { UpdateOTIDto } from './app/oti/oti.dto';
 import { CreateOTPDto, UpdateOTPDto } from './app/otp/otp.dto';
@@ -84,6 +96,10 @@ export class App {
     await app.register(fastifyCompression, {
       encodings: ['gzip', 'deflate'],
     });
+    await app.register(fastifyStatic, {
+      root: join(__dirname, '..', 'invoices'),
+      prefix: '/invoices/',
+    });
     app.useGlobalFilters(new HttpExceptionFilter());
     return new App(app);
   }
@@ -131,6 +147,13 @@ export class App {
         UpdateOTPDto,
         CreateRCDto,
         UpdateRCDto,
+        InvoiceEntity,
+        BankDetailsEntity,
+        FOPCustomerEntity,
+        CreateFOPCustomerDto,
+        FOPCustomerDto,
+        CreateBankDetailsDto,
+        CreateInvoiceDto,
       ],
     });
     SwaggerModule.setup('/api/docs', this.application, document);

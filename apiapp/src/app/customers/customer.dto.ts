@@ -27,11 +27,6 @@ export class CustomerDto {
   @IsNotEmpty()
   currency: Currency;
 
-  @ApiProperty({ example: false })
-  @IsBoolean()
-  @IsDefined()
-  isCashless: boolean;
-
   @ApiProperty({ example: false, default: false })
   @IsOptional()
   @IsBoolean()

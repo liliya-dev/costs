@@ -26,7 +26,7 @@ import { CustomerDto, CustomerDtoWithPayments } from './customer.dto';
 import { CustomerEntity } from './customer.entity';
 import { CustomersService } from './customers.service';
 
-@ApiTags('Customers with monthly payments')
+@ApiTags('Customers')
 @Controller('customers')
 @UseInterceptors(FormatResponseInterceptor)
 export class CustomersController implements ICustomerController {

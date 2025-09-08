@@ -7,7 +7,6 @@ export interface CreateAccountDto {
 export interface CreateCustomerDto {
   name: string;
   currency: Currency;
-  isCashless: boolean;
   monthlyPayment: number;
   approximatelyPaymentDay: number;
   accountId: number;
@@ -97,4 +96,30 @@ export interface CreateRCTransactionDto {
 export interface CreatePBIPaymentsDto {
   pbiId: number;
   datesShouldBePaid: string[];
+}
+
+export interface CreateFOPCustomerDto {
+  id: number;
+  name: string;
+  currency: Currency;
+  isCancelled: boolean;
+  monthlyPayment: number;
+  accountId: number;
+
+  bankDetails?: {
+    edrpou?: string;
+    ipn?: string;
+    vat_certificate?: string;
+    tax_system?: string;
+    iban?: string;
+    bank_name?: string;
+    mfo?: string;
+    address?: string;
+    phone?: string;
+    email?: string;
+    contract_number?: string;
+    contract_date?: string;
+    contract_description?: string;
+    invoice_description?: string;
+  };
 }

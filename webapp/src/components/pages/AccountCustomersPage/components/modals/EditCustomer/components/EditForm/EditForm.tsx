@@ -1,7 +1,6 @@
 import { Form, Formik, FormikProps } from 'formik';
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
-import Checkbox from '@/components/atoms/Checkbox/Checkbox';
 import Dropdown from '@/components/atoms/Dropdown/Dropdown';
 import FormDirtyStateWatcher from '@/components/atoms/form-elements/FormStateWatcher/FormDirtyStateWatcher';
 import FormStateWatcher from '@/components/atoms/form-elements/FormStateWatcher/FormStateWatcher';
@@ -26,7 +25,6 @@ interface FormValues {
   name: string;
   monthlyPayment: number;
   currency: Currency;
-  isCashless: boolean;
   approximatelyPaymentDay: number;
 }
 
@@ -49,7 +47,6 @@ const EditForm = forwardRef<EditFormRef, IProps>(
       monthlyPayment: customer.monthlyPayment,
       currency: customer.currency,
       approximatelyPaymentDay: customer.approximatelyPaymentDay,
-      isCashless: customer.isCashless,
     };
 
     useEffect(() => {
@@ -62,15 +59,11 @@ const EditForm = forwardRef<EditFormRef, IProps>(
         innerRef={formikRef}
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={async (
-          { monthlyPayment, name, currency, isCashless, approximatelyPaymentDay },
-          actions,
-        ) => {
+        onSubmit={async ({ monthlyPayment, name, currency, approximatelyPaymentDay }, actions) => {
           const res = await updateCustomer(customer.id, {
             monthlyPayment,
             name,
             currency,
-            isCashless,
             approximatelyPaymentDay,
           });
 
@@ -124,7 +117,6 @@ const EditForm = forwardRef<EditFormRef, IProps>(
                   setFieldValue('currency', item.id);
                 }}
               />
-              <Checkbox name="isCashless" label="Is client cashless" />
               {requestErr !== '' && <p className="text-sm font-bold text-red-400">{requestErr}</p>}
             </Form>
           </>

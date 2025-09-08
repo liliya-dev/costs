@@ -1,5 +1,6 @@
 export * from './accounts';
 export * from './customers';
+export * from './fop-customers';
 export * from './tags';
 export * from './transactions';
 export * from './subscriptions';

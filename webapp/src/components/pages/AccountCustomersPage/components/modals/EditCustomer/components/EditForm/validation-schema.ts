@@ -21,6 +21,4 @@ export const validationSchema = Yup.object({
     .min(1, 'Day must be at least 1')
     .max(28, 'Day cannot be more than 30')
     .required('Approximately payment day is required'),
-
-  isCashless: Yup.boolean(),
 });

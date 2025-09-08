@@ -1,5 +1,6 @@
 export * from './general/enums';
 export * from './general/base';
+export * from './general/fop-customer';
 export * from './general/tag';
 export * from './general/customer';
 export * from './general/account';

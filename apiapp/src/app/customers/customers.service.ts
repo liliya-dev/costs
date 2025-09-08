@@ -103,7 +103,6 @@ export class CustomersService {
   async create(createDto: CustomerDto): Promise<CustomerEntity> {
     try {
       const {
-        isCashless,
         accountId,
         approximatelyPaymentDay,
         currency,
@@ -122,7 +121,6 @@ export class CustomersService {
       const createdCustomer = await this.customersRepository.save({
         name,
         currency,
-        isCashless,
         approximatelyPaymentDay,
         monthlyPayment,
         isCancelled: false,

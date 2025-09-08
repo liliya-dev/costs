@@ -2,7 +2,6 @@ import { Form, Formik, FormikProps } from 'formik';
 import { useRef, useState } from 'react';
 
 import Button from '@/components/atoms/Button/Button';
-import Checkbox from '@/components/atoms/Checkbox/Checkbox';
 import Dropdown from '@/components/atoms/Dropdown/Dropdown';
 import FormStateWatcher from '@/components/atoms/form-elements/FormStateWatcher/FormStateWatcher';
 import TextInput from '@/components/atoms/form-elements/TextInput/TextInput';
@@ -18,7 +17,6 @@ interface FormValues {
   monthlyPayment?: string;
   name: string;
   approximatelyPaymentDay: number;
-  isCashless: boolean;
 }
 
 interface IProps {
@@ -37,7 +35,6 @@ const AddCustomerForm = ({ callback, accountId }: IProps) => {
     monthlyPayment: '',
     name: '',
     approximatelyPaymentDay: 15,
-    isCashless: false,
   };
   return (
     <div className="mt-12 h-full w-full rounded-[10px] bg-white px-7.5 pb-7 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card xl:col-span-6">
@@ -52,16 +49,12 @@ const AddCustomerForm = ({ callback, accountId }: IProps) => {
         innerRef={formikRef}
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={async (
-          { monthlyPayment, name, currency, approximatelyPaymentDay, isCashless },
-          actions,
-        ) => {
+        onSubmit={async ({ monthlyPayment, name, currency, approximatelyPaymentDay }, actions) => {
           setIsLoading(true);
           if (!monthlyPayment) return;
           const res = await createCustomer({
             accountId,
             monthlyPayment: +monthlyPayment,
-            isCashless,
             currency,
             name,
             approximatelyPaymentDay: +approximatelyPaymentDay,
@@ -121,7 +114,6 @@ const AddCustomerForm = ({ callback, accountId }: IProps) => {
                     setFieldValue('currency', item.id);
                   }}
                 />
-                <Checkbox name="isCashless" label="Is client cashless" />
                 {requestErr !== '' && (
                   <p className="text-sm font-bold text-red-400">{requestErr}</p>
                 )}
