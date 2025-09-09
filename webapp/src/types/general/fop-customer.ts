@@ -1,4 +1,5 @@
 import { BaseEntityPaymentData, BaseEntityType } from './base';
+import { InvoiceStatus } from './enums';
 
 export interface IBaseFOPCustomer extends BaseEntityType, BaseEntityPaymentData {
   isCancelled: boolean;
@@ -30,7 +31,7 @@ export interface IFOPInvoice {
   month: number;
   year: number;
   totalAmount: number;
-  status: string;
+  status: InvoiceStatus;
   filePath?: string;
 }
 

@@ -1,4 +1,5 @@
 import { Form, Formik, FormikProps } from 'formik';
+import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 
 import Button from '@/components/atoms/Button/Button';
@@ -20,6 +21,7 @@ const AddFopCustomerForm = ({ accountId }: IProps) => {
   const [isDisabled, setIsDisabled] = useState(true);
   const [requestErr, setRequestErr] = useState('');
   const formikRef = useRef<FormikProps<CreateFOPCustomerDto> | null>(null);
+  const router = useRouter();
 
   const initialValues: CreateFOPCustomerDto = {
     accountId,
@@ -74,6 +76,7 @@ const AddFopCustomerForm = ({ accountId }: IProps) => {
           if (res.data) {
             actions.resetForm();
             setRequestErr('');
+            router.push(`/account/${accountId}/fop/customers`);
           } else if (res.message) {
             setRequestErr(res.message || 'Error occurred');
           }

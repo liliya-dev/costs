@@ -18,7 +18,10 @@ export class FOPCustomersService {
   ) {}
 
   async getOneById(id: number): Promise<FOPCustomerEntity> {
-    return this.fopCustomersRepository.findOne({ where: { id } });
+    return this.fopCustomersRepository.findOne({
+      where: { id },
+      relations: { bankDetails: true },
+    });
   }
 
   async getAllByAccountId(accountId: number): Promise<FOPCustomerEntity[]> {

@@ -1,10 +1,10 @@
 import DashBoardLayout from '@/components/layouts/DashboardLayout/DashBoardLayout';
-import AddFopCustomersPage from '@/components/pages/AddFopCustomersPage/AddFopCustomersPage';
+import FopCustomersPage from '@/components/pages/FopCustomersPage/FopCustomersPage';
 
 const Page = ({ params }: { params: { id: number } }) => {
   return (
     <DashBoardLayout>
-      <AddFopCustomersPage accountId={params.id} />
+      <FopCustomersPage accountId={params.id} />
     </DashBoardLayout>
   );
 };
