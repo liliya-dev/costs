@@ -62,7 +62,7 @@ const AddOneTimePayment = ({ callback, accountId }: IProps) => {
             setCurrency(Currency.EUR);
             callback();
           } else if (res.message) {
-            setRequestErr('Error occured');
+            setRequestErr(res.message || 'Error occurred');
           }
           setIsLoading(false);
         }}
@@ -113,7 +113,7 @@ const AddOneTimePayment = ({ callback, accountId }: IProps) => {
                 )}
                 <div className="mt-4 flex justify-end">
                   <Button
-                    type="SUCESS"
+                    type="SUCCESS"
                     title="Add"
                     buttonType="submit"
                     onClick={() => {}}

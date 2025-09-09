@@ -1,9 +1,6 @@
-import { BaseEntityType } from './base';
-import { Currency } from './enums';
+import { BaseEntityPaymentData, BaseEntityType } from './base';
 
-export interface IBaseFOPCustomer extends BaseEntityType {
-  monthlyPayment: number;
-  currency: Currency;
+export interface IBaseFOPCustomer extends BaseEntityType, BaseEntityPaymentData {
   isCancelled: boolean;
 }
 
@@ -23,6 +20,7 @@ export interface IBankDetails {
   contract_date?: string;
   contract_description?: string;
   invoice_description?: string;
+  director: string;
 }
 
 export interface IFOPInvoice {

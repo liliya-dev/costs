@@ -41,6 +41,13 @@ export class BankDetailsEntity {
   @Column({ type: 'varchar', nullable: true })
   iban?: string;
 
+  @ApiProperty({
+    example: 'Рябчина О.М',
+    description: 'Director',
+  })
+  @Column({ type: 'varchar', nullable: true })
+  director?: string;
+
   @ApiProperty({ example: 'ПАТ КБ "ПриватБанк"', description: 'Bank name' })
   @Column({ type: 'varchar', nullable: true })
   bank_name?: string;

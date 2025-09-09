@@ -18,13 +18,7 @@ interface IProps {
   accountId: number;
 }
 
-const headers = [
-  'Name',
-  'Amount per month',
-  'Currency',
-  'Form of payment',
-  'Approximately payment day',
-];
+const headers = ['Name', 'Amount per month', 'Currency', 'Approximately payment day'];
 
 const CustomersTable = ({ customers, isLoading, callback, accountId }: IProps) => {
   const [pausedCustomer, setPausedCustomer] = useState<ICustomer | null>(null);
@@ -83,7 +77,7 @@ const CustomersTable = ({ customers, isLoading, callback, accountId }: IProps) =
           <TableTitle title="Current active customers" />
         </div>
         <div className="flex flex-col">
-          <div className="grid grid-cols-3 sm:grid-cols-6">
+          <div className="grid grid-cols-3 sm:grid-cols-5">
             {headers.map((item) => (
               <TableHeader key={item} title={item} />
             ))}

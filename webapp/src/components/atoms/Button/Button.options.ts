@@ -1,5 +1,5 @@
 export const BUTTON_TYPES = {
-  SUCESS: 'sucess',
+  SUCCESS: 'success',
   DANGER: 'danger',
   LIGHT: 'light',
   DARK: 'dark',

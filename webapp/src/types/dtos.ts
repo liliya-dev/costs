@@ -99,14 +99,14 @@ export interface CreatePBIPaymentsDto {
 }
 
 export interface CreateFOPCustomerDto {
-  id: number;
   name: string;
   currency: Currency;
   isCancelled: boolean;
   monthlyPayment: number;
   accountId: number;
+  approximatelyPaymentDay: number;
 
-  bankDetails?: {
+  bankDetails: {
     edrpou?: string;
     ipn?: string;
     vat_certificate?: string;
@@ -121,5 +121,6 @@ export interface CreateFOPCustomerDto {
     contract_date?: string;
     contract_description?: string;
     invoice_description?: string;
+    director: string;
   };
 }

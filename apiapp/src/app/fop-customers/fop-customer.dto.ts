@@ -10,6 +10,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  Max,
   Min,
 } from 'class-validator';
 
@@ -167,6 +168,13 @@ export class FOPCustomerDto {
   @Min(1)
   @IsInt()
   accountId: number;
+
+  @ApiProperty({ example: 18 })
+  @Type(() => Number)
+  @Min(1)
+  @Max(28)
+  @IsInt()
+  approximatelyPaymentDay: number;
 }
 
 export class CreateFOPCustomerDto extends FOPCustomerDto {

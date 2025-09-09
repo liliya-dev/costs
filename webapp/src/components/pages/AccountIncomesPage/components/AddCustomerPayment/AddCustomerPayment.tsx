@@ -68,7 +68,7 @@ const AddCustomerPayment = ({ callback, customers }: IProps) => {
               setSelectedCustomer(customers[0]);
               callback();
             } else if (res.message) {
-              setRequestErr('Error occured');
+              setRequestErr(res.message || 'Error occurred');
             }
             setIsLoading(false);
           }}
@@ -130,7 +130,7 @@ const AddCustomerPayment = ({ callback, customers }: IProps) => {
                   )}
                   <div className="mt-4 flex justify-end">
                     <Button
-                      type="SUCESS"
+                      type="SUCCESS"
                       title="Add"
                       buttonType="submit"
                       onClick={() => {}}

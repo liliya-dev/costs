@@ -13,7 +13,7 @@ export const validationSchema = Yup.object({
   approximatelyPaymentDay: Yup.number()
     .typeError('Amount must be a number')
     .min(1, 'Amount must be at least 1')
-    .max(30, 'Amount must be at least 1')
+    .max(30, 'Amount must no more than 30')
     .required('Amount is required'),
   currency: Yup.mixed<Currency>()
     .oneOf(Object.values(Currency), 'Invalid currency')

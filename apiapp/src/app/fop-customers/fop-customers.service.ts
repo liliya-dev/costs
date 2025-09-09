@@ -41,6 +41,7 @@ export class FOPCustomersService {
         name,
         monthlyPayment,
         isCancelled,
+        approximatelyPaymentDay,
         bankDetails,
       } = createDto;
 
@@ -68,6 +69,7 @@ export class FOPCustomersService {
         name,
         currency,
         monthlyPayment,
+        approximatelyPaymentDay,
         isCancelled: isCancelled || false,
         account: { id: accountId },
         bankDetails: createdBankDetails,

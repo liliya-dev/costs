@@ -119,7 +119,7 @@ const AddCustomerForm = ({ callback, accountId }: IProps) => {
                 )}
                 <div className="mt-4 flex justify-end">
                   <Button
-                    type="SUCESS"
+                    type="SUCCESS"
                     title="Add"
                     buttonType="submit"
                     onClick={() => {}}

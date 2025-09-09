@@ -18,16 +18,10 @@ interface IProps {
 const SidebarItem = ({ item }: IProps) => {
   const pathname = usePathname();
   const cleanPath = pathname.split('?')[0];
-
-  // Track if children are expanded
   const [expanded, setExpanded] = useState(false);
+  const isActive = cleanPath === item.route;
+  const hasActiveChild = item.children?.some((child) => cleanPath === child.route);
 
-  const isActive = cleanPath === item.route || cleanPath.startsWith(item.route + '/');
-  const hasActiveChild = item.children?.some(
-    (child) => cleanPath === child.route || cleanPath.startsWith(child.route + '/'),
-  );
-
-  // Automatically expand if current path matches this item or its children
   useEffect(() => {
     if (isActive || hasActiveChild) setExpanded(true);
   }, [isActive, hasActiveChild]);
@@ -40,7 +34,7 @@ const SidebarItem = ({ item }: IProps) => {
     <li>
       <div
         className={`${
-          isActive || hasActiveChild
+          isActive
             ? 'bg-primary/[.07] text-primary dark:bg-white/10 dark:text-white'
             : 'text-dark-4 hover:bg-gray-2 hover:text-dark dark:text-gray-5 dark:hover:bg-white/10 dark:hover:text-white'
         } group relative flex cursor-pointer items-center justify-between gap-3 rounded-[7px] px-3.5 py-3 font-medium duration-300 ease-in-out`}
@@ -53,7 +47,9 @@ const SidebarItem = ({ item }: IProps) => {
 
         {item.children && (
           <span
-            className={`text-sm opacity-60 transition-transform duration-200 ${expanded ? 'rotate-90' : 'rotate-0'}`}
+            className={`text-sm opacity-60 transition-transform duration-200 ${
+              expanded ? 'rotate-90' : 'rotate-0'
+            }`}
           >
             ▶
           </span>
@@ -63,8 +59,7 @@ const SidebarItem = ({ item }: IProps) => {
       {item.children && expanded && (
         <ul className="ml-6 mt-1 flex flex-col gap-2 border-l border-gray-200 pl-4 dark:border-gray-700">
           {item.children.map((child) => {
-            const isChildActive =
-              cleanPath === child.route || cleanPath.startsWith(child.route + '/');
+            const isChildActive = cleanPath === child.route;
 
             return (
               <li key={child.route}>

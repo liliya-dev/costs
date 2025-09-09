@@ -72,7 +72,7 @@ const EditForm = forwardRef<EditFormRef, IProps>(({ callback, oti, toggleIsDisab
           setCurrency(Currency.EUR);
           callback();
         } else if (res.message) {
-          setRequestErr('Error occurred');
+          setRequestErr(res.message || 'Error occurred');
         }
       }}
     >

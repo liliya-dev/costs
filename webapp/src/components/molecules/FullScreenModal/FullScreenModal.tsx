@@ -79,7 +79,7 @@ const FullScreenModal = ({
         <div className="my-6">{children}</div>
         <div className="flex justify-end">
           <Button
-            type="SUCESS"
+            type="SUCCESS"
             onClick={handlePrimaryClick}
             title={primaryButtonText}
             isDisabled={isPrimaryButtonDisabled}
@@ -100,7 +100,7 @@ const FullScreenModal = ({
                   onClick={() => setShowConfirmation(false)}
                 />
                 <div className="mx-2" />
-                <Button type="SUCESS" title={confirmText} onClick={handleConfirm} />
+                <Button type="SUCCESS" title={confirmText} onClick={handleConfirm} />
               </div>
             </div>
           </div>

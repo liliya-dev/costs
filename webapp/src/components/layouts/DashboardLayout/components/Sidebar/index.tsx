@@ -69,7 +69,11 @@ const menuGroups = [
             route: '/account/[id]/details',
           },
           {
-            label: 'Customers',
+            label: 'Add FOP Customer',
+            route: '/account/[id]/fop/customers/add',
+          },
+          {
+            label: 'Fop Customers',
             route: '/account/[id]/fop/customers',
           },
         ],

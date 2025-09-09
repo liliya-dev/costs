@@ -12,7 +12,6 @@ import { PaymentEntity } from 'src/common/entities/payment.entity';
 
 import { AccountEntity } from '../accounts/accounts.entity';
 import { BankDetailsEntity } from '../bank-details/bank-details.entity';
-import { IncomeTransactionEntity } from '../income-transactions/income-transaction.entity';
 import { InvoiceEntity } from '../invoices/invoice.entity';
 
 @Entity('fop-customer')
@@ -26,12 +25,6 @@ export class FOPCustomerEntity extends PaymentEntity {
     default: false,
   })
   readonly isCancelled: boolean;
-
-  @OneToMany(
-    () => IncomeTransactionEntity,
-    (donePayment) => donePayment.customer,
-  )
-  readonly transactions: Relation<IncomeTransactionEntity[]>;
 
   @ManyToOne(() => AccountEntity, (account) => account.customers)
   readonly account: Relation<AccountEntity>;
