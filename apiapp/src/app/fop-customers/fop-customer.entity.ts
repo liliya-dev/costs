@@ -33,7 +33,7 @@ export class FOPCustomerEntity extends PaymentEntity {
     cascade: true,
     nullable: true,
   })
-  bankDetails?: Relation<BankDetailsEntity>;
+  bankDetails: Relation<BankDetailsEntity>;
 
   @OneToMany(() => InvoiceEntity, (invoice) => invoice.customer)
   readonly invoices: Relation<InvoiceEntity[]>;

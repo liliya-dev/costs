@@ -120,7 +120,21 @@ export interface CreateFOPCustomerDto {
     contract_number?: string;
     contract_date?: string;
     contract_description?: string;
+    invoice_prefix: string;
     invoice_description?: string;
     director: string;
   };
+}
+
+export interface AccountUpdateDto {
+  fopFullName?: string;
+  directorName?: string;
+  iban?: string;
+  bankName?: string;
+  ipn?: string;
+  bankEdrpou?: string;
+  mfo?: string;
+  address?: string;
+  taxSystem?: string;
+  phone?: string;
 }

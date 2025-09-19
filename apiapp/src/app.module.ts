@@ -51,6 +51,9 @@ import { SubscriptionsService } from './app/subscriptions/subscriptions.service'
 import { TagsController } from './app/tags/tags.controller';
 import { TagsRepository } from './app/tags/tags.repository';
 import { TagsService } from './app/tags/tags.service';
+import { WorkActsController } from './app/work-acts/work-acts.controller';
+import { WorkActsRepository } from './app/work-acts/work-acts.repository';
+import { WorkActsService } from './app/work-acts/work-acts.service';
 import { validateEnvSchema } from './common/helpers/validate-env-schema.helper';
 import { HttpPrivatBankService } from './common/http/http-privat-bank.service';
 import { TypeOrmExModule } from './common/typeormex-module/typeorm-ex.module';
@@ -73,6 +76,7 @@ const repositories: DynamicModule = TypeOrmExModule.forCustomRepository([
   InvoicesRepository,
   BankDetailsRepository,
   FOPCustomersRepository,
+  WorkActsRepository,
 ]);
 
 const controllers = [
@@ -91,6 +95,7 @@ const controllers = [
   OTIsController,
   InvoicesController,
   FOPCustomersController,
+  WorkActsController,
 ];
 
 const services: Array<Provider> = [
@@ -113,6 +118,7 @@ const services: Array<Provider> = [
   InvoicesService,
   BankDetailsService,
   FOPCustomersService,
+  WorkActsService,
 ];
 
 @Module({

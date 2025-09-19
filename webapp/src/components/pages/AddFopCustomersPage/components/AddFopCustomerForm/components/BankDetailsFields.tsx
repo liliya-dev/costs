@@ -140,6 +140,14 @@ const BankDetailsFields = ({ errors, touched }: Props) => {
         name="bankDetails.invoice_description"
         errorText={errors.bankDetails?.invoice_description}
       />
+      <TextInput
+        isError={Boolean(errors.bankDetails?.invoice_prefix && touched.bankDetails?.invoice_prefix)}
+        isTouched={Boolean(touched.bankDetails?.invoice_prefix)}
+        placeholder="ФО"
+        title="Invoice prefix"
+        name="bankDetails.invoice_prefix"
+        errorText={errors.bankDetails?.invoice_prefix}
+      />
     </div>
   );
 };

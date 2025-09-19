@@ -34,14 +34,15 @@ export class InvoicesController {
   @Get(':id/download')
   async downloadInvoice(@Param('id') id: string, @Res() res: FastifyReply) {
     const invoice = await this.invoicesService.findById(+id);
-
     if (!invoice.filePath || !fs.existsSync(invoice.filePath)) {
       throw new NotFoundException('Invoice file not found');
     }
 
     const fileName = path.basename(invoice.filePath);
-
-    res.header('Content-Disposition', `attachment; filename="${fileName}"`);
+    res.header(
+      'Content-Disposition',
+      `attachment; filename*=UTF-8''${encodeURIComponent(fileName)}`,
+    );
     res.header('Content-Type', 'application/pdf');
 
     const stream = fs.createReadStream(invoice.filePath);

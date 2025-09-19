@@ -1,20 +1,19 @@
 import { useCallback, useRef, useState } from 'react';
 
 import FullScreenModal from '@/components/molecules/FullScreenModal/FullScreenModal';
-import { IFOPCustomer } from '@/types/general/fop-customer';
+import { IAccount } from '@/types';
 
-import EditForm, { EditFopFormRef } from './components/EditForm/EditForm';
+import EditAccountForm, { EditAccountFormRef } from './EditAccountForm';
 
 interface IProps {
-  customer: IFOPCustomer;
+  account: IAccount;
   handleClose: () => void;
   callback: () => void;
-  accountId: number;
 }
 
-const EditCustomer = ({ customer, handleClose, callback, accountId }: IProps) => {
+const EditAccount = ({ account, handleClose, callback }: IProps) => {
   const [isDisabled, setIsDisabled] = useState(true);
-  const formRef = useRef<EditFopFormRef>(null);
+  const formRef = useRef<EditAccountFormRef>(null);
 
   const toggleIsDisabled = useCallback((value: boolean) => {
     setIsDisabled(value);
@@ -28,25 +27,24 @@ const EditCustomer = ({ customer, handleClose, callback, accountId }: IProps) =>
       onPrimaryButtonClick={() => formRef.current?.submitForm()}
       primaryButtonText="Save"
       secondaryButtonText="Cancel"
-      title="Edit customer details"
-      text="Based on the information provided, related payments for this transaction will also be updated."
+      title="Edit Account Details"
+      text="Updating account details will affect all related customers and transactions."
       confirmBeforePrimaryAction={true}
       confirmTitle="Are you sure you want to save changes?"
       confirmText="Yes"
       cancelConfirmText="No"
     >
-      <EditForm
+      <EditAccountForm
         ref={formRef}
-        customer={customer}
+        account={account}
         toggleIsDisabled={toggleIsDisabled}
         callback={() => {
           callback();
           handleClose();
         }}
-        accountId={accountId}
       />
     </FullScreenModal>
   );
 };
 
-export default EditCustomer;
+export default EditAccount;

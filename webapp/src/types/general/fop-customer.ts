@@ -21,21 +21,23 @@ export interface IBankDetails {
   contract_date?: string;
   contract_description?: string;
   invoice_description?: string;
+  invoice_prefix: string;
   director: string;
 }
 
-export interface IFOPInvoice {
-  id: number;
-  createdAt: string;
-  updatedAt: string;
-  month: number;
-  year: number;
-  totalAmount: number;
+export interface IFOPAct extends BaseEntityType {
+  filePath?: string;
+}
+
+export interface IFOPInvoice extends BaseEntityType {
+  datePaid?: string;
+  amount: number;
   status: InvoiceStatus;
   filePath?: string;
+  act: IFOPAct;
 }
 
 export interface IFOPCustomer extends IBaseFOPCustomer {
   bankDetails?: IBankDetails;
-  invoices?: IFOPInvoice[];
+  invoices: IFOPInvoice[];
 }

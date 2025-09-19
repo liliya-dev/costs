@@ -15,6 +15,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import { AccountCreateDto, AccountUpdateDto } from './app/accounts/account.dto';
 import { AccountEntity } from './app/accounts/accounts.entity';
 import { BankDetailsEntity } from './app/bank-details/bank-details.entity';
 import { CustomerDto } from './app/customers/customer.dto';
@@ -58,6 +59,8 @@ import {
 import { SubscriptionEntity } from './app/subscriptions/subscription.entity';
 import { CreatedTagDto, CreateTagDto } from './app/tags/tag.dto';
 import { TagEntity } from './app/tags/tag.entity';
+import { WorkActEntity } from './app/work-acts/work-act.entity';
+import { CreateWorkActDto } from './app/work-acts/work-acts.dto';
 import { AppModule } from './app.module';
 import { AvailableDatesDto } from './common/dtos/dates-available.dto';
 import { PaymentDto } from './common/dtos/payments.dto';
@@ -154,6 +157,10 @@ export class App {
         FOPCustomerDto,
         CreateBankDetailsDto,
         CreateInvoiceDto,
+        WorkActEntity,
+        CreateWorkActDto,
+        AccountCreateDto,
+        AccountUpdateDto,
       ],
     });
     SwaggerModule.setup('/api/docs', this.application, document);

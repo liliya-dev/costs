@@ -1,10 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
+import { AccountsService } from '../accounts/accounts.service';
+import { FOPCustomerEntity } from '../fop-customers/fop-customer.entity';
+import { FOPCustomersService } from '../fop-customers/fop-customers.service';
+import { InvoicesService } from '../invoices/invoices.service';
 import { PBIsService } from '../pbi/pbis.service';
 import { PBITransactionsService } from '../pbi-transactions/pbi-transactions.service';
 import { SubscriptionTransactionsService } from '../subscription-transactions/subscription-transactions.service';
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
+import { WorkActsService } from '../work-acts/work-acts.service';
 
 @Injectable()
 export class SheduledService {
@@ -12,6 +17,10 @@ export class SheduledService {
     private readonly subscriptionTransactionsService: SubscriptionTransactionsService,
     private readonly subscriptionsService: SubscriptionsService,
     private readonly pbiTransactionsService: PBITransactionsService,
+    private readonly invoicesService: InvoicesService,
+    private readonly workActsService: WorkActsService,
+    private readonly accountsService: AccountsService,
+    private readonly fopCustomersService: FOPCustomersService,
     private readonly pbisService: PBIsService,
   ) {}
 
@@ -86,6 +95,43 @@ export class SheduledService {
           `The pbi transaction was created with id ${createdTransaction.id} for pbi ${pbi.id}`,
         );
       }
+    }
+  }
+
+  @Cron('0 0 23 * *')
+  async generateInvoicesAndActs() {
+    try {
+      console.log('Generating acts and invoices was started');
+      const date = new Date();
+      const accounts = await this.accountsService.getMany();
+      let allCustomers: FOPCustomerEntity[] = [];
+      for (let i = 0; i < accounts.length; i++) {
+        const customers = await this.fopCustomersService.getAllByAccountId(
+          accounts[i].id,
+        );
+        allCustomers = [...allCustomers, ...customers];
+      }
+      for (let i = 0; i < allCustomers.length; i++) {
+        const invoice = await this.invoicesService.createInvoice({
+          day: date.getDay(),
+          year: date.getFullYear(),
+          month: date.getMonth(),
+          customerId: allCustomers[i].id,
+        });
+        if (invoice) {
+          const act = await this.workActsService.createAct({
+            day: date.getDay(),
+            year: date.getFullYear(),
+            month: date.getMonth(),
+            invoiceId: invoice.id,
+          });
+          console.log(
+            `Invoice and act ${invoice.name}, ${act.name} were created for ${allCustomers[i].name}`,
+          );
+        }
+      }
+    } catch (e) {
+      console.log(e, 'Error');
     }
   }
 }

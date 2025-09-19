@@ -56,6 +56,10 @@ export class BankDetailsEntity {
   @Column({ type: 'varchar', nullable: true })
   mfo?: string;
 
+  @ApiProperty({ example: 'ФО', description: 'Invoices prefix' })
+  @Column({ type: 'varchar', nullable: true })
+  invoice_prefix: string;
+
   @ApiProperty({
     example: '65085, м. Одеса, вул. Самарська, 4',
     description: 'Address',

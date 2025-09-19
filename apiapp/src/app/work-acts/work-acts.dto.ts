@@ -1,17 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, Min, Max } from 'class-validator';
 
-export class CreateInvoiceDto {
+export class CreateWorkActDto {
   @ApiProperty({
     example: 5,
-    description: 'ID клієнта, який отримує рахунок',
+    description: 'ID інвойса, який отримує акт',
   })
   @IsInt()
-  customerId: number;
+  invoiceId: number;
 
   @ApiProperty({
     example: 9,
-    description: 'Місяць рахунку (1-12)',
+    description: 'Місяць акту (1-12)',
   })
   @IsInt()
   @Min(1)
@@ -20,14 +20,14 @@ export class CreateInvoiceDto {
 
   @ApiProperty({
     example: 2025,
-    description: 'Рік рахунку',
+    description: 'Рік акту',
   })
   @IsInt()
   year: number;
 
   @ApiProperty({
     example: 28,
-    description: 'День рахунку',
+    description: 'День акту',
   })
   @IsInt()
   day: number;

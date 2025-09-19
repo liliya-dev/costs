@@ -7,6 +7,7 @@ import { IFOPCustomer } from '@/types';
 
 import FopCustomersList from './components/CustomersList/FopCustomersList';
 import DeleteFopCustomer from './components/modals/DeleteFopCustomer/DeleteFopCustomer';
+import EditCustomer from './components/modals/EditCustomer/EditCustomer';
 
 interface IProps {
   customers: IFOPCustomer[];
@@ -18,25 +19,16 @@ interface IProps {
 const headers = ['Name', 'Amount per month', 'Currency', 'Approximately payment day'];
 
 const FopCustomersTable = ({ customers, isLoading, callback, accountId }: IProps) => {
-  const [pausedCustomer, setPausedCustomer] = useState<IFOPCustomer | null>(null);
-  // const [editedCustomer, setEditedCustomer] = useState<IFOPCustomer | null>(null);
+  const [editedCustomer, setEditedCustomer] = useState<IFOPCustomer | null>(null);
   const [deletedCustomer, setDeletedCustomer] = useState<IFOPCustomer | null>(null);
 
-  const handleOpenPauseCustomer = useCallback((customer: IFOPCustomer) => {
-    setPausedCustomer(customer);
+  const handleOpenEditCustomer = useCallback((customer: IFOPCustomer) => {
+    setEditedCustomer(customer);
   }, []);
 
-  const handleClosePauseCustomer = useCallback(() => {
-    setPausedCustomer(null);
+  const handleCloseEditCustomer = useCallback(() => {
+    setEditedCustomer(null);
   }, []);
-
-  // const handleOpenEditCustomer = useCallback((customer: IFOPCustomer) => {
-  //   setEditedCustomer(customer);
-  // }, []);
-
-  // const handleCloseEditCustomer = useCallback(() => {
-  //   setEditedCustomer(null);
-  // }, []);
 
   const handleOpenDeleteCustomer = useCallback((customer: IFOPCustomer) => {
     setDeletedCustomer(customer);
@@ -55,20 +47,14 @@ const FopCustomersTable = ({ customers, isLoading, callback, accountId }: IProps
           handleClose={handleCloseDeleteCustomer}
         />
       )}
-      {/* {editedCustomer && (
+      {editedCustomer && (
         <EditCustomer
           customer={editedCustomer}
           callback={callback}
           handleClose={handleCloseEditCustomer}
+          accountId={accountId}
         />
-      )} */}
-      {/* {pausedCustomer && (
-        <PauseCustomer
-          customer={pausedCustomer}
-          callback={callback}
-          handleClose={handleClosePauseCustomer}
-        />
-      )} */}
+      )}
       <div className="mt-12 rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card">
         <div className="mb-12 flex justify-between">
           <TableTitle title="Current active customers" />
@@ -85,9 +71,8 @@ const FopCustomersTable = ({ customers, isLoading, callback, accountId }: IProps
             <FopCustomersList
               accountId={accountId}
               customers={customers}
-              handleOpenEditCustomer={handleOpenDeleteCustomer}
+              handleOpenEditCustomer={handleOpenEditCustomer}
               handleOpenDeleteCustomer={handleOpenDeleteCustomer}
-              handleOpenPauseCustomer={handleOpenPauseCustomer}
             />
           )}
         </div>

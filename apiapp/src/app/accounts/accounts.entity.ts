@@ -85,4 +85,8 @@ export class AccountEntity extends AbstractEntity {
   })
   @Column({ type: 'varchar', nullable: true })
   taxSystem?: string;
+
+  @ApiProperty({ example: '096-318-25-01', description: 'Phone number' })
+  @Column({ type: 'varchar', nullable: true })
+  phone?: string;
 }

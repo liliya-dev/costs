@@ -1,3 +1,4 @@
+/* eslint-disable import/default */
 import React, { useRef, useState } from 'react';
 
 import Button from '@/components/atoms/Button/Button';
@@ -49,6 +50,7 @@ const FullScreenModal = ({
 
   const handlePrimaryClick = () => {
     if (confirmBeforePrimaryAction) {
+      modalContentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
       setShowConfirmation(true);
     } else {
       onPrimaryButtonClick();
@@ -63,7 +65,7 @@ const FullScreenModal = ({
   return (
     <div
       onClick={handleClickOutside}
-      className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-black bg-opacity-30 backdrop-blur-sm"
+      className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center overflow-scroll bg-black bg-opacity-30 backdrop-blur-sm"
     >
       <div
         ref={modalContentRef}
@@ -90,7 +92,7 @@ const FullScreenModal = ({
         </div>
 
         {showConfirmation && (
-          <div className="absolute left-0 top-0 z-10 flex h-full w-full items-center justify-center rounded-lg bg-black bg-opacity-20">
+          <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center rounded-lg bg-black bg-opacity-20">
             <div className="w-[350px] rounded-lg bg-white p-6 shadow-md">
               <Text size="S" color="DARK" text={confirmTitle} />
               <div className="mt-6 flex justify-end">

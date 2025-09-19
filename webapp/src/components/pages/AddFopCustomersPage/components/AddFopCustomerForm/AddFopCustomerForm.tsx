@@ -45,6 +45,7 @@ const AddFopCustomerForm = ({ accountId }: IProps) => {
       contract_date: '',
       contract_description: '',
       invoice_description: '',
+      invoice_prefix: '',
       director: '',
     },
   };

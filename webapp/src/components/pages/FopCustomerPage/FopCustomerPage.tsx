@@ -8,6 +8,7 @@ import { IFOPCustomer } from '@/types';
 import { getFopCustomer } from '@/utils/api';
 
 import FopCustomerDetails from './components/FopCustomerDetails';
+import InvoicesList from './components/InvoicesList';
 
 interface IProps {
   customerId: number;
@@ -30,11 +31,11 @@ const FopCustomersPage = ({ customerId }: IProps) => {
 
   if (isLoading) return <Loader />;
   if (!customer) return <p className="text-red-500">Customer not found</p>;
-
   return (
-    <div className="space-y-6">
+    <div className="">
       <TableTitle title={customer.name} />
       <FopCustomerDetails customer={customer} />
+      <InvoicesList invoices={customer.invoices} />
     </div>
   );
 };

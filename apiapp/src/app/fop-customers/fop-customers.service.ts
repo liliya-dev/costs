@@ -20,7 +20,13 @@ export class FOPCustomersService {
   async getOneById(id: number): Promise<FOPCustomerEntity> {
     return this.fopCustomersRepository.findOne({
       where: { id },
-      relations: { bankDetails: true },
+      relations: {
+        bankDetails: true,
+        invoices: {
+          act: true,
+        },
+        account: true,
+      },
     });
   }
 
@@ -28,6 +34,12 @@ export class FOPCustomersService {
     return this.fopCustomersRepository.find({
       where: {
         account: { id: accountId },
+      },
+      relations: {
+        bankDetails: true,
+        invoices: {
+          act: true,
+        },
       },
     });
   }

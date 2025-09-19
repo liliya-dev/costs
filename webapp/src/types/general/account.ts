@@ -14,4 +14,15 @@ export interface IAccount extends BaseEntityType {
   pbis: IPBI[];
   otps: IOTP[];
   otis: IOTI[];
+  name: string;
+  fopFullName?: string;
+  directorName?: string;
+  iban?: string;
+  bankName?: string;
+  ipn?: string;
+  bankEdrpou?: string;
+  mfo?: string;
+  address?: string;
+  taxSystem?: string;
+  phone?: string;
 }

@@ -19,7 +19,7 @@ const renderField = (label: string, value: string | number | null | undefined) =
 };
 
 const FopCustomerDetails = ({ customer }: FopCustomerDetailsProps) => (
-  <div className="grid grid-cols-1 gap-x-15 md:grid-cols-2">
+  <div className="mb-24 mt-12 grid grid-cols-1 gap-x-15 gap-y-3 md:grid-cols-2">
     {renderField(
       'Monthly Payment',
       `${customer.monthlyPayment} ${currencySymbols[customer.currency]}`,

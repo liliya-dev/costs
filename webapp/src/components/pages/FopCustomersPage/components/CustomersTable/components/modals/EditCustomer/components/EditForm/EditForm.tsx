@@ -1,39 +1,31 @@
 import { Form, Formik, FormikProps } from 'formik';
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
-import Dropdown from '@/components/atoms/Dropdown/Dropdown';
 import FormDirtyStateWatcher from '@/components/atoms/form-elements/FormStateWatcher/FormDirtyStateWatcher';
 import FormStateWatcher from '@/components/atoms/form-elements/FormStateWatcher/FormStateWatcher';
-import NumberInput from '@/components/atoms/form-elements/NumberInput/NumberInput';
-import TextInput from '@/components/atoms/form-elements/TextInput/TextInput';
-import { Currency, ICustomer } from '@/types';
-import { updateCustomer } from '@/utils/api';
+import { CreateFOPCustomerDto, IFOPCustomer, Currency } from '@/types';
+import { updateFopCustomer } from '@/utils/api';
 
+import BankDetailsFields from './BankDetailsFields';
+import BasicCustomerFields from './BasicCustomerFields';
 import { validationSchema } from './validation-schema';
 
 interface IProps {
-  customer: ICustomer;
+  customer: IFOPCustomer;
   toggleIsDisabled: (value: boolean) => void;
   callback: () => void;
+  accountId: number;
 }
 
-export interface EditFormRef {
+export interface EditFopFormRef {
   submitForm: () => void;
 }
 
-interface FormValues {
-  name: string;
-  monthlyPayment: number;
-  currency: Currency;
-  approximatelyPaymentDay: number;
-}
-
-const EditForm = forwardRef<EditFormRef, IProps>(
-  ({ toggleIsDisabled, customer, callback }, ref) => {
-    const formikRef = useRef<FormikProps<FormValues> | null>(null);
+const EditFopForm = forwardRef<EditFopFormRef, IProps>(
+  ({ toggleIsDisabled, customer, accountId, callback }, ref) => {
+    const formikRef = useRef<FormikProps<CreateFOPCustomerDto> | null>(null);
     const [isDisabled, setIsDisabled] = useState(true);
     const [isDirty, setIsDirty] = useState(false);
-    const [currency, setCurrency] = useState<Currency>(customer.currency);
     const [requestErr, setRequestErr] = useState('');
 
     useImperativeHandle(ref, () => ({
@@ -42,11 +34,31 @@ const EditForm = forwardRef<EditFormRef, IProps>(
       },
     }));
 
-    const initialValues: FormValues = {
+    const initialValues: CreateFOPCustomerDto = {
+      accountId: accountId,
       name: customer.name,
+      currency: customer.currency || Currency.EUR,
       monthlyPayment: customer.monthlyPayment,
-      currency: customer.currency,
+      isCancelled: customer.isCancelled,
       approximatelyPaymentDay: customer.approximatelyPaymentDay,
+      bankDetails: {
+        edrpou: customer.bankDetails?.edrpou || '',
+        ipn: customer.bankDetails?.ipn || '',
+        vat_certificate: customer.bankDetails?.vat_certificate || '',
+        tax_system: customer.bankDetails?.tax_system || '',
+        iban: customer.bankDetails?.iban || '',
+        bank_name: customer.bankDetails?.bank_name || '',
+        mfo: customer.bankDetails?.mfo || '',
+        address: customer.bankDetails?.address || '',
+        phone: customer.bankDetails?.phone || '',
+        email: customer.bankDetails?.email || '',
+        contract_number: customer.bankDetails?.contract_number || '',
+        contract_date: customer.bankDetails?.contract_date || '',
+        contract_description: customer.bankDetails?.contract_description || '',
+        invoice_description: customer.bankDetails?.invoice_description || '',
+        invoice_prefix: customer.bankDetails?.invoice_prefix || '',
+        director: customer.bankDetails?.director || '',
+      },
     };
 
     useEffect(() => {
@@ -59,16 +71,17 @@ const EditForm = forwardRef<EditFormRef, IProps>(
         innerRef={formikRef}
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={async ({ monthlyPayment, name, currency, approximatelyPaymentDay }, actions) => {
-          const res = await updateCustomer(customer.id, {
-            monthlyPayment,
-            name,
-            currency,
-            approximatelyPaymentDay,
-          });
+        onSubmit={async (values, actions) => {
+          const dto = {
+            id: customer.id,
+            ...values,
+            monthlyPayment: +values.monthlyPayment,
+          };
+
+          const res = await updateFopCustomer(customer.id, dto);
 
           if (res.data) {
-            actions.resetForm();
+            actions.resetForm({ values: dto });
             setRequestErr('');
             callback();
           } else if (res.message) {
@@ -76,56 +89,33 @@ const EditForm = forwardRef<EditFormRef, IProps>(
           }
         }}
       >
-        {({ errors, touched, setFieldValue }) => (
-          <>
-            <FormDirtyStateWatcher setIsDirty={setIsDirty} />
-            <FormStateWatcher setIsDisabled={setIsDisabled} />
-            <Form onChange={() => setRequestErr('')}>
-              <TextInput
-                isError={Boolean(errors.name || requestErr)}
-                isTouched={Boolean(touched.name)}
-                placeholder="ChatGPT"
-                title="Customer name"
-                name="name"
-                errorText={errors.name}
-              />
-              <NumberInput
-                name="monthlyPayment"
-                placeholder="2000"
-                title="Monthly payment"
-                isError={Boolean(errors.monthlyPayment || requestErr)}
-                isTouched={Boolean(touched.monthlyPayment)}
-                errorText={errors.monthlyPayment}
-              />
-              <NumberInput
-                name="approximatelyPaymentDay"
-                placeholder="10"
-                title="Approximately payment day from 1 to 28"
-                isError={Boolean(errors.approximatelyPaymentDay || requestErr)}
-                isTouched={Boolean(touched.approximatelyPaymentDay)}
-                errorText={errors.approximatelyPaymentDay}
-              />
-              <Dropdown
-                title="Select currency"
-                selectedItem={{ id: currency, label: currency.toUpperCase() }}
-                items={Object.values(Currency).map((item) => ({
-                  id: item,
-                  label: item.toUpperCase(),
-                }))}
-                onSelect={(item) => {
-                  setCurrency(item.id as Currency);
-                  setFieldValue('currency', item.id);
-                }}
-              />
-              {requestErr !== '' && <p className="text-sm font-bold text-red-400">{requestErr}</p>}
-            </Form>
-          </>
-        )}
+        {({ errors, touched, setFieldValue }) => {
+          console.log(errors);
+          return (
+            <>
+              <FormDirtyStateWatcher setIsDirty={setIsDirty} />
+              <FormStateWatcher setIsDisabled={setIsDisabled} />
+              <Form onChange={() => setRequestErr('')}>
+                <BasicCustomerFields
+                  errors={errors}
+                  touched={touched}
+                  setFieldValue={setFieldValue}
+                  requestErr={requestErr}
+                  initialCurrency={customer.currency}
+                />
+                <BankDetailsFields errors={errors} touched={touched} />
+                {requestErr !== '' && (
+                  <p className="text-sm font-bold text-red-400">{requestErr}</p>
+                )}
+              </Form>
+            </>
+          );
+        }}
       </Formik>
     );
   },
 );
 
-EditForm.displayName = 'EditForm';
+EditFopForm.displayName = 'EditFopForm';
 
-export default EditForm;
+export default EditFopForm;
