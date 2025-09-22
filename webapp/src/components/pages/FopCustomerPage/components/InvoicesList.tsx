@@ -61,13 +61,15 @@ const InvoicesList = ({ invoices }: IProps) => {
                   Download Invoice
                 </a>
                 <br />
-                <a
-                  href={`${process.env.BASE_URL}/work-acts/${act.id}/download`}
-                  download
-                  target="_blank"
-                >
-                  Download Act
-                </a>
+                {act && (
+                  <a
+                    href={`${process.env.BASE_URL}/work-acts/${act.id}/download`}
+                    download
+                    target="_blank"
+                  >
+                    Download Act
+                  </a>
+                )}
               </TableRow>
             </div>
           ))}
