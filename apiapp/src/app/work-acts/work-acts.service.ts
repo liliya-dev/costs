@@ -87,7 +87,7 @@ export class WorkActsService {
       const fopCustomer = invoice.customer;
       if (!fs.existsSync(actsDir)) fs.mkdirSync(actsDir, { recursive: true });
 
-      const fileName = `Акт ${dto.month}_${dto.year.toString().substring(2)}_${fopCustomer.bankDetails.invoice_prefix}_від_${dto.day}_${getUkrainianMonthName(dto.month, MonthCase.Genitive)}_${dto.year}р.pdf`;
+      const fileName = `Акт ${dto.year === 2025 ? dto.month - 2 : dto.month}_${dto.year.toString().substring(2)}_${fopCustomer.bankDetails.invoice_prefix}_від_${dto.day}_${getUkrainianMonthName(dto.month, MonthCase.Genitive)}_${dto.year}р.pdf`;
       const filePath = path.join(actsDir, fileName);
 
       const fontPath = path.join(
