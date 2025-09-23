@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 
 import { generateActPdfStructure } from 'src/common/helpers/generate-act-pdf-structure.helper';
+import { getLastDayOfMonth } from 'src/common/helpers/get-last-month-day.helper';
 import { getRates } from 'src/common/helpers/get-rates.helper';
 import {
   getUkrainianMonthName,
@@ -33,6 +34,7 @@ export class WorkActsService {
   async createAct(dto: CreateWorkActDto): Promise<WorkActEntity> {
     const invoice = await this.invoicesService.findById(dto.invoiceId);
     if (!invoice) throw new NotFoundException('Invoice not found');
+    const day = getLastDayOfMonth(dto.year, dto.month);
     const actName = `Act № ${dto.year === 2025 ? dto.month - 2 : dto.month}/${dto.year}-${invoice.customer.bankDetails.invoice_prefix}`;
     const existingAct = await this.workActsRepository.findOne({
       where: {
@@ -54,7 +56,10 @@ export class WorkActsService {
       rateUahToEur,
       rateUahToUsd,
       invoice,
-      dto,
+      dto: {
+        ...dto,
+        day,
+      },
       totalAmount,
     });
 
