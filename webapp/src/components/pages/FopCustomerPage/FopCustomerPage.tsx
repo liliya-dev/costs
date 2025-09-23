@@ -1,5 +1,6 @@
 'use client';
 
+import Head from 'next/head';
 import { useEffect, useState } from 'react';
 
 import Button from '@/components/atoms/Button/Button';
@@ -18,6 +19,12 @@ interface IProps {
 const FopCustomersPage = ({ customerId }: IProps) => {
   const [customer, setCustomer] = useState<IFOPCustomer>();
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (customer?.name) {
+      document.title = `${customer.name} | FOP Customers`;
+    }
+  }, [customer]);
 
   const getData = async () => {
     setIsLoading(true);
@@ -55,6 +62,9 @@ const FopCustomersPage = ({ customerId }: IProps) => {
   if (!customer) return <p className="text-red-500">Customer not found</p>;
   return (
     <div className="">
+      <Head>
+        <title>{customer?.name} | FOP Customer</title>
+      </Head>
       <div className="flex items-center justify-between">
         <TableTitle title={customer.name} />
         <Button title="Generate current invoice" type="DARK" onClick={generateInvoice} />
