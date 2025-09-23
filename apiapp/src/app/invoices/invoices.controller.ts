@@ -10,8 +10,12 @@ import {
   UseInterceptors,
   NotFoundException,
   Res,
+  HttpStatus,
+  ParseIntPipe,
+  HttpCode,
+  Delete,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiNotFoundResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FastifyReply } from 'fastify';
 
 import { FormatResponseInterceptor } from 'src/common/interceptors/format-response.interceptor';
@@ -47,5 +51,25 @@ export class InvoicesController {
 
     const stream = fs.createReadStream(invoice.filePath);
     return res.send(stream);
+  }
+
+  @ApiOperation({
+    summary: 'Delete invoice by its id',
+  })
+  @ApiNotFoundResponse({
+    description: 'The invoice customer was not deleted',
+  })
+  @HttpCode(HttpStatus.OK)
+  @Delete('/delete/:id')
+  async delete(
+    @Param(
+      'id',
+      new ParseIntPipe({
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+      }),
+    )
+    id: number,
+  ): Promise<number> {
+    return await this.invoicesService.deleteById(id);
   }
 }

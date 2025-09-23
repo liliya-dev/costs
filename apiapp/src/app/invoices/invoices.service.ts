@@ -2,6 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import {
+  HttpException,
+  HttpStatus,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -39,7 +41,7 @@ export class InvoicesService {
     );
     if (!fopCustomer) throw new NotFoundException('FOP Customer not found');
 
-    const invoiceName = `№ ${dto.month}/${dto.year}-${fopCustomer.bankDetails.invoice_prefix}`;
+    const invoiceName = `№ ${dto.year === 2025 ? dto.month - 2 : dto.month}/${dto.year}-${fopCustomer.bankDetails.invoice_prefix}`;
 
     const existingInvoice = await this.invoicesRepository.findOne({
       where: {
@@ -48,7 +50,6 @@ export class InvoicesService {
       },
       relations: ['customer'],
     });
-
     if (existingInvoice) {
       return existingInvoice;
     }
@@ -76,7 +77,7 @@ export class InvoicesService {
       amount: totalAmount,
       status: InvoiceStatus.PENDING,
       filePath: pdfPath,
-      name: `№ ${dto.month}/${dto.year}-${fopCustomer.bankDetails.invoice_prefix}`,
+      name: `№ ${dto.year === 2025 ? dto.month - 2 : dto.month}/${dto.year}-${fopCustomer.bankDetails.invoice_prefix}`,
     });
 
     return await this.invoicesRepository.save(invoice);
@@ -101,7 +102,7 @@ export class InvoicesService {
       if (!fs.existsSync(invoicesDir))
         fs.mkdirSync(invoicesDir, { recursive: true });
 
-      const fileName = `Рахунок_на_сплату_№_${dto.month}_${dto.year.toString().substring(2)}_${fopCustomer.bankDetails.invoice_prefix}_від_${dto.day}_${getUkrainianMonthName(dto.month, MonthCase.Genitive)}_${dto.year}р.pdf`;
+      const fileName = `Рахунок_на_сплату_№_${dto.year === 2025 ? dto.month - 2 : dto.month}_${dto.year.toString().substring(2)}_${fopCustomer.bankDetails.invoice_prefix}_від_${dto.day}_${getUkrainianMonthName(dto.month, MonthCase.Genitive)}_${dto.year}р.pdf`;
       const filePath = path.join(invoicesDir, fileName);
 
       const fontPath = path.join(
@@ -151,5 +152,16 @@ export class InvoicesService {
     });
     if (!invoice) throw new NotFoundException('Invoice not found');
     return invoice;
+  }
+
+  async deleteById(id: number): Promise<number> {
+    const res = await this.invoicesRepository.delete(id);
+    if (res.affected === 0) {
+      throw new HttpException(
+        'There is no invoice customer with this id',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return id;
   }
 }

@@ -138,3 +138,17 @@ export interface AccountUpdateDto {
   taxSystem?: string;
   phone?: string;
 }
+
+export interface CreateInvoiceDto {
+  customerId: number;
+  month: number;
+  year: number;
+  day: number;
+}
+
+export interface CreateActDto {
+  invoiceId: number;
+  month: number;
+  year: number;
+  day: number;
+}

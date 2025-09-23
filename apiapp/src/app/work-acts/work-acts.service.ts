@@ -33,7 +33,7 @@ export class WorkActsService {
   async createAct(dto: CreateWorkActDto): Promise<WorkActEntity> {
     const invoice = await this.invoicesService.findById(dto.invoiceId);
     if (!invoice) throw new NotFoundException('Invoice not found');
-    const actName = `Act № ${dto.month}/${dto.year}-${invoice.customer.bankDetails.invoice_prefix}`;
+    const actName = `Act № ${dto.year === 2025 ? dto.month - 2 : dto.month}/${dto.year}-${invoice.customer.bankDetails.invoice_prefix}`;
     const existingAct = await this.workActsRepository.findOne({
       where: {
         invoice: { id: dto.invoiceId },
@@ -61,7 +61,7 @@ export class WorkActsService {
     const act = this.workActsRepository.create({
       invoice,
       filePath: pdfPath,
-      name: `Act № ${dto.month}/${dto.year}-${invoice.customer.bankDetails.invoice_prefix}`,
+      name: `Act № ${dto.year === 2025 ? dto.month - 2 : dto.month}/${dto.year}-${invoice.customer.bankDetails.invoice_prefix}`,
     });
     const savedAct = await this.workActsRepository.save(act);
     await this.invoicesService.updateInvoice(invoice.id, { act: savedAct });

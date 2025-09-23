@@ -70,7 +70,7 @@ export async function generateActPdfStructure({
     .font(boldFontPath)
     .fontSize(11)
     .text(
-      `№ ${dto.month}/${dto.year.toString().substring(2)}-${fopCustomer.bankDetails.invoice_prefix} від ${dto.day} ${getUkrainianMonthName(dto.month, MonthCase.Genitive)} ${dto.year} року`,
+      `№ ${dto.year === 2025 ? dto.month - 2 : dto.month}/${dto.year.toString().substring(2)}-${fopCustomer.bankDetails.invoice_prefix} від ${dto.day} ${getUkrainianMonthName(dto.month, MonthCase.Genitive)} ${dto.year} року`,
       { align: 'left' },
     );
 
@@ -86,7 +86,7 @@ export async function generateActPdfStructure({
     .font(fontPath)
     .fontSize(7)
     .text(
-      `                   Договір:                ${fopCustomer.bankDetails?.contract_description}  № ${fopCustomer.bankDetails.contract_number} від ${fopCustomer.bankDetails.contract_date} р`,
+      `                   Договір:                ${fopCustomer.bankDetails?.contract_description}  № ${fopCustomer.bankDetails.contract_number} від ${fopCustomer.bankDetails.contract_date} р.`,
     );
   doc.moveDown(1);
   doc
@@ -139,8 +139,7 @@ export async function generateActPdfStructure({
   const { bankDetails, account } = fopCustomer;
 
   if (bankDetails?.address) linesCustomer.push(bankDetails.address);
-  if (bankDetails?.iban)
-    linesCustomer.push(`П/р в форматі IBAN: ${bankDetails.iban}`);
+  if (bankDetails?.iban) linesCustomer.push(`IBAN: ${bankDetails.iban}`);
   if (bankDetails?.bank_name || bankDetails?.mfo) {
     linesCustomer.push(
       `${bankDetails?.bank_name || ''}${bankDetails?.mfo ? `, МФО ${bankDetails.mfo}` : ''}`,
@@ -158,7 +157,7 @@ export async function generateActPdfStructure({
   const linesAccount: string[] = [];
 
   if (account?.address) linesAccount.push(account.address);
-  if (account?.iban) linesAccount.push(`П/р в форматі IBAN: ${account.iban}`);
+  if (account?.iban) linesAccount.push(`IBAN: ${account.iban}`);
   if (account?.bankName || account?.mfo) {
     linesAccount.push(
       `${account?.bankName || ''}${account?.mfo ? `, МФО ${account.mfo}` : ''}`,
@@ -181,8 +180,8 @@ export async function generateActPdfStructure({
       ],
       [fopCustomer.account.directorName, fopCustomer.bankDetails.director],
       [
-        `${dto.day}.${dto.month}.${dto.year}p.`,
-        `${dto.day}.${dto.month}.${dto.year}p.`,
+        `${dto.day}.${`${dto.month}`.length === 1 ? `0${dto.month}` : dto.month}.${dto.year}p.`,
+        `${dto.day}.${`${dto.month}`.length === 1 ? `0${dto.month}` : dto.month}.${dto.year}p.`,
       ],
       [fopCustomer.account.fopFullName, fopCustomer.name],
       [linesAccount.join('\n'), linesCustomer.join('\n')],

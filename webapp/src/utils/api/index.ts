@@ -9,3 +9,4 @@ export * from './rcs';
 export * from './otis';
 export * from './irps';
 export * from './otps';
+export * from './invoices-acts';

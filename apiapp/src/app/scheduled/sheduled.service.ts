@@ -113,16 +113,16 @@ export class SheduledService {
       }
       for (let i = 0; i < allCustomers.length; i++) {
         const invoice = await this.invoicesService.createInvoice({
-          day: date.getDay(),
+          day: date.getDate(),
           year: date.getFullYear(),
-          month: date.getMonth(),
+          month: date.getMonth() + 1,
           customerId: allCustomers[i].id,
         });
         if (invoice) {
           const act = await this.workActsService.createAct({
-            day: date.getDay(),
+            day: date.getDate(),
             year: date.getFullYear(),
-            month: date.getMonth(),
+            month: date.getMonth() + 1,
             invoiceId: invoice.id,
           });
           console.log(
