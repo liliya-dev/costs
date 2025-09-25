@@ -3,17 +3,18 @@ import TableHeader from '@/components/atoms/table/TableHeader/TableHeader';
 import TableRow from '@/components/atoms/table/TableRow/TableRow';
 import TableTitle from '@/components/atoms/table/TableTitle/TableTitle';
 import { currencySymbols, InvoicesStatusColors } from '@/constants';
-import { IFOPInvoice } from '@/types';
+import { IFOPInvoice, InvoiceStatus } from '@/types';
 import { formatDate } from '@/utils/helpers/format-date.helper';
 
 interface IProps {
   invoices: IFOPInvoice[];
   handleDeleteInvoice: (id: number) => void;
+  handleSetPayInvoice: (invoice: IFOPInvoice) => void;
 }
 
 const headers = ['Invoice number', 'Amount', 'Date  paid', 'Files'];
 
-const InvoicesList = ({ invoices, handleDeleteInvoice }: IProps) => {
+const InvoicesList = ({ invoices, handleDeleteInvoice, handleSetPayInvoice }: IProps) => {
   return (
     <div className="mt-12 rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card">
       <div className="mb-12">
@@ -73,12 +74,24 @@ const InvoicesList = ({ invoices, handleDeleteInvoice }: IProps) => {
                 )}
               </TableRow>
               <TableRow>
-                <IconButton
-                  iconHeight={24}
-                  iconColor="RED"
-                  icon="Trash"
-                  onClick={() => handleDeleteInvoice(id)}
-                />
+                <div className="grid w-28 grid-cols-2">
+                  {status !== InvoiceStatus.PAID ? (
+                    <IconButton
+                      iconHeight={24}
+                      iconColor="DARK"
+                      icon="Pay"
+                      onClick={() => handleSetPayInvoice(invoices[index])}
+                    />
+                  ) : (
+                    <span />
+                  )}
+                  <IconButton
+                    iconHeight={24}
+                    iconColor="RED"
+                    icon="Trash"
+                    onClick={() => handleDeleteInvoice(id)}
+                  />
+                </div>
               </TableRow>
             </div>
           ))}

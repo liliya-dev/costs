@@ -1,5 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, Min, Max } from 'class-validator';
+import {
+  IsInt,
+  Min,
+  Max,
+  IsEnum,
+  IsDefined,
+  IsNotEmpty,
+} from 'class-validator';
+
+import { InvoiceStatus } from 'src/common/enums/invoice-status.enum';
 
 export class CreateInvoiceDto {
   @ApiProperty({
@@ -31,4 +40,12 @@ export class CreateInvoiceDto {
   })
   @IsInt()
   day: number;
+}
+
+export class UpdateInvoiceStatusDto {
+  @ApiProperty({ example: InvoiceStatus.PAID })
+  @IsEnum(InvoiceStatus)
+  @IsDefined()
+  @IsNotEmpty()
+  status: InvoiceStatus;
 }

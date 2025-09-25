@@ -14,14 +14,16 @@ import {
   ParseIntPipe,
   HttpCode,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FastifyReply } from 'fastify';
 
+import { ApiOkResponseDecorator } from 'src/common/decorators/api-ok-response.decorator';
 import { FormatResponseInterceptor } from 'src/common/interceptors/format-response.interceptor';
 
 import { InvoiceEntity } from './invoice.entity';
-import { CreateInvoiceDto } from './invoices.dto';
+import { CreateInvoiceDto, UpdateInvoiceStatusDto } from './invoices.dto';
 import { InvoicesService } from './invoices.service';
 
 @ApiTags('Invoices')
@@ -51,6 +53,25 @@ export class InvoicesController {
 
     const stream = fs.createReadStream(invoice.filePath);
     return res.send(stream);
+  }
+
+  @ApiOperation({
+    summary: 'Update regular costs item by id',
+  })
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponseDecorator(InvoiceEntity)
+  @Put('/update-status/:id')
+  async updateInvoiceStatus(
+    @Body() updateDto: Partial<UpdateInvoiceStatusDto>,
+    @Param(
+      'id',
+      new ParseIntPipe({
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+      }),
+    )
+    id: number,
+  ): Promise<InvoiceEntity> {
+    return await this.invoicesService.updateInvoice(id, updateDto);
   }
 
   @ApiOperation({
