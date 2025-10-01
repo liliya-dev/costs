@@ -11,6 +11,7 @@ import { createTransaction } from '@/utils/api';
 
 import IRPDatesPreview from './components/IRPDatesPreview/ IRPDatesPreview';
 import { validationSchema } from './validation-schema';
+import DropdownSearch from '@/components/atoms/Dropdown/DropdownSearch';
 
 interface IProps {
   callback: () => void;
@@ -78,7 +79,7 @@ const AddCustomerPayment = ({ callback, customers }: IProps) => {
               <>
                 <FormStateWatcher setIsDisabled={setIsDisabled} />
                 <Form onChange={() => setRequestErr('')}>
-                  <Dropdown
+                  <DropdownSearch
                     selectedItem={{ id: selectedCustomer.id, label: selectedCustomer.name }}
                     title="Select customer"
                     items={customers.map((item) => ({ id: item.id, label: item.name }))}
