@@ -3,6 +3,7 @@ import { useRef, useState } from 'react';
 
 import Button from '@/components/atoms/Button/Button';
 import Dropdown from '@/components/atoms/Dropdown/Dropdown';
+import DropdownSearch from '@/components/atoms/Dropdown/DropdownSearch';
 import FormStateWatcher from '@/components/atoms/form-elements/FormStateWatcher/FormStateWatcher';
 import TextInput from '@/components/atoms/form-elements/TextInput/TextInput';
 import Loader from '@/components/atoms/Loader/Loader';
@@ -11,7 +12,6 @@ import { createTransaction } from '@/utils/api';
 
 import IRPDatesPreview from './components/IRPDatesPreview/ IRPDatesPreview';
 import { validationSchema } from './validation-schema';
-import DropdownSearch from '@/components/atoms/Dropdown/DropdownSearch';
 
 interface IProps {
   callback: () => void;
