@@ -26,6 +26,7 @@ interface FormValues {
   monthlyPayment: number;
   currency: Currency;
   approximatelyPaymentDay: number;
+  phone?: string;
 }
 
 const EditForm = forwardRef<EditFormRef, IProps>(
@@ -47,6 +48,7 @@ const EditForm = forwardRef<EditFormRef, IProps>(
       monthlyPayment: customer.monthlyPayment,
       currency: customer.currency,
       approximatelyPaymentDay: customer.approximatelyPaymentDay,
+      phone: customer.phone,
     };
 
     useEffect(() => {
@@ -59,12 +61,16 @@ const EditForm = forwardRef<EditFormRef, IProps>(
         innerRef={formikRef}
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={async ({ monthlyPayment, name, currency, approximatelyPaymentDay }, actions) => {
+        onSubmit={async (
+          { monthlyPayment, name, currency, approximatelyPaymentDay, phone },
+          actions,
+        ) => {
           const res = await updateCustomer(customer.id, {
             monthlyPayment,
             name,
             currency,
             approximatelyPaymentDay,
+            phone,
           });
 
           if (res.data) {
@@ -88,6 +94,14 @@ const EditForm = forwardRef<EditFormRef, IProps>(
                 title="Customer name"
                 name="name"
                 errorText={errors.name}
+              />
+              <TextInput
+                isError={Boolean((errors.phone && touched.phone) || requestErr)}
+                isTouched={Boolean(touched.phone)}
+                placeholder="+380950588989"
+                title="Customer Telegram contact"
+                name="phone"
+                errorText={errors.phone}
               />
               <NumberInput
                 name="monthlyPayment"

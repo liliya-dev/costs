@@ -18,4 +18,7 @@ export const validationSchema = Yup.object({
   currency: Yup.mixed<Currency>()
     .oneOf(Object.values(Currency), 'Invalid currency')
     .required('Currency is required'),
+  phone: Yup.string()
+    .matches(/^\+380\d{9}$/, 'Phone number must be in the format +380XXXXXXXXX')
+    .notRequired(),
 });

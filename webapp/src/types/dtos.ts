@@ -11,6 +11,7 @@ export interface CreateCustomerDto {
   approximatelyPaymentDay: number;
   accountId: number;
   isCancelled?: boolean;
+  phone?: string;
 }
 
 export interface CreateTransactionDto {

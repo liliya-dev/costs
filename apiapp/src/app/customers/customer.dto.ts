@@ -45,6 +45,15 @@ export class CustomerDto {
   @IsInt()
   approximatelyPaymentDay: number;
 
+  @ApiProperty({
+    example: '096-318-25-01',
+    description: 'Phone number',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  phone?: string;
+
   @ApiProperty({ example: 4 })
   @Type(() => Number)
   @Min(1)

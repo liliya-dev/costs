@@ -8,6 +8,10 @@ import { IncomeTransactionEntity } from '../income-transactions/income-transacti
 
 @Entity('customer')
 export class CustomerEntity extends PaymentEntity {
+  @ApiProperty({ example: '096-318-25-01', description: 'Phone number' })
+  @Column({ type: 'varchar', nullable: true })
+  phone?: string;
+
   @ApiProperty({
     example: false,
     description: 'Is customer cancelled',

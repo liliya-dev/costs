@@ -5,6 +5,7 @@ import Loader from '@/components/atoms/Loader/Loader';
 import { IFOPCustomer } from '@/types';
 import { getFopCustomersByAccountId } from '@/utils/api';
 
+import AddFopCustomer from './components/CustomersTable/components/AddFopCustomer/AddFopCustomer';
 import FopCustomersTable from './components/CustomersTable/FopCustomersTable';
 
 interface IProps {
@@ -32,12 +33,15 @@ const FopCustomersPage = ({ accountId }: IProps) => {
     <>
       {isLoading && <Loader />}
       {!isLoading && (
-        <FopCustomersTable
-          accountId={accountId}
-          customers={fopCustomers}
-          callback={getData}
-          isLoading={isLoading}
-        />
+        <>
+          <AddFopCustomer callback={getData} accountId={accountId} />
+          <FopCustomersTable
+            accountId={accountId}
+            customers={fopCustomers}
+            callback={getData}
+            isLoading={isLoading}
+          />
+        </>
       )}
     </>
   );

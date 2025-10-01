@@ -17,6 +17,7 @@ interface FormValues {
   monthlyPayment?: string;
   name: string;
   approximatelyPaymentDay: number;
+  phone?: string;
 }
 
 interface IProps {
@@ -35,6 +36,7 @@ const AddCustomerForm = ({ callback, accountId }: IProps) => {
     monthlyPayment: '',
     name: '',
     approximatelyPaymentDay: 15,
+    phone: '',
   };
   return (
     <div className="mt-12 h-full w-full rounded-[10px] bg-white px-7.5 pb-7 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card xl:col-span-6">
@@ -49,7 +51,10 @@ const AddCustomerForm = ({ callback, accountId }: IProps) => {
         innerRef={formikRef}
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={async ({ monthlyPayment, name, currency, approximatelyPaymentDay }, actions) => {
+        onSubmit={async (
+          { monthlyPayment, name, currency, approximatelyPaymentDay, phone },
+          actions,
+        ) => {
           setIsLoading(true);
           if (!monthlyPayment) return;
           const res = await createCustomer({
@@ -57,6 +62,7 @@ const AddCustomerForm = ({ callback, accountId }: IProps) => {
             monthlyPayment: +monthlyPayment,
             currency,
             name,
+            phone,
             approximatelyPaymentDay: +approximatelyPaymentDay,
           });
           if (res.data) {
@@ -82,6 +88,14 @@ const AddCustomerForm = ({ callback, accountId }: IProps) => {
                   title="Customer name"
                   name="name"
                   errorText={errors.name}
+                />
+                <TextInput
+                  isError={Boolean((errors.phone && touched.phone) || requestErr)}
+                  isTouched={Boolean(touched.phone)}
+                  placeholder="+380950588989"
+                  title="Customer Telegram contact"
+                  name="phone"
+                  errorText={errors.phone}
                 />
                 <TextInput
                   isError={Boolean((errors.monthlyPayment && touched.monthlyPayment) || requestErr)}

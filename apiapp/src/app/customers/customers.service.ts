@@ -108,6 +108,7 @@ export class CustomersService {
         currency,
         name,
         monthlyPayment,
+        phone,
       } = createDto;
       const isCustomerExists = await this.checkIsExists({ name });
       if (isCustomerExists)
@@ -124,6 +125,7 @@ export class CustomersService {
         approximatelyPaymentDay,
         monthlyPayment,
         isCancelled: false,
+        phone,
         account: {
           id: accountId,
         },

@@ -20,6 +20,12 @@ const CustomerPage = ({ customerId }: IProps) => {
   const [customer, setCustomer] = useState<ICustomerWithPayments>();
   const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    if (customer?.name) {
+      document.title = `${customer.name} | Customers`;
+    }
+  }, [customer]);
+
   const getData = async () => {
     setIsLoading(true);
     const res = await getCustomerById(customerId);
@@ -71,6 +77,11 @@ const CustomerPage = ({ customerId }: IProps) => {
               <span className="font-semibold">Total received:</span> {totalReceivedInEUR}{' '}
               {currencySymbols[Currency.EUR]}
             </p>
+            {customer.phone && (
+              <p>
+                <span className="font-semibold">Contact number:</span> {customer.phone}{' '}
+              </p>
+            )}
           </div>
           <TransactionsTable payments={customer.payments} />
         </>
