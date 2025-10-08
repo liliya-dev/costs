@@ -36,7 +36,7 @@ const EditIRPTransaction = ({ transactionId, customers, handleClose, callback }:
   useEffect(() => {
     getTransactionData();
   }, []);
-
+  
   return (
     <FullScreenModal
       isPrimaryButtonDisabled={isDisabled}

@@ -98,14 +98,14 @@ const IRPsList = ({
                     iconHeight={24}
                     iconColor="LIGHT"
                     icon="Edit"
-                    onClick={() => handleOpenEditIRP(irps[index])}
+                    onClick={() => handleOpenEditIRP(sortedIrps[index])}
                   />
                   <div className="ml-4" />
                   <IconButton
                     iconHeight={24}
                     iconColor="RED"
                     icon="Trash"
-                    onClick={() => handleOpenDeleteIRP(irps[index])}
+                    onClick={() => handleOpenDeleteIRP(sortedIrps[index])}
                   />
                 </div>
               </TableRow>
