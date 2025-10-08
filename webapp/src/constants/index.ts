@@ -23,7 +23,7 @@ export const ExpencesTypesTexts: Record<ExpencesTypes, string> = {
 
 export const currencySymbols: { [key in Currency]: string } = {
   [Currency.EUR]: '€',
-  [Currency.UAH]: '₴',
+  [Currency.UAH]: 'UAH',
   [Currency.USD]: '$',
 };
 

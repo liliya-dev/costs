@@ -72,7 +72,8 @@ const IRPsList = ({
                     />
                   </div>
                   <p className="font-medium">
-                    {customerName} ({amount}
+                    {customerName} (
+                    {Number.isInteger(amount) ? amount.toString() : amount.toFixed(2)}
                     {currencySymbols[currency]})
                   </p>
                 </div>
