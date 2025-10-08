@@ -27,7 +27,6 @@ const FullScreenModal = ({
   primaryButtonType = 'button',
   isPrimaryButtonDisabled = false,
   children,
-  onClose,
   title,
   text,
   primaryButtonText,
