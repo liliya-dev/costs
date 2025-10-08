@@ -42,12 +42,6 @@ const FullScreenModal = ({
   const modalContentRef = useRef<HTMLDivElement>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
 
-  const handleClickOutside = (event: React.MouseEvent) => {
-    if (modalContentRef.current && !modalContentRef.current.contains(event.target as Node)) {
-      onClose();
-    }
-  };
-
   const handlePrimaryClick = () => {
     if (confirmBeforePrimaryAction) {
       modalContentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
@@ -63,10 +57,7 @@ const FullScreenModal = ({
   };
 
   return (
-    <div
-      onClick={handleClickOutside}
-      className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center overflow-scroll bg-black bg-opacity-30 backdrop-blur-sm"
-    >
+    <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center overflow-scroll bg-black bg-opacity-30 backdrop-blur-sm">
       <div
         ref={modalContentRef}
         id="content"
