@@ -59,6 +59,13 @@ export class CustomerDto {
   @Min(1)
   @IsInt()
   accountId: number;
+
+  @ApiProperty({ example: 468546815 })
+  @Type(() => Number)
+  @Min(1)
+  @IsInt()
+  @IsOptional()
+  tgId?: number;
 }
 
 export class CustomerPayment extends OutgoingTransactionEntity {

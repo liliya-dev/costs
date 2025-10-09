@@ -87,6 +87,7 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
             isCancelled: values.isCancelled,
             approximatelyPaymentDay: values.approximatelyPaymentDay,
             bankDetails: values.bankDetails,
+            tgId: values.tgId || null,
           };
           const res = await createFopCustomer(dto);
           if (res.data) {

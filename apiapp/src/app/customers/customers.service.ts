@@ -109,6 +109,7 @@ export class CustomersService {
         name,
         monthlyPayment,
         phone,
+        tgId,
       } = createDto;
       const isCustomerExists = await this.checkIsExists({ name });
       if (isCustomerExists)
@@ -126,6 +127,7 @@ export class CustomersService {
         monthlyPayment,
         isCancelled: false,
         phone,
+        tgId,
         account: {
           id: accountId,
         },
@@ -164,9 +166,14 @@ export class CustomersService {
             400,
           );
       }
-      return this.customersRepository.save({
+
+      const newUpdatedCustomer = {
         ...customer,
         ...updateDto,
+      };
+
+      return this.customersRepository.save({
+        ...newUpdatedCustomer,
       });
     } catch (err) {
       throw new HttpException(err.message || 'server error', err.status || 500);

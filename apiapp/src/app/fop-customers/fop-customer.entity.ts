@@ -37,4 +37,11 @@ export class FOPCustomerEntity extends PaymentEntity {
 
   @OneToMany(() => InvoiceEntity, (invoice) => invoice.customer)
   readonly invoices: Relation<InvoiceEntity[]>;
+
+  @ApiProperty({
+    example: 1234,
+    description: 'Tg chat id',
+  })
+  @Column({ type: 'integer', nullable: true })
+  tgId?: number;
 }

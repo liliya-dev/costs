@@ -58,6 +58,7 @@ export class FOPCustomersService {
         isCancelled,
         approximatelyPaymentDay,
         bankDetails,
+        tgId,
       } = createDto;
 
       const isFOPCustomerExists = await this.checkIsExists({ name });
@@ -84,6 +85,7 @@ export class FOPCustomersService {
         name,
         currency,
         monthlyPayment,
+        tgId: tgId || null,
         approximatelyPaymentDay,
         isCancelled: isCancelled || false,
         account: { id: accountId },
@@ -125,7 +127,6 @@ export class FOPCustomersService {
 
       const { bankDetails, ...fopCustomerFields } = updateDto;
       Object.assign(fopCustomer, fopCustomerFields);
-
       if (bankDetails) {
         if (fopCustomer.bankDetails) {
           fopCustomer.bankDetails = await this.bankDetailsService.update(

@@ -41,6 +41,7 @@ const EditFopForm = forwardRef<EditFopFormRef, IProps>(
       monthlyPayment: customer.monthlyPayment,
       isCancelled: customer.isCancelled,
       approximatelyPaymentDay: customer.approximatelyPaymentDay,
+      tgId: customer.tgId || null,
       bankDetails: {
         edrpou: customer.bankDetails?.edrpou || '',
         ipn: customer.bankDetails?.ipn || '',
@@ -77,7 +78,6 @@ const EditFopForm = forwardRef<EditFopFormRef, IProps>(
             ...values,
             monthlyPayment: +values.monthlyPayment,
           };
-
           const res = await updateFopCustomer(customer.id, dto);
 
           if (res.data) {
@@ -90,7 +90,6 @@ const EditFopForm = forwardRef<EditFopFormRef, IProps>(
         }}
       >
         {({ errors, touched, setFieldValue }) => {
-          console.log(errors);
           return (
             <>
               <FormDirtyStateWatcher setIsDirty={setIsDirty} />

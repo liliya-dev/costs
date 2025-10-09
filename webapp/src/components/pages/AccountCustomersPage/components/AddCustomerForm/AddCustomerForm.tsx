@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import Button from '@/components/atoms/Button/Button';
 import Dropdown from '@/components/atoms/Dropdown/Dropdown';
 import FormStateWatcher from '@/components/atoms/form-elements/FormStateWatcher/FormStateWatcher';
+import NumberInput from '@/components/atoms/form-elements/NumberInput/NumberInput';
 import TextInput from '@/components/atoms/form-elements/TextInput/TextInput';
 import Loader from '@/components/atoms/Loader/Loader';
 import TableTitle from '@/components/atoms/table/TableTitle/TableTitle';
@@ -14,10 +15,11 @@ import { validationSchema } from './validation-schema';
 
 interface FormValues {
   currency: Currency;
-  monthlyPayment?: string;
+  monthlyPayment?: number;
   name: string;
   approximatelyPaymentDay: number;
   phone?: string;
+  tgId?: number;
 }
 
 interface IProps {
@@ -33,7 +35,6 @@ const AddCustomerForm = ({ callback, accountId }: IProps) => {
   const [requestErr, setRequestErr] = useState('');
   const initialValues: FormValues = {
     currency: Currency.EUR,
-    monthlyPayment: '',
     name: '',
     approximatelyPaymentDay: 15,
     phone: '',
@@ -52,14 +53,15 @@ const AddCustomerForm = ({ callback, accountId }: IProps) => {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={async (
-          { monthlyPayment, name, currency, approximatelyPaymentDay, phone },
+          { monthlyPayment, name, currency, approximatelyPaymentDay, phone, tgId },
           actions,
         ) => {
           setIsLoading(true);
           if (!monthlyPayment) return;
           const res = await createCustomer({
+            tgId: tgId || null,
             accountId,
-            monthlyPayment: +monthlyPayment,
+            monthlyPayment,
             currency,
             name,
             phone,
@@ -97,7 +99,15 @@ const AddCustomerForm = ({ callback, accountId }: IProps) => {
                   name="phone"
                   errorText={errors.phone}
                 />
-                <TextInput
+                <NumberInput
+                  isError={Boolean((errors.tgId && touched.tgId) || requestErr)}
+                  isTouched={Boolean(touched.tgId)}
+                  placeholder="15"
+                  title="Telegram id"
+                  name="tgId"
+                  errorText={errors.tgId}
+                />
+                <NumberInput
                   isError={Boolean((errors.monthlyPayment && touched.monthlyPayment) || requestErr)}
                   isTouched={Boolean(touched.monthlyPayment)}
                   placeholder="2000"

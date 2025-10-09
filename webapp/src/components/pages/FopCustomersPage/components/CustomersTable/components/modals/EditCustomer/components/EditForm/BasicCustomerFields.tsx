@@ -41,7 +41,14 @@ const BasicCustomerFields = ({
         isTouched={Boolean(touched.monthlyPayment)}
         errorText={errors.monthlyPayment}
       />
-
+      <NumberInput
+        isError={Boolean((errors.tgId && touched.tgId) || requestErr)}
+        isTouched={Boolean(touched.tgId)}
+        placeholder="15"
+        title="Telegram id"
+        name="tgId"
+        errorText={errors.tgId}
+      />
       <NumberInput
         name="approximatelyPaymentDay"
         placeholder="10"

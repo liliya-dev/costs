@@ -24,6 +24,8 @@ export const validationSchema = Yup.object({
 
   accountId: Yup.number().required(),
 
+  tgId: Yup.number().notRequired(),
+
   bankDetails: Yup.object({
     edrpou: Yup.string().optional(),
     ipn: Yup.string().optional(),

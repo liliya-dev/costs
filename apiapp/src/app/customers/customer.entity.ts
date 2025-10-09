@@ -30,4 +30,11 @@ export class CustomerEntity extends PaymentEntity {
 
   @ManyToOne(() => AccountEntity, (account) => account.customers)
   readonly account: Relation<AccountEntity>;
+
+  @ApiProperty({
+    example: 1234,
+    description: 'Tg chat id',
+  })
+  @Column({ type: 'integer', nullable: true })
+  tgId?: number;
 }

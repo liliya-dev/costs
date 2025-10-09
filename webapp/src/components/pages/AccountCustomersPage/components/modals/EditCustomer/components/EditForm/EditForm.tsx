@@ -27,6 +27,7 @@ interface FormValues {
   currency: Currency;
   approximatelyPaymentDay: number;
   phone?: string;
+  tgId?: number;
 }
 
 const EditForm = forwardRef<EditFormRef, IProps>(
@@ -49,6 +50,7 @@ const EditForm = forwardRef<EditFormRef, IProps>(
       currency: customer.currency,
       approximatelyPaymentDay: customer.approximatelyPaymentDay,
       phone: customer.phone,
+      tgId: customer.tgId || undefined,
     };
 
     useEffect(() => {
@@ -62,16 +64,19 @@ const EditForm = forwardRef<EditFormRef, IProps>(
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={async (
-          { monthlyPayment, name, currency, approximatelyPaymentDay, phone },
+          { monthlyPayment, name, currency, approximatelyPaymentDay, phone, tgId },
           actions,
         ) => {
-          const res = await updateCustomer(customer.id, {
+          const dto = {
             monthlyPayment,
             name,
             currency,
             approximatelyPaymentDay,
             phone,
-          });
+            tgId: tgId || null,
+          };
+          console.log(dto);
+          const res = await updateCustomer(customer.id, dto);
 
           if (res.data) {
             actions.resetForm();
@@ -110,6 +115,14 @@ const EditForm = forwardRef<EditFormRef, IProps>(
                 isError={Boolean(errors.monthlyPayment || requestErr)}
                 isTouched={Boolean(touched.monthlyPayment)}
                 errorText={errors.monthlyPayment}
+              />
+              <NumberInput
+                isError={Boolean((errors.tgId && touched.tgId) || requestErr)}
+                isTouched={Boolean(touched.tgId)}
+                placeholder="15"
+                title="Telegram id"
+                name="tgId"
+                errorText={errors.tgId}
               />
               <NumberInput
                 name="approximatelyPaymentDay"
