@@ -6,7 +6,7 @@ import type { IFOPCustomer } from '../types/general/fop-customer';
 import { Role, type ICustomer } from '../types';
 import { setCustomerState, type CustomerState } from '../states/customers.state';
 
-export const ADMIN_USERNAMES = ['@vitalyms'];
+export const ADMIN_USERNAMES = ['vitalyms'];
 
 export function registerStartHandler(bot: TelegramBot) {
   bot.onText(

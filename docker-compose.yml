@@ -54,16 +54,14 @@ services:
       context: ./tg-bot     
       args:
         NODE_ENV: ${NODE_ENV}
-    container_name: tg_bot_app
+    container_name: tg_bot
     volumes:
       - ./tg-bot:/app
       - /app/node_modules
     env_file:
       - .env
     depends_on:
-      db:
-        condition: service_healthy
-    command: npm run dev
+      - apiapp
 
 volumes:
   pgdata: {}

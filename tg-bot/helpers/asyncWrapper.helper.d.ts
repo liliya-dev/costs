@@ -1,2 +1,0 @@
-export declare function asyncHandler<Args extends unknown[]>(fn: (...args: Args) => Promise<void>, contextName?: string): (...args: Args) => Promise<void>;
-//# sourceMappingURL=asyncWrapper.helper.d.ts.map

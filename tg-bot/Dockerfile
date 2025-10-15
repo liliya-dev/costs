@@ -2,11 +2,12 @@ FROM node:18
 
 WORKDIR /app
 
-# Copy only package files and install dependencies inside container
 COPY package*.json ./
+
 RUN npm install
 
-# Now copy source code (node_modules stays container-native)
 COPY . .
+    
+RUN if [ "$NODE_ENV" = "production" ]; then npm run build; fi
 
-CMD ["npm", "run", "dev"]
+CMD if [ "$NODE_ENV" = "production" ]; then npm run build && npm run start; else npm run dev; fi
