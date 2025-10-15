@@ -41,7 +41,7 @@ const DeleteIRPTransaction = ({ transactionId, handleClose, callback }: IProps) 
       callback();
       handleClose();
     }
-  }, []);
+  }, [transaction]);
 
   return (
     <FullScreenModal

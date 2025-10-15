@@ -38,6 +38,10 @@ export class CustomersService {
     return this.customersRepository.findOne({ where: { id } });
   }
 
+  async getOneByTgId(tgId: number): Promise<CustomerEntity> {
+    return this.customersRepository.findOne({ where: { tgId } });
+  }
+
   async getOneWithPayments(id: number): Promise<CustomerDtoWithPayments> {
     const customer = await this.customersRepository.findOne({
       where: { id },
@@ -110,6 +114,7 @@ export class CustomersService {
         monthlyPayment,
         phone,
         tgId,
+        isTgSubscribed,
       } = createDto;
       const isCustomerExists = await this.checkIsExists({ name });
       if (isCustomerExists)
@@ -128,6 +133,7 @@ export class CustomersService {
         isCancelled: false,
         phone,
         tgId,
+        isTgSubscribed,
         account: {
           id: accountId,
         },

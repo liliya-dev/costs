@@ -44,4 +44,14 @@ export class FOPCustomerEntity extends PaymentEntity {
   })
   @Column({ type: 'integer', nullable: true })
   tgId?: number;
+
+  @ApiProperty({
+    example: false,
+    description: 'Is customer subscribed to tg bot',
+  })
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
+  readonly isTgSubscribed: boolean;
 }

@@ -46,7 +46,9 @@ const TransactionsTable = ({ payments }: IProps) => {
                 }`}
                 key={id}
               >
-                <TableRow>{amount}</TableRow>
+                <TableRow>
+                  {Number.isInteger(amount) ? amount.toString() : amount.toFixed(2)}
+                </TableRow>
                 <TableRow>{currencySymbols[currency]}</TableRow>
                 <TableRow>{rateUahToUsd}</TableRow>
                 <TableRow>{rateUahToEur}</TableRow>

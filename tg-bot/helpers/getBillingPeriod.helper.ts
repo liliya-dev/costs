@@ -38,7 +38,7 @@ export const getBillingPeriod = (
   }
 
   const startDate = new Date(startYear, startMonth, 15, 1).toISOString();
-  const endDate = new Date(endYear, endMonth, 14, 23, 59, 59, 999).toISOString();
+  const endDate = new Date(endYear, endMonth, 14, 1).toISOString();
 
   return { startDate, endDate };
 };

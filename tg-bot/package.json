@@ -1,0 +1,46 @@
+{
+  "name": "costs-tg-bot",
+  "version": "1.0.0",
+  "main": "bot.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc && tsc-alias",
+    "start": "node dist/bot.js",
+    "dev": "tsx watch bot.ts",
+    "lint": "eslint . --ext .ts,.tsx --fix",
+    "lint:fix": "eslint --resolve-plugins-relative-to . . --ext .ts,.tsx --fix ",
+    "format": "prettier --write './**/*.{ts,js,json,md}'"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.12.2",
+    "dotenv": "^17.2.3",
+    "jiti": "^2.6.1",
+    "node-cron": "^4.2.1",
+    "node-telegram-bot-api": "^0.66.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "@types/node": "^24.6.2",
+    "@types/node-telegram-bot-api": "^0.64.11",
+    "@typescript-eslint/eslint-plugin": "^8.45.0",
+    "@typescript-eslint/parser": "^8.45.0",
+    "chokidar-cli": "^3.0.0",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.36.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "globals": "^16.4.0",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2",
+    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.45.0",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import": "^2.32.0"
+  }
+}

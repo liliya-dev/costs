@@ -51,6 +51,8 @@ import { SubscriptionsService } from './app/subscriptions/subscriptions.service'
 import { TagsController } from './app/tags/tags.controller';
 import { TagsRepository } from './app/tags/tags.repository';
 import { TagsService } from './app/tags/tags.service';
+import { TgController } from './app/tg/tg.controller';
+import { TgService } from './app/tg/tg.service';
 import { WorkActsController } from './app/work-acts/work-acts.controller';
 import { WorkActsRepository } from './app/work-acts/work-acts.repository';
 import { WorkActsService } from './app/work-acts/work-acts.service';
@@ -96,6 +98,7 @@ const controllers = [
   InvoicesController,
   FOPCustomersController,
   WorkActsController,
+  TgController,
 ];
 
 const services: Array<Provider> = [
@@ -119,6 +122,7 @@ const services: Array<Provider> = [
   BankDetailsService,
   FOPCustomersService,
   WorkActsService,
+  TgService,
 ];
 
 @Module({

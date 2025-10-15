@@ -1,10 +1,10 @@
-import { BaseEntityPaymentData, BaseEntityType } from './base';
+import type { BaseEntityPaymentData, BaseEntityType } from './base';
 import { InvoiceStatus } from './enums';
 
 export interface IBaseFOPCustomer extends BaseEntityType, BaseEntityPaymentData {
-  tgId?: number;
   isCancelled: boolean;
-  isTgSubscribed?: boolean;
+  tgId?: number;
+  isTgSubscribed: boolean;
 }
 
 export interface IBankDetails {

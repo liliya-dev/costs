@@ -82,6 +82,10 @@ const CustomerPage = ({ customerId }: IProps) => {
                 <span className="font-semibold">Contact number:</span> {customer.phone}{' '}
               </p>
             )}
+            <p>
+              <span className="font-semibold">Subscribed to tg bot</span>{' '}
+              {customer.isTgSubscribed ? 'yes' : 'no'}{' '}
+            </p>
           </div>
           <TransactionsTable payments={customer.payments} />
         </>
