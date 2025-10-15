@@ -48,6 +48,10 @@ const FopCustomerDetails = ({ customer }: FopCustomerDetailsProps) => (
         )}
         {renderField('Invoice Description', customer.bankDetails.invoice_description)}
         {renderField('Director', customer.bankDetails.director)}
+        <p>
+          <span className="font-semibold">Subscribed to tg bot</span>{' '}
+          {customer.isTgSubscribed ? 'yes' : 'no'}{' '}
+        </p>
       </>
     )}
   </div>

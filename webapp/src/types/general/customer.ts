@@ -6,6 +6,7 @@ export interface ICustomer extends BaseRegularPayment, BaseEntityPaymentData {
   isCancelled: boolean;
   phone?: string;
   tgId?: number;
+  isTgSubscribed?: boolean;
 }
 
 export interface ICustomerWithPayments extends ICustomer {

@@ -157,6 +157,11 @@ export class FOPCustomerDto {
   @IsBoolean()
   isCancelled: boolean;
 
+  @ApiProperty({ example: false, default: false })
+  @IsOptional()
+  @IsBoolean()
+  isTgSubscribed?: boolean;
+
   @ApiProperty({ example: 500 })
   @Type(() => Number)
   @Min(1)

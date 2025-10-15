@@ -143,6 +143,8 @@ export class IRPsService {
       })
       .flat();
 
+    console.log(paymentsForThePeriodDone, dto)
+
     return [...paymentsForThePeriodDone, ...paymentsForThePeriodShouldBeDone];
   }
 

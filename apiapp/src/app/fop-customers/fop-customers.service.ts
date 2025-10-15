@@ -30,6 +30,19 @@ export class FOPCustomersService {
     });
   }
 
+  async getOneByTgId(tgId: number): Promise<FOPCustomerEntity> {
+    return this.fopCustomersRepository.findOne({
+      where: { tgId },
+      relations: {
+        bankDetails: true,
+        invoices: {
+          act: true,
+        },
+        account: true,
+      },
+    });
+  }
+
   async getAllByAccountId(accountId: number): Promise<FOPCustomerEntity[]> {
     return this.fopCustomersRepository.find({
       where: {
@@ -59,6 +72,7 @@ export class FOPCustomersService {
         approximatelyPaymentDay,
         bankDetails,
         tgId,
+        isTgSubscribed,
       } = createDto;
 
       const isFOPCustomerExists = await this.checkIsExists({ name });
@@ -90,6 +104,7 @@ export class FOPCustomersService {
         isCancelled: isCancelled || false,
         account: { id: accountId },
         bankDetails: createdBankDetails,
+        isTgSubscribed,
       });
 
       return createdFOPCustomer;

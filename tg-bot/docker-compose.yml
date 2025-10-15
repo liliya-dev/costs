@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: tg_bot_db
+    restart: always
+    environment:
+      POSTGRES_USER: tg_bot_user
+      POSTGRES_PASSWORD: tg_bot_pass
+      POSTGRES_DB: tg_bot
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data_tg_bot:/var/lib/postgresql/data
+
+  tg_bot:
+    build: .
+    container_name: tg_bot_app
+    restart: always
+    env_file: .env
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app:cached         # mount source code
+      - /app/node_modules     # keep container-installed node_modules
+    working_dir: /app
+    command: npm run dev
+
+volumes:
+  postgres_data_tg_bot:
