@@ -1,0 +1,96 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
+import {
+  Controller,
+  Post,
+  Body,
+  Param,
+  Get,
+  UseInterceptors,
+  NotFoundException,
+  Res,
+  HttpStatus,
+  ParseIntPipe,
+  HttpCode,
+  Delete,
+  Put,
+} from '@nestjs/common';
+import { ApiNotFoundResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { FastifyReply } from 'fastify';
+
+import { ApiOkResponseDecorator } from 'src/common/decorators/api-ok-response.decorator';
+import { FormatResponseInterceptor } from 'src/common/interceptors/format-response.interceptor';
+
+import { InvoiceEntity } from './invoice.entity';
+import { CreateInvoiceDto, UpdateInvoiceStatusDto } from './invoices.dto';
+import { InvoicesService } from './invoices.service';
+
+@ApiTags('Invoices')
+@Controller('invoices')
+@UseInterceptors(FormatResponseInterceptor)
+export class InvoicesController {
+  constructor(private readonly invoicesService: InvoicesService) {}
+
+  @Post('create')
+  async createInvoice(@Body() dto: CreateInvoiceDto): Promise<InvoiceEntity> {
+    return this.invoicesService.createInvoice(dto);
+  }
+
+  @Get(':id/download')
+  async downloadInvoice(@Param('id') id: string, @Res() res: FastifyReply) {
+    const invoice = await this.invoicesService.findById(+id);
+    if (!invoice.filePath || !fs.existsSync(invoice.filePath)) {
+      throw new NotFoundException('Invoice file not found');
+    }
+
+    const fileName = path.basename(invoice.filePath);
+    res.header(
+      'Content-Disposition',
+      `attachment; filename*=UTF-8''${encodeURIComponent(fileName)}`,
+    );
+    res.header('Content-Type', 'application/pdf');
+
+    const stream = fs.createReadStream(invoice.filePath);
+    return res.send(stream);
+  }
+
+  @ApiOperation({
+    summary: 'Update regular costs item by id',
+  })
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponseDecorator(InvoiceEntity)
+  @Put('/update-status/:id')
+  async updateInvoiceStatus(
+    @Body() updateDto: Partial<UpdateInvoiceStatusDto>,
+    @Param(
+      'id',
+      new ParseIntPipe({
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+      }),
+    )
+    id: number,
+  ): Promise<InvoiceEntity> {
+    return await this.invoicesService.updateInvoice(id, updateDto);
+  }
+
+  @ApiOperation({
+    summary: 'Delete invoice by its id',
+  })
+  @ApiNotFoundResponse({
+    description: 'The invoice customer was not deleted',
+  })
+  @HttpCode(HttpStatus.OK)
+  @Delete('/delete/:id')
+  async delete(
+    @Param(
+      'id',
+      new ParseIntPipe({
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+      }),
+    )
+    id: number,
+  ): Promise<number> {
+    return await this.invoicesService.deleteById(id);
+  }
+}

@@ -57,7 +57,7 @@ const EditForm = forwardRef<EditFormRef, IProps>(
       approximatelyPaymentDay: pbi.approximatelyPaymentDay,
       tags: pbi.tags || [],
       numberOfPayments: pbi.numberOfPayments,
-      numberOfDownpayments: pbi.numberOfDownpayments,
+      numberOfDownpayments: pbi.numberOfDownpayments || 0,
     };
 
     useEffect(() => {

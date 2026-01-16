@@ -21,7 +21,7 @@ const TextInput = ({ isError, isTouched, name, title, placeholder, errorText }: 
         name={name}
         placeholder={placeholder}
         className={cx(
-          'dd focus:shadow-outline block w-full appearance-none rounded border border-gray-300 bg-white px-4 py-2 focus:outline-none',
+          'focus:shadow-outline block w-full appearance-none rounded border border-gray-300 bg-white px-4 py-2 text-gray-900 placeholder-gray-300 focus:outline-none',
           {
             'mb-1': isError,
             'mb-3': (!isError && !isTouched) || (isTouched && !isError),

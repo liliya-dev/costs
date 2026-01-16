@@ -38,6 +38,10 @@ export class CustomersService {
     return this.customersRepository.findOne({ where: { id } });
   }
 
+  async getOneByTgId(tgId: number): Promise<CustomerEntity> {
+    return this.customersRepository.findOne({ where: { tgId } });
+  }
+
   async getOneWithPayments(id: number): Promise<CustomerDtoWithPayments> {
     const customer = await this.customersRepository.findOne({
       where: { id },
@@ -103,12 +107,14 @@ export class CustomersService {
   async create(createDto: CustomerDto): Promise<CustomerEntity> {
     try {
       const {
-        isCashless,
         accountId,
         approximatelyPaymentDay,
         currency,
         name,
         monthlyPayment,
+        phone,
+        tgId,
+        isTgSubscribed,
       } = createDto;
       const isCustomerExists = await this.checkIsExists({ name });
       if (isCustomerExists)
@@ -122,10 +128,12 @@ export class CustomersService {
       const createdCustomer = await this.customersRepository.save({
         name,
         currency,
-        isCashless,
         approximatelyPaymentDay,
         monthlyPayment,
         isCancelled: false,
+        phone,
+        tgId,
+        isTgSubscribed,
         account: {
           id: accountId,
         },
@@ -164,9 +172,14 @@ export class CustomersService {
             400,
           );
       }
-      return this.customersRepository.save({
+
+      const newUpdatedCustomer = {
         ...customer,
         ...updateDto,
+      };
+
+      return this.customersRepository.save({
+        ...newUpdatedCustomer,
       });
     } catch (err) {
       throw new HttpException(err.message || 'server error', err.status || 500);

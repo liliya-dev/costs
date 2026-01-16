@@ -2,9 +2,9 @@ import { Form, Formik, FormikProps } from 'formik';
 import { useRef, useState } from 'react';
 
 import Button from '@/components/atoms/Button/Button';
-import Checkbox from '@/components/atoms/Checkbox/Checkbox';
 import Dropdown from '@/components/atoms/Dropdown/Dropdown';
 import FormStateWatcher from '@/components/atoms/form-elements/FormStateWatcher/FormStateWatcher';
+import NumberInput from '@/components/atoms/form-elements/NumberInput/NumberInput';
 import TextInput from '@/components/atoms/form-elements/TextInput/TextInput';
 import Loader from '@/components/atoms/Loader/Loader';
 import TableTitle from '@/components/atoms/table/TableTitle/TableTitle';
@@ -15,10 +15,11 @@ import { validationSchema } from './validation-schema';
 
 interface FormValues {
   currency: Currency;
-  monthlyPayment?: string;
+  monthlyPayment?: number;
   name: string;
   approximatelyPaymentDay: number;
-  isCashless: boolean;
+  phone?: string;
+  tgId?: number;
 }
 
 interface IProps {
@@ -34,10 +35,9 @@ const AddCustomerForm = ({ callback, accountId }: IProps) => {
   const [requestErr, setRequestErr] = useState('');
   const initialValues: FormValues = {
     currency: Currency.EUR,
-    monthlyPayment: '',
     name: '',
     approximatelyPaymentDay: 15,
-    isCashless: false,
+    phone: '',
   };
   return (
     <div className="mt-12 h-full w-full rounded-[10px] bg-white px-7.5 pb-7 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card xl:col-span-6">
@@ -53,17 +53,18 @@ const AddCustomerForm = ({ callback, accountId }: IProps) => {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={async (
-          { monthlyPayment, name, currency, approximatelyPaymentDay, isCashless },
+          { monthlyPayment, name, currency, approximatelyPaymentDay, phone, tgId },
           actions,
         ) => {
           setIsLoading(true);
           if (!monthlyPayment) return;
           const res = await createCustomer({
+            tgId: tgId || null,
             accountId,
-            monthlyPayment: +monthlyPayment,
-            isCashless,
+            monthlyPayment,
             currency,
             name,
+            phone,
             approximatelyPaymentDay: +approximatelyPaymentDay,
           });
           if (res.data) {
@@ -91,6 +92,22 @@ const AddCustomerForm = ({ callback, accountId }: IProps) => {
                   errorText={errors.name}
                 />
                 <TextInput
+                  isError={Boolean((errors.phone && touched.phone) || requestErr)}
+                  isTouched={Boolean(touched.phone)}
+                  placeholder="+380950588989"
+                  title="Customer Telegram contact"
+                  name="phone"
+                  errorText={errors.phone}
+                />
+                <NumberInput
+                  isError={Boolean((errors.tgId && touched.tgId) || requestErr)}
+                  isTouched={Boolean(touched.tgId)}
+                  placeholder="15"
+                  title="Telegram id"
+                  name="tgId"
+                  errorText={errors.tgId}
+                />
+                <NumberInput
                   isError={Boolean((errors.monthlyPayment && touched.monthlyPayment) || requestErr)}
                   isTouched={Boolean(touched.monthlyPayment)}
                   placeholder="2000"
@@ -121,13 +138,12 @@ const AddCustomerForm = ({ callback, accountId }: IProps) => {
                     setFieldValue('currency', item.id);
                   }}
                 />
-                <Checkbox name="isCashless" label="Is client cashless" />
                 {requestErr !== '' && (
                   <p className="text-sm font-bold text-red-400">{requestErr}</p>
                 )}
                 <div className="mt-4 flex justify-end">
                   <Button
-                    type="SUCESS"
+                    type="SUCCESS"
                     title="Add"
                     buttonType="submit"
                     onClick={() => {}}

@@ -2,9 +2,10 @@ import { useCallback, useState } from 'react';
 
 import Loader from '@/components/atoms/Loader/Loader';
 import FullScreenModal from '@/components/molecules/FullScreenModal/FullScreenModal';
-import { currencySymbols } from '@/constants';
 import { IPBI } from '@/types';
-import { payPBI } from '@/utils/api';
+import { payPBIPayments } from '@/utils/api';
+
+import PBIDatesPreview from '../../PBIDatesPreview/PBIDatesPreview';
 
 interface IProps {
   pbi: IPBI;
@@ -14,37 +15,28 @@ interface IProps {
 
 const PayPBI = ({ pbi, handleClose, callback }: IProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const handleDeleteSubscription = useCallback(async () => {
+  const [dates, setDates] = useState<string[]>([]);
+  const handlePayPBI = useCallback(async () => {
     setIsLoading(true);
-    await payPBI(pbi.id);
+    await payPBIPayments({
+      pbiId: pbi.id,
+      datesShouldBePaid: dates,
+    });
     setIsLoading(false);
     callback();
     handleClose();
-  }, []);
+  }, [dates]);
 
   return (
     <FullScreenModal
       isPrimaryButtonDisabled={false}
       onClose={handleClose}
       onSecondaryButtonClick={handleClose}
-      onPrimaryButtonClick={handleDeleteSubscription}
-      primaryButtonText="Pay off"
+      onPrimaryButtonClick={handlePayPBI}
+      primaryButtonText="Pay"
       secondaryButtonText="Cancel"
-      title={`Do you really want to pay off the installment plan for ${pbi.name} completely?`}
-      text={
-        <>
-          By clicking the button, you will be charged{' '}
-          <strong>
-            {pbi.numberOfPayments - pbi.transactions.length - pbi.numberOfDownpayments}
-          </strong>{' '}
-          payments of{' '}
-          <strong>
-            {pbi.monthlyPayment} {currencySymbols[pbi.currency]}
-          </strong>
-          , and the installment plan will be fully paid off. These payments will be recorded in the
-          current billing period.
-        </>
-      }
+      title={`Creating payments for ${pbi.name}`}
+      text={'Here you can create few payments or pay off and finish this payment by installments'}
       confirmBeforePrimaryAction={true}
       confirmTitle={`Are you sure you want to pay off payment by installments for ${pbi.name}`}
       confirmText="Yes"
@@ -57,6 +49,10 @@ const PayPBI = ({ pbi, handleClose, callback }: IProps) => {
           </div>
         )}
       </>
+      <PBIDatesPreview
+        pbi={pbi}
+        onDatesChange={(selectedDates: string[]) => setDates(selectedDates)}
+      />
     </FullScreenModal>
   );
 };

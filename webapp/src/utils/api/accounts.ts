@@ -1,4 +1,4 @@
-import { CreateAccountDto, IAccount } from '@/types';
+import { AccountUpdateDto, CreateAccountDto, IAccount } from '@/types';
 import { Method } from '@/types/request-action';
 
 import { apiHelperPublic } from './axios';
@@ -12,3 +12,10 @@ export const createAccount = (dto: CreateAccountDto) =>
 
 export const deleteAccount = (id: number) =>
   apiHelperPublic<{ id: number }>({ url: `accounts/${id}`, method: Method.DELETE });
+
+export const updateAccount = (id: number, dto: AccountUpdateDto) =>
+  apiHelperPublic<IAccount>({
+    url: `accounts/${id}`,
+    method: Method.PUT,
+    data: dto,
+  });

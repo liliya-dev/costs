@@ -22,5 +22,9 @@ export const validationSchema = Yup.object({
     .max(28, 'Day cannot be more than 30')
     .required('Approximately payment day is required'),
 
-  isCashless: Yup.boolean(),
+  phone: Yup.string()
+    .matches(/^\+380\d{9}$/, 'Phone number must be in the format +380XXXXXXXXX')
+    .notRequired(),
+
+  tgId: Yup.number().optional(),
 });

@@ -113,7 +113,7 @@ const EditForm = forwardRef<EditFormRef, IProps>(
           if (res.data) {
             callback();
           } else {
-            setRequestErr('Error occurred');
+            setRequestErr(res.message || 'Error occurred');
           }
           setIsLoading(false);
         }}

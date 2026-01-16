@@ -1,4 +1,4 @@
-import { CreatePBIDto, IPBI, IPBITransaction } from '@/types';
+import { CreatePBIDto, CreatePBIPaymentsDto, IIRPDates, IPBI, IPBITransaction } from '@/types';
 import { Method } from '@/types/request-action';
 
 import { apiHelperPublic } from './axios';
@@ -17,10 +17,19 @@ export const updatePBI = (id: number, dto: Partial<CreatePBIDto>) =>
 export const deletePBI = (id: number) =>
   apiHelperPublic({ url: `pbis/delete/${id}`, method: Method.DELETE });
 
-export const payPBI = (id: number) =>
-  apiHelperPublic<IPBI>({ url: `pbi-transactions/pay-off/${id}`, method: Method.POST });
-
 export const getPBITransactions = (accountId: number, startDate: string, endDate: string) =>
   apiHelperPublic<IPBITransaction[]>({
     url: `/pbi-transactions/period/${accountId}?startDate=${startDate}&endDate=${endDate}`,
+  });
+
+export const getDatesForThePBI = (id: number) =>
+  apiHelperPublic<IIRPDates[]>({
+    url: `pbi-transactions/dates/${id}`,
+  });
+
+export const payPBIPayments = (dto: CreatePBIPaymentsDto) =>
+  apiHelperPublic<IPBI>({
+    url: `pbi-transactions/create-payments`,
+    method: Method.POST,
+    data: dto,
   });

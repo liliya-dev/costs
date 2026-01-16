@@ -1,7 +1,6 @@
 import { Form, Formik, FormikProps } from 'formik';
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
-import Checkbox from '@/components/atoms/Checkbox/Checkbox';
 import Dropdown from '@/components/atoms/Dropdown/Dropdown';
 import FormDirtyStateWatcher from '@/components/atoms/form-elements/FormStateWatcher/FormDirtyStateWatcher';
 import FormStateWatcher from '@/components/atoms/form-elements/FormStateWatcher/FormStateWatcher';
@@ -26,8 +25,9 @@ interface FormValues {
   name: string;
   monthlyPayment: number;
   currency: Currency;
-  isCashless: boolean;
   approximatelyPaymentDay: number;
+  phone?: string;
+  tgId?: number;
 }
 
 const EditForm = forwardRef<EditFormRef, IProps>(
@@ -49,7 +49,8 @@ const EditForm = forwardRef<EditFormRef, IProps>(
       monthlyPayment: customer.monthlyPayment,
       currency: customer.currency,
       approximatelyPaymentDay: customer.approximatelyPaymentDay,
-      isCashless: customer.isCashless,
+      phone: customer.phone,
+      tgId: customer.tgId || undefined,
     };
 
     useEffect(() => {
@@ -63,23 +64,26 @@ const EditForm = forwardRef<EditFormRef, IProps>(
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={async (
-          { monthlyPayment, name, currency, isCashless, approximatelyPaymentDay },
+          { monthlyPayment, name, currency, approximatelyPaymentDay, phone, tgId },
           actions,
         ) => {
-          const res = await updateCustomer(customer.id, {
+          const dto = {
             monthlyPayment,
             name,
             currency,
-            isCashless,
             approximatelyPaymentDay,
-          });
+            phone,
+            tgId: tgId || null,
+          };
+          console.log(dto);
+          const res = await updateCustomer(customer.id, dto);
 
           if (res.data) {
             actions.resetForm();
             setRequestErr('');
             callback();
           } else if (res.message) {
-            setRequestErr('Error occurred');
+            setRequestErr(res.message || 'Error occurred');
           }
         }}
       >
@@ -96,6 +100,14 @@ const EditForm = forwardRef<EditFormRef, IProps>(
                 name="name"
                 errorText={errors.name}
               />
+              <TextInput
+                isError={Boolean((errors.phone && touched.phone) || requestErr)}
+                isTouched={Boolean(touched.phone)}
+                placeholder="+380950588989"
+                title="Customer Telegram contact"
+                name="phone"
+                errorText={errors.phone}
+              />
               <NumberInput
                 name="monthlyPayment"
                 placeholder="2000"
@@ -103,6 +115,14 @@ const EditForm = forwardRef<EditFormRef, IProps>(
                 isError={Boolean(errors.monthlyPayment || requestErr)}
                 isTouched={Boolean(touched.monthlyPayment)}
                 errorText={errors.monthlyPayment}
+              />
+              <NumberInput
+                isError={Boolean((errors.tgId && touched.tgId) || requestErr)}
+                isTouched={Boolean(touched.tgId)}
+                placeholder="15"
+                title="Telegram id"
+                name="tgId"
+                errorText={errors.tgId}
               />
               <NumberInput
                 name="approximatelyPaymentDay"
@@ -124,7 +144,6 @@ const EditForm = forwardRef<EditFormRef, IProps>(
                   setFieldValue('currency', item.id);
                 }}
               />
-              <Checkbox name="isCashless" label="Is client cashless" />
               {requestErr !== '' && <p className="text-sm font-bold text-red-400">{requestErr}</p>}
             </Form>
           </>

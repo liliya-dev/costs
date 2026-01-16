@@ -17,11 +17,11 @@ import { PeriodOptionsDto } from 'src/common/dtos/period-options.dto';
 import { FormatResponseInterceptor } from 'src/common/interceptors/format-response.interceptor';
 import { IPBITransactionsController } from 'src/common/interfaces/controllers/pbi-transactions.controller';
 
-import { PBIEntity } from '../pbi/pbi.entity';
-
 import {
   CreatePBITransactionDto,
+  PBIDatesDto,
   PBIsDoneAndUpcomingDto,
+  PBIsPaySpecificNumberDto,
 } from './pbi-transaction.dto';
 import { PBITransactionEntity } from './pbi-transaction.entity';
 import { PBITransactionsService } from './pbi-transactions.service';
@@ -64,12 +64,24 @@ export class PBITransactionsController implements IPBITransactionsController {
   }
 
   @ApiOperation({
-    summary: 'Pay off pbi by its id',
+    summary: 'Pay some payments for pbi by its id',
   })
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponseDecorator(PBITransactionEntity)
-  @Post('/pay-off/:id')
-  async payOff(
+  @Post('/create-payments')
+  async createPayments(
+    @Body() createDto: PBIsPaySpecificNumberDto,
+  ): Promise<void> {
+    return await this.pbistransactionsService.createPayments(createDto);
+  }
+
+  @ApiOperation({
+    summary:
+      'Get all available pbi payment dates in the period for the specific pbi',
+  })
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponseDecorator(PBIDatesDto, true)
+  @Get('/dates/:id')
+  async getPaymentDatesAvailableForThePeriod(
     @Param(
       'id',
       new ParseIntPipe({
@@ -77,7 +89,9 @@ export class PBITransactionsController implements IPBITransactionsController {
       }),
     )
     id: number,
-  ): Promise<PBIEntity> {
-    return await this.pbistransactionsService.payOff(id);
+  ): Promise<PBIDatesDto[]> {
+    return await this.pbistransactionsService.getPaymentDatesAvailableForThePeriod(
+      id,
+    );
   }
 }

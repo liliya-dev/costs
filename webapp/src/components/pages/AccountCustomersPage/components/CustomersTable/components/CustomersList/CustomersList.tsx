@@ -23,12 +23,9 @@ const CustomersList = ({
   return (
     <>
       {customers.map(
-        (
-          { name, currency, monthlyPayment, isCashless, approximatelyPaymentDay, id, isCancelled },
-          index,
-        ) => (
+        ({ name, currency, monthlyPayment, approximatelyPaymentDay, id, isCancelled }, index) => (
           <div
-            className={`grid grid-cols-3 sm:grid-cols-6 ${
+            className={`grid grid-cols-3 sm:grid-cols-5 ${
               index === customers.length - 1 ? '' : 'border-b border-stroke dark:border-dark-3'
             }`}
             key={id}
@@ -37,7 +34,6 @@ const CustomersList = ({
               <TableRow>{name}</TableRow>
               <TableRow>{monthlyPayment}</TableRow>
               <TableRow>{currencySymbols[currency]}</TableRow>
-              <TableRow>{isCashless ? 'Cashless' : 'Transfer'}</TableRow>
               <TableRow>{approximatelyPaymentDay}</TableRow>
             </Link>
             <TableRow>

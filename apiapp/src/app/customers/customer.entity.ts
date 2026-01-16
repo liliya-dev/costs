@@ -8,15 +8,9 @@ import { IncomeTransactionEntity } from '../income-transactions/income-transacti
 
 @Entity('customer')
 export class CustomerEntity extends PaymentEntity {
-  @ApiProperty({
-    example: false,
-    description: 'Does customer pays cashless',
-  })
-  @Column({
-    type: 'boolean',
-    default: false,
-  })
-  readonly isCashless: boolean;
+  @ApiProperty({ example: '096-318-25-01', description: 'Phone number' })
+  @Column({ type: 'varchar', nullable: true })
+  phone?: string;
 
   @ApiProperty({
     example: false,
@@ -36,4 +30,21 @@ export class CustomerEntity extends PaymentEntity {
 
   @ManyToOne(() => AccountEntity, (account) => account.customers)
   readonly account: Relation<AccountEntity>;
+
+  @ApiProperty({
+    example: 1234,
+    description: 'Tg chat id',
+  })
+  @Column({ type: 'integer', nullable: true })
+  tgId?: number;
+
+  @ApiProperty({
+    example: false,
+    description: 'Is customer subscribed to tg bot',
+  })
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
+  readonly isTgSubscribed: boolean;
 }

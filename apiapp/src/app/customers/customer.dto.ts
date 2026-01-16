@@ -27,15 +27,15 @@ export class CustomerDto {
   @IsNotEmpty()
   currency: Currency;
 
-  @ApiProperty({ example: false })
-  @IsBoolean()
-  @IsDefined()
-  isCashless: boolean;
-
   @ApiProperty({ example: false, default: false })
   @IsOptional()
   @IsBoolean()
   isCancelled: boolean;
+
+  @ApiProperty({ example: false, default: false })
+  @IsOptional()
+  @IsBoolean()
+  isTgSubscribed?: boolean;
 
   @ApiProperty({ example: 500 })
   @Type(() => Number)
@@ -50,11 +50,27 @@ export class CustomerDto {
   @IsInt()
   approximatelyPaymentDay: number;
 
+  @ApiProperty({
+    example: '096-318-25-01',
+    description: 'Phone number',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  phone?: string;
+
   @ApiProperty({ example: 4 })
   @Type(() => Number)
   @Min(1)
   @IsInt()
   accountId: number;
+
+  @ApiProperty({ example: 468546815 })
+  @Type(() => Number)
+  @Min(1)
+  @IsInt()
+  @IsOptional()
+  tgId?: number;
 }
 
 export class CustomerPayment extends OutgoingTransactionEntity {

@@ -1,5 +1,6 @@
 export * from './accounts';
 export * from './customers';
+export * from './fop-customers';
 export * from './tags';
 export * from './transactions';
 export * from './subscriptions';
@@ -8,3 +9,4 @@ export * from './rcs';
 export * from './otis';
 export * from './irps';
 export * from './otps';
+export * from './invoices-acts';

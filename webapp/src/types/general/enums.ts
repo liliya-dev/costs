@@ -15,3 +15,9 @@ export enum DateStatus {
   PAID = 'PAID',
   NOT_PAID = 'NOT_PAID',
 }
+
+export enum InvoiceStatus {
+  PENDING = 'PENDING',
+  SENT = 'SENT',
+  PAID = 'PAID',
+}

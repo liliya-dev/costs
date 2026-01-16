@@ -3,6 +3,7 @@ import { useRef, useState } from 'react';
 
 import Button from '@/components/atoms/Button/Button';
 import Dropdown from '@/components/atoms/Dropdown/Dropdown';
+import DropdownSearch from '@/components/atoms/Dropdown/DropdownSearch';
 import FormStateWatcher from '@/components/atoms/form-elements/FormStateWatcher/FormStateWatcher';
 import TextInput from '@/components/atoms/form-elements/TextInput/TextInput';
 import Loader from '@/components/atoms/Loader/Loader';
@@ -68,7 +69,7 @@ const AddCustomerPayment = ({ callback, customers }: IProps) => {
               setSelectedCustomer(customers[0]);
               callback();
             } else if (res.message) {
-              setRequestErr('Error occured');
+              setRequestErr(res.message || 'Error occurred');
             }
             setIsLoading(false);
           }}
@@ -78,7 +79,7 @@ const AddCustomerPayment = ({ callback, customers }: IProps) => {
               <>
                 <FormStateWatcher setIsDisabled={setIsDisabled} />
                 <Form onChange={() => setRequestErr('')}>
-                  <Dropdown
+                  <DropdownSearch
                     selectedItem={{ id: selectedCustomer.id, label: selectedCustomer.name }}
                     title="Select customer"
                     items={customers.map((item) => ({ id: item.id, label: item.name }))}
@@ -130,7 +131,7 @@ const AddCustomerPayment = ({ callback, customers }: IProps) => {
                   )}
                   <div className="mt-4 flex justify-end">
                     <Button
-                      type="SUCESS"
+                      type="SUCCESS"
                       title="Add"
                       buttonType="submit"
                       onClick={() => {}}

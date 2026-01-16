@@ -6,12 +6,20 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AccountsController } from './app/accounts/accounts.controller';
 import { AccountsRepository } from './app/accounts/accounts.repository';
 import { AccountsService } from './app/accounts/accounts.service';
+import { BankDetailsRepository } from './app/bank-details/bank-details.repository';
+import { BankDetailsService } from './app/bank-details/bank-details.service';
 import { CustomersController } from './app/customers/customers.controller';
 import { CustomersRepository } from './app/customers/customers.repository';
 import { CustomersService } from './app/customers/customers.service';
+import { FOPCustomersController } from './app/fop-customers/fop-customers.controller';
+import { FOPCustomersRepository } from './app/fop-customers/fop-customers.repository';
+import { FOPCustomersService } from './app/fop-customers/fop-customers.service';
 import { IncomeTransactionsController } from './app/income-transactions/income-transactions.controller';
 import { IncomeTransactionsRepository } from './app/income-transactions/income-transactions.repository';
 import { IncomeTransactionsService } from './app/income-transactions/income-transactions.service';
+import { InvoicesController } from './app/invoices/invoices.controller';
+import { InvoicesRepository } from './app/invoices/invoices.repository';
+import { InvoicesService } from './app/invoices/invoices.service';
 import { IRPsController } from './app/irp/irps.controller';
 import { IRPsRepository } from './app/irp/irps.repository';
 import { IRPsService } from './app/irp/irps.service';
@@ -43,6 +51,11 @@ import { SubscriptionsService } from './app/subscriptions/subscriptions.service'
 import { TagsController } from './app/tags/tags.controller';
 import { TagsRepository } from './app/tags/tags.repository';
 import { TagsService } from './app/tags/tags.service';
+import { TgController } from './app/tg/tg.controller';
+import { TgService } from './app/tg/tg.service';
+import { WorkActsController } from './app/work-acts/work-acts.controller';
+import { WorkActsRepository } from './app/work-acts/work-acts.repository';
+import { WorkActsService } from './app/work-acts/work-acts.service';
 import { validateEnvSchema } from './common/helpers/validate-env-schema.helper';
 import { HttpPrivatBankService } from './common/http/http-privat-bank.service';
 import { TypeOrmExModule } from './common/typeormex-module/typeorm-ex.module';
@@ -62,6 +75,10 @@ const repositories: DynamicModule = TypeOrmExModule.forCustomRepository([
   PBITransactionsRepository,
   OTPsRepository,
   OTIsRepository,
+  InvoicesRepository,
+  BankDetailsRepository,
+  FOPCustomersRepository,
+  WorkActsRepository,
 ]);
 
 const controllers = [
@@ -78,6 +95,10 @@ const controllers = [
   PBITransactionsController,
   OTPsController,
   OTIsController,
+  InvoicesController,
+  FOPCustomersController,
+  WorkActsController,
+  TgController,
 ];
 
 const services: Array<Provider> = [
@@ -97,6 +118,11 @@ const services: Array<Provider> = [
   OTPsService,
   SheduledService,
   OTIsService,
+  InvoicesService,
+  BankDetailsService,
+  FOPCustomersService,
+  WorkActsService,
+  TgService,
 ];
 
 @Module({

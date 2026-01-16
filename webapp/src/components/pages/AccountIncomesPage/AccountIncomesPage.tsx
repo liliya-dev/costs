@@ -14,7 +14,7 @@ import AddCustomerPayment from './components/AddCustomerPayment/AddCustomerPayme
 import AddOneTimePayment from './components/AddOneTimePayment/AddOneTimePayment';
 import BillingPeriod from './components/BillingPeriod/BillingPeriod';
 import CurrencySwitcher from './components/CurrencySwitcher/CurrencySwitcher';
-import DataStats from './components/DataStats/DataStatsOne';
+import IncomesStats from './components/IncomesStats/IncomesStats';
 import OtiTable from './components/OtiTable/OtiTable';
 import StatsChart from './components/StatsChart/StatsChart';
 import Tabs from './components/Tabs/Tabs';
@@ -116,7 +116,7 @@ const AccountIncomesPage = ({ id }: IProps) => {
             />
           </div>
           <div className="my-6" />
-          <DataStats
+          <IncomesStats
             irps={irps}
             selectedCurrency={selectedCurrency}
             totalOti={otis.reduce(

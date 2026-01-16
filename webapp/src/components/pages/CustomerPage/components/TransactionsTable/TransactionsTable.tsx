@@ -18,7 +18,7 @@ const headers = [
   'Date shold be paid',
 ];
 
-const paymentsTable = ({ payments }: IProps) => {
+const TransactionsTable = ({ payments }: IProps) => {
   return (
     <div className="mt-12 rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card">
       <div className="mb-12">
@@ -46,7 +46,9 @@ const paymentsTable = ({ payments }: IProps) => {
                 }`}
                 key={id}
               >
-                <TableRow>{amount}</TableRow>
+                <TableRow>
+                  {Number.isInteger(amount) ? amount.toString() : amount.toFixed(2)}
+                </TableRow>
                 <TableRow>{currencySymbols[currency]}</TableRow>
                 <TableRow>{rateUahToUsd}</TableRow>
                 <TableRow>{rateUahToEur}</TableRow>
@@ -61,4 +63,4 @@ const paymentsTable = ({ payments }: IProps) => {
   );
 };
 
-export default paymentsTable;
+export default TransactionsTable;
