@@ -1,7 +1,7 @@
 import TelegramBot from 'node-telegram-bot-api';
 import { Currency, Role } from '../types';
 import { selectedDatesMap, paymentStates } from '../states/payment.state';
-import { createTransaction } from '../services/apiService';
+import { createTransaction, getCustomer } from '../services/apiService';
 import { asyncHandler } from '../helpers/asyncWrapper.helper';
 import { customerStates } from '../states/customers.state';
 
@@ -90,10 +90,11 @@ export function registerPaymentsHandler(bot: TelegramBot) {
       };
 
       await createTransaction(dto);
+      const customer = await getCustomer(+customerId)
 
       await bot.sendMessage(
         chatId,
-        `✅ Оплата внесена:\nКлиент: ${customerId}\nДаты оплат: ${dates.join(
+        `✅ Оплата внесена:\nКлиент: ${customer.name}\nДаты оплат: ${dates.join(
           ', ',
         )}\nCurrency: ${currency}\nAmount: ${amount}`,
       );
