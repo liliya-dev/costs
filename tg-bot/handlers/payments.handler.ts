@@ -94,7 +94,7 @@ export function registerPaymentsHandler(bot: TelegramBot) {
 
       await bot.sendMessage(
         chatId,
-        `✅ Оплата внесена:\nКлиент: ${customer.name}\nДаты оплат: ${dates.join(
+        `✅ Оплата внесена:\nКлиент: ${customer?.name}\nДаты оплат: ${dates.join(
           ', ',
         )}\nCurrency: ${currency}\nAmount: ${amount}`,
       );
