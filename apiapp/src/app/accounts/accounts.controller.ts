@@ -1,12 +1,14 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
   Param,
   ParseIntPipe,
   Post,
+  Put,
   UseInterceptors,
 } from '@nestjs/common';
 import {
@@ -20,7 +22,7 @@ import { ApiOkResponseDecorator } from 'src/common/decorators/api-ok-response.de
 import { FormatResponseInterceptor } from 'src/common/interceptors/format-response.interceptor';
 import { IAccountsController } from 'src/common/interfaces/controllers/accounts-controller.interface';
 
-import { AccountDto } from './account.dto';
+import { AccountCreateDto, AccountUpdateDto } from './account.dto';
 import { AccountEntity } from './accounts.entity';
 import { AccountsService } from './accounts.service';
 
@@ -73,7 +75,35 @@ export class AccountsController implements IAccountsController {
   @HttpCode(HttpStatus.OK)
   @ApiOkResponseDecorator(AccountEntity)
   @Post('/create')
-  async create(@Body() accountDto: AccountDto): Promise<AccountEntity> {
+  async create(@Body() accountDto: AccountCreateDto): Promise<AccountEntity> {
     return await this.accountsService.create(accountDto);
+  }
+
+  @ApiOperation({
+    summary: 'Update account info by id',
+  })
+  @ApiNotFoundResponse({ description: 'Account with this id was not found' })
+  @ApiParam({ name: 'id', type: 'integer', example: 1 })
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponseDecorator(AccountEntity)
+  @Put('/:id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateDto: AccountUpdateDto,
+  ): Promise<AccountEntity> {
+    return await this.accountsService.update(id, updateDto);
+  }
+
+  @ApiOperation({
+    summary: 'Delete account by id',
+  })
+  @ApiNotFoundResponse({ description: 'Account with this id was not found' })
+  @ApiParam({ name: 'id', type: 'integer', example: 1 })
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponseDecorator(AccountEntity)
+  @Delete('/:id')
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<{ id: number }> {
+    await this.accountsService.delete(id);
+    return { id };
   }
 }

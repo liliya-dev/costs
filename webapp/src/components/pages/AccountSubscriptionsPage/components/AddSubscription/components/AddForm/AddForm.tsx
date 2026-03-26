@@ -83,7 +83,7 @@ const AddForm = forwardRef<AddFormRef, IProps>(({ toggleIsDisabled, accountId, c
           setRequestErr('');
           callback();
         } else if (res.message) {
-          setRequestErr('Error occurred');
+          setRequestErr(res.message || 'Error occurred');
         }
       }}
     >

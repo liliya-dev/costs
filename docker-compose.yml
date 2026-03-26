@@ -25,7 +25,6 @@ services:
     container_name: apiapp
     volumes:
       - ./apiapp:/app 
-      - /app/node_modules   
     ports:
       - "${API_PORT}:4000"
     env_file:
@@ -45,6 +44,20 @@ services:
       - /app/node_modules   # keep node_modules inside container
     ports:
       - "${WEB_PORT}:3000"
+    env_file:
+      - .env
+    depends_on:
+      - apiapp
+
+  tg_bot:
+    build:
+      context: ./tg-bot     
+      args:
+        NODE_ENV: ${NODE_ENV}
+    container_name: tg_bot
+    volumes:
+      - ./tg-bot:/app
+      - /app/node_modules
     env_file:
       - .env
     depends_on:

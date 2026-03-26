@@ -13,10 +13,13 @@ export const validationSchema = Yup.object({
   approximatelyPaymentDay: Yup.number()
     .typeError('Amount must be a number')
     .min(1, 'Amount must be at least 1')
-    .max(30, 'Amount must be at least 1')
+    .max(30, 'Amount must no more than 30')
     .required('Amount is required'),
   currency: Yup.mixed<Currency>()
     .oneOf(Object.values(Currency), 'Invalid currency')
     .required('Currency is required'),
-  isCashless: Yup.boolean(),
+  phone: Yup.string()
+    .matches(/^\+380\d{9}$/, 'Phone number must be in the format +380XXXXXXXXX')
+    .notRequired(),
+  tgId: Yup.number().notRequired(),
 });

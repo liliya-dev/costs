@@ -7,6 +7,9 @@
     "settings": {
     "eslint.workingDirectories": [
       { "mode": "auto" }
+    ],
+    "cSpell.words": [
+      "pbitransactions"
     ]
   }
 }

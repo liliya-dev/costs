@@ -7,11 +7,12 @@ export interface CreateAccountDto {
 export interface CreateCustomerDto {
   name: string;
   currency: Currency;
-  isCashless: boolean;
   monthlyPayment: number;
   approximatelyPaymentDay: number;
   accountId: number;
   isCancelled?: boolean;
+  phone?: string;
+  tgId?: number | null;
 }
 
 export interface CreateTransactionDto {
@@ -92,4 +93,65 @@ export interface CreateRCTransactionDto {
   dateShouldBePaid: string;
   amount: number;
   currency: Currency;
+}
+
+export interface CreatePBIPaymentsDto {
+  pbiId: number;
+  datesShouldBePaid: string[];
+}
+
+export interface CreateFOPCustomerDto {
+  name: string;
+  currency: Currency;
+  isCancelled: boolean;
+  monthlyPayment: number;
+  accountId: number;
+  approximatelyPaymentDay: number;
+  tgId?: number | null;
+
+  bankDetails: {
+    edrpou?: string;
+    ipn?: string;
+    vat_certificate?: string;
+    tax_system?: string;
+    iban?: string;
+    bank_name?: string;
+    mfo?: string;
+    address?: string;
+    phone?: string;
+    email?: string;
+    contract_number?: string;
+    contract_date?: string;
+    contract_description?: string;
+    invoice_prefix: string;
+    invoice_description?: string;
+    director: string;
+  };
+}
+
+export interface AccountUpdateDto {
+  fopFullName?: string;
+  directorName?: string;
+  iban?: string;
+  bankName?: string;
+  ipn?: string;
+  bankEdrpou?: string;
+  mfo?: string;
+  address?: string;
+  taxSystem?: string;
+  phone?: string;
+}
+
+export interface CreateInvoiceDto {
+  customerId: number;
+  month: number;
+  year: number;
+  day: number;
+}
+
+export interface CreateActDto {
+  invoiceId: number;
+  month: number;
+  year: number;
+  day: number;
 }

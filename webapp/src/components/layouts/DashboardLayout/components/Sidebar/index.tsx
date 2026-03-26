@@ -51,8 +51,28 @@ const menuGroups = [
       },
       {
         icon: <IconType.Income />,
+        label: 'Balance overview',
+        route: '/account/[id]/balance',
+      },
+      {
+        icon: <IconType.Income />,
         label: 'Customers',
         route: '/account/[id]/customers',
+      },
+      {
+        icon: <IconType.Income />,
+        label: 'FOP',
+        route: '/account/[id]/details',
+        children: [
+          {
+            label: 'Account details',
+            route: '/account/[id]/details',
+          },
+          {
+            label: 'Fop Customers',
+            route: '/account/[id]/fop/customers',
+          },
+        ],
       },
     ],
   },

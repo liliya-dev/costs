@@ -1,4 +1,4 @@
-import { Currency, Status } from '../types';
+import { Currency, InvoiceStatus, Status } from '../types';
 
 export enum ExpencesTypes {
   SUBSCRIPTION = 'SUBSCRIPTION',
@@ -23,7 +23,7 @@ export const ExpencesTypesTexts: Record<ExpencesTypes, string> = {
 
 export const currencySymbols: { [key in Currency]: string } = {
   [Currency.EUR]: '€',
-  [Currency.UAH]: '₴',
+  [Currency.UAH]: 'UAH',
   [Currency.USD]: '$',
 };
 
@@ -32,6 +32,12 @@ export const StatusColors: Record<Status, string> = {
   [Status.PAID_BEFORE]: 'rgba(211, 211, 211, 0.6)',
   [Status.NOT_PAID]: 'rgba(255, 0, 0, 0.6)',
   [Status.PAID_IN_ADVANCE]: 'rgba(64, 82, 214, 0.6)',
+};
+
+export const InvoicesStatusColors: Record<InvoiceStatus, string> = {
+  [InvoiceStatus.PAID]: 'rgba(0, 128, 0, 0.6)',
+  [InvoiceStatus.PENDING]: 'rgba(216, 222, 40, 0.6)',
+  [InvoiceStatus.SENT]: 'rgba(0, 170, 255, 0.6)',
 };
 
 export enum SubscriptionsStatusTypes {

@@ -7,6 +7,8 @@ import { IIRP, Currency } from '@/types';
 import { convertAmountToCurrency } from '@/utils/helpers/convert-amount-to-currency.helper';
 import { formatDate } from '@/utils/helpers/format-date.helper';
 
+const STATUS_ORDER = ['PAID_IN_PERIOD', 'PAID_BEFORE', 'PAID_IN_ADVANCE', 'NOT_PAID'];
+
 interface IProps {
   irps: IIRP[];
   selectedCurrency: Currency;
@@ -22,9 +24,24 @@ const IRPsList = ({
   handleOpenEditIRP,
   accountId,
 }: IProps) => {
+  const sortedIrps = [...irps].sort((a, b) => {
+    const statusA = STATUS_ORDER.indexOf(a.status);
+    const statusB = STATUS_ORDER.indexOf(b.status);
+
+    if (statusA !== statusB) {
+      return statusA - statusB; // sort by status order
+    }
+
+    // inside NOT_PAID, sort by dateShouldBePaid asc
+    if (a.status === 'NOT_PAID' && b.status === 'NOT_PAID') {
+      return new Date(a.dateShouldBePaid).getTime() - new Date(b.dateShouldBePaid).getTime();
+    }
+
+    return 0;
+  });
   return (
     <>
-      {irps.map(
+      {sortedIrps.map(
         (
           {
             amount,
@@ -55,7 +72,8 @@ const IRPsList = ({
                     />
                   </div>
                   <p className="font-medium">
-                    {customerName} ({amount}
+                    {customerName} (
+                    {Number.isInteger(amount) ? amount.toString() : amount.toFixed(2)}
                     {currencySymbols[currency]})
                   </p>
                 </div>
@@ -81,14 +99,14 @@ const IRPsList = ({
                     iconHeight={24}
                     iconColor="LIGHT"
                     icon="Edit"
-                    onClick={() => handleOpenEditIRP(irps[index])}
+                    onClick={() => handleOpenEditIRP(sortedIrps[index])}
                   />
                   <div className="ml-4" />
                   <IconButton
                     iconHeight={24}
                     iconColor="RED"
                     icon="Trash"
-                    onClick={() => handleOpenDeleteIRP(irps[index])}
+                    onClick={() => handleOpenDeleteIRP(sortedIrps[index])}
                   />
                 </div>
               </TableRow>

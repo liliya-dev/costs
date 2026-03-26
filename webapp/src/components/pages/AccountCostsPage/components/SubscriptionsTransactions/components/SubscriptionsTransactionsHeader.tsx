@@ -2,7 +2,7 @@ import TableHeader from '@/components/atoms/table/TableHeader/TableHeader';
 import { currencySymbols } from '@/constants';
 import { Currency } from '@/types';
 
-const headers = ['Name', 'Amount', 'UAH-USD', 'UAH-EUR', 'Tags', 'Date should be paid'];
+const headers = ['Name', 'Amount', 'UAH-USD', 'UAH-EUR', 'Date should be paid', 'Tags'];
 
 interface IProps {
   selectedCurrency: Currency;

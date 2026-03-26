@@ -36,7 +36,7 @@ const AddRC = ({ accountId, callback }: IProps) => {
 
   return (
     <div className="flex w-full justify-end">
-      <Button type="SUCESS" title="Add new" onClick={openModal} />
+      <Button type="SUCCESS" title="Add new" onClick={openModal} />
       {isOpened && (
         <FullScreenModal
           isPrimaryButtonDisabled={isDisabled}

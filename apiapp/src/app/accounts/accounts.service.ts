@@ -1,7 +1,7 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { AccountDto } from './account.dto';
+import { AccountCreateDto, AccountUpdateDto } from './account.dto';
 import { AccountEntity } from './accounts.entity';
 import { AccountsRepository } from './accounts.repository';
 
@@ -32,7 +32,7 @@ export class AccountsService {
     return this.accountsRepository.exists({ where: query });
   }
 
-  async create(createDto: AccountDto): Promise<AccountEntity> {
+  async create(createDto: AccountCreateDto): Promise<AccountEntity> {
     try {
       const isExists = await this.checkIsExists({ name: createDto.name });
       if (isExists)
@@ -42,5 +42,26 @@ export class AccountsService {
     } catch (err) {
       throw new HttpException(err.message || 'server error', err.status || 500);
     }
+  }
+
+  async update(
+    id: number,
+    updateDto: AccountUpdateDto,
+  ): Promise<AccountEntity> {
+    const account = await this.accountsRepository.findOne({ where: { id } });
+    if (!account) {
+      throw new HttpException('Account not found', HttpStatus.NOT_FOUND);
+    }
+
+    Object.assign(account, updateDto);
+    return this.accountsRepository.save(account);
+  }
+
+  async delete(id: number): Promise<void> {
+    const account = await this.accountsRepository.findOne({ where: { id } });
+    if (!account) {
+      throw new HttpException('Account not found', HttpStatus.NOT_FOUND);
+    }
+    await this.accountsRepository.remove(account);
   }
 }

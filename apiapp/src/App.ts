@@ -1,4 +1,7 @@
+import { join } from 'path';
+
 import fastifyCompression from '@fastify/compress';
+import fastifyStatic from '@fastify/static';
 import {
   ClassSerializerInterceptor,
   INestApplication,
@@ -12,10 +15,20 @@ import {
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import { AccountCreateDto, AccountUpdateDto } from './app/accounts/account.dto';
 import { AccountEntity } from './app/accounts/accounts.entity';
+import { BankDetailsEntity } from './app/bank-details/bank-details.entity';
 import { CustomerDto } from './app/customers/customer.dto';
 import { CustomerEntity } from './app/customers/customer.entity';
+import {
+  CreateFOPCustomerDto,
+  FOPCustomerDto,
+  CreateBankDetailsDto,
+} from './app/fop-customers/fop-customer.dto';
+import { FOPCustomerEntity } from './app/fop-customers/fop-customer.entity';
 import { IncomeTransactionEntity } from './app/income-transactions/income-transaction.entity';
+import { InvoiceEntity } from './app/invoices/invoice.entity';
+import { CreateInvoiceDto } from './app/invoices/invoices.dto';
 import { IRPsDoneAndUpcomingDto, IRPCreateDto } from './app/irp/irps.dto';
 import { UpdateOTIDto } from './app/oti/oti.dto';
 import { CreateOTPDto, UpdateOTPDto } from './app/otp/otp.dto';
@@ -46,6 +59,8 @@ import {
 import { SubscriptionEntity } from './app/subscriptions/subscription.entity';
 import { CreatedTagDto, CreateTagDto } from './app/tags/tag.dto';
 import { TagEntity } from './app/tags/tag.entity';
+import { WorkActEntity } from './app/work-acts/work-act.entity';
+import { CreateWorkActDto } from './app/work-acts/work-acts.dto';
 import { AppModule } from './app.module';
 import { AvailableDatesDto } from './common/dtos/dates-available.dto';
 import { PaymentDto } from './common/dtos/payments.dto';
@@ -83,6 +98,10 @@ export class App {
     app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
     await app.register(fastifyCompression, {
       encodings: ['gzip', 'deflate'],
+    });
+    await app.register(fastifyStatic, {
+      root: join(__dirname, '..', 'invoices'),
+      prefix: '/invoices/',
     });
     app.useGlobalFilters(new HttpExceptionFilter());
     return new App(app);
@@ -131,6 +150,17 @@ export class App {
         UpdateOTPDto,
         CreateRCDto,
         UpdateRCDto,
+        InvoiceEntity,
+        BankDetailsEntity,
+        FOPCustomerEntity,
+        CreateFOPCustomerDto,
+        FOPCustomerDto,
+        CreateBankDetailsDto,
+        CreateInvoiceDto,
+        WorkActEntity,
+        CreateWorkActDto,
+        AccountCreateDto,
+        AccountUpdateDto,
       ],
     });
     SwaggerModule.setup('/api/docs', this.application, document);

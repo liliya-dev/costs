@@ -1,0 +1,62 @@
+import { useState, useRef, useCallback } from 'react';
+
+import Button from '@/components/atoms/Button/Button';
+import FullScreenModal from '@/components/molecules/FullScreenModal/FullScreenModal';
+
+import AddForm, { AddFormRef } from './components/AddForm/AddForm';
+interface IProps {
+  accountId: number;
+  callback: () => void;
+}
+const AddFopCustomer = ({ accountId, callback }: IProps) => {
+  const [isOpened, setIsOpened] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(true);
+  const formRef = useRef<AddFormRef>(null);
+
+  const toggleIsDisabled = useCallback((value: boolean) => {
+    setIsDisabled(value);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setIsOpened(false);
+  }, []);
+
+  const openModal = useCallback(() => {
+    setIsOpened(true);
+  }, []);
+
+  const handleSuccessfulCreation = useCallback(() => {
+    closeModal();
+    callback();
+  }, [callback, closeModal]);
+  return (
+    <div className="flex w-full justify-end">
+      <Button type="SUCCESS" title="Add new" onClick={openModal} />
+      {isOpened && (
+        <FullScreenModal
+          isPrimaryButtonDisabled={isDisabled}
+          onClose={closeModal}
+          onSecondaryButtonClick={closeModal}
+          onPrimaryButtonClick={() => formRef.current?.submitForm()}
+          primaryButtonText="Save"
+          secondaryButtonText="Cancel"
+          title="Add new customer"
+          text="Based on the provided information, the fop customer will be created and included in your monthly incomes."
+          confirmBeforePrimaryAction={true}
+          confirmTitle="Are you sure you want to save this customer?"
+          confirmText="Yes"
+          cancelConfirmText="No"
+        >
+          <AddForm
+            accountId={accountId}
+            ref={formRef}
+            toggleIsDisabled={toggleIsDisabled}
+            callback={handleSuccessfulCreation}
+          />
+        </FullScreenModal>
+      )}
+    </div>
+  );
+};
+
+export default AddFopCustomer;

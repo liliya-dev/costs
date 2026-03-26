@@ -75,6 +75,7 @@ export const convertRCsPaymentsToPaymentsPerPeriod = (
   rateUahToUsd: item.rateUahToUsd,
   rcId: item.rc.id,
   rcName: item.rc.name,
+  rcTags: item.rc.tags,
   isPaidInCurrentPeriod: checkIsDateInRange(startDate, endDate, item.datePaid),
   status:
     checkIsDateInRange(startDate, endDate, item.datePaid) &&
@@ -101,6 +102,7 @@ export const convertPBIsPaymentsToPaymentsPerPeriod = (
   pbiId: item.pbi.id,
   pbiName: item.pbi.name,
   isPaidInCurrentPeriod: checkIsDateInRange(startDate, endDate, item.datePaid),
+  pbiTags: item.pbi.tags,
   status:
     checkIsDateInRange(startDate, endDate, item.datePaid) &&
     checkIsDateInRange(startDate, endDate, item.dateShouldBePaid)
@@ -126,6 +128,7 @@ export const convertPBIToPaymentsPerPeriod = (
   pbiName: pbi.name,
   isPaidInCurrentPeriod: false,
   status: Status.NOT_PAID,
+  pbiTags: pbi.tags,
 });
 
 export const convertRcToPaymentsPerPeriod = (
@@ -143,6 +146,7 @@ export const convertRcToPaymentsPerPeriod = (
   rcName: rc.name,
   isPaidInCurrentPeriod: false,
   status: Status.NOT_PAID,
+  rcTags: rc.tags,
 });
 
 export const convertSubscriptionToPaymentsPerPeriod = (

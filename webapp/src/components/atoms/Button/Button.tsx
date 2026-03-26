@@ -14,7 +14,7 @@ const typeClasses: Record<ButtonType, string> = {
   DARK: 'bg-dark text-white rounded-[5px] px-10 py-3.5 lg:px-8 xl:px-10',
   LIGHT: 'border border-dark text-dark rounded-[5px] px-10 py-3.5 lg:px-8 xl:px-10',
   DANGER: 'bg-red text-white rounded-[5px] px-10 py-3.5 lg:px-8 xl:px-10',
-  SUCESS: 'bg-primary text-white rounded-[5px] px-10 py-3.5 lg:px-8 xl:px-10"',
+  SUCCESS: 'bg-primary text-white rounded-[5px] px-10 py-3.5 lg:px-8 xl:px-10"',
 };
 
 const Button = ({ title, type, onClick, isDisabled = false, buttonType = 'button' }: IProps) => {
