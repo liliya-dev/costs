@@ -56,7 +56,7 @@ const FullScreenModal = ({
   };
 
   return (
-    <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center overflow-scroll bg-black bg-opacity-30 backdrop-blur-sm">
+    <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center overflow-scroll bg-black bg-opacity-30 py-15 backdrop-blur-sm">
       <div
         ref={modalContentRef}
         id="content"

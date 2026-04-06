@@ -103,7 +103,11 @@ const RoundedChart = ({ title, items, colors, labels, total }: IProps) => {
                 />
                 <p className="flex w-full justify-between text-body-sm font-medium text-dark dark:text-dark-6">
                   <span> {labels[index]} </span>
-                  <span> {((+item.value * 100) / total).toFixed(2)}% </span>
+                  {
+                    total !== 0 ? (
+                      <span> {((+item.value * 100) / total).toFixed(2)}% </span>
+                    ) : <span> 0% </span>
+                  }
                 </p>
               </div>
             </div>

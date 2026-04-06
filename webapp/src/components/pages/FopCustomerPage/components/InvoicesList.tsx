@@ -15,6 +15,7 @@ interface IProps {
 const headers = ['Invoice number', 'Amount', 'Date  paid', 'Files'];
 
 const InvoicesList = ({ invoices, handleDeleteInvoice, handleSetPayInvoice }: IProps) => {
+  console.log(invoices)
   return (
     <div className="mt-12 rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card">
       <div className="mb-12">

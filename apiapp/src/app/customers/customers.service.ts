@@ -38,7 +38,7 @@ export class CustomersService {
     return this.customersRepository.findOne({ where: { id } });
   }
 
-  async getOneByTgId(tgId: number): Promise<CustomerEntity> {
+  async getOneByTgId(tgId: string): Promise<CustomerEntity> {
     return this.customersRepository.findOne({ where: { tgId } });
   }
 

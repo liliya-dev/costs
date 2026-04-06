@@ -14,7 +14,7 @@ export class TgService {
     private readonly customersService: CustomersService,
   ) {}
 
-  async findCustomerByTgId(tgId: number): Promise<CustomerWithRoleDto> {
+  async findCustomerByTgId(tgId: string): Promise<CustomerWithRoleDto> {
     const fopCustomer = await this.fopCustomerService.getOneByTgId(tgId);
     if (fopCustomer) {
       return new CustomerWithRoleDto(fopCustomer, Role.FOP_CUSTOMER);

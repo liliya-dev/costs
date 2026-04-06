@@ -27,7 +27,7 @@ interface FormValues {
   currency: Currency;
   approximatelyPaymentDay: number;
   phone?: string;
-  tgId?: number;
+  tgId?: string;
 }
 
 const EditForm = forwardRef<EditFormRef, IProps>(
@@ -116,7 +116,7 @@ const EditForm = forwardRef<EditFormRef, IProps>(
                 isTouched={Boolean(touched.monthlyPayment)}
                 errorText={errors.monthlyPayment}
               />
-              <NumberInput
+              <TextInput
                 isError={Boolean((errors.tgId && touched.tgId) || requestErr)}
                 isTouched={Boolean(touched.tgId)}
                 placeholder="15"

@@ -80,6 +80,8 @@ export class InvoicesService {
       name: `№ ${dto.year === 2025 ? dto.month - 2 : dto.month}/${dto.year}-${fopCustomer.bankDetails.invoice_prefix}`,
     });
 
+    console.log(invoice)
+
     return await this.invoicesRepository.save(invoice);
   }
 

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import Loader from '@/components/atoms/Loader/Loader';
 import TableHeader from '@/components/atoms/table/TableHeader/TableHeader';
@@ -11,6 +11,7 @@ import EditSubscription from '../modals/EditSubscription/EditSubscription';
 import PauseSubscription from '../modals/PauseSubscription/PauseSubscription';
 
 import SubscriptionsList from './components/SubscriptionsList';
+import Dropdown from '@/components/atoms/Dropdown/Dropdown';
 
 interface IProps {
   subscriptions: ISubscription[];
@@ -19,6 +20,12 @@ interface IProps {
   accountId: number;
 }
 
+const statusOptions = [
+  { id: 'active', label: 'Active' },
+  { id: 'canceled', label: 'Canceled' },
+  { id: 'all', label: 'All' },
+]
+
 const headers = ['Name', 'Payment', 'Payment day', 'Description', 'Tags', ''];
 
 const SubscriptionsTable = ({ subscriptions, isLoading, callback, accountId }: IProps) => {
@@ -26,6 +33,7 @@ const SubscriptionsTable = ({ subscriptions, isLoading, callback, accountId }: I
   const [editedSubscription, setEditedSubscription] = useState<ISubscription | null>(null);
   const [deletedSubscription, setDeletedSubscription] = useState<ISubscription | null>(null);
   const [selectedTags, setSelectedTags] = useState<ITag[]>([]);
+  const [status, setStatus] = useState<'active' | 'canceled' | 'all'>('active')
 
   const handleOpenPauseSubscription = useCallback((subscription: ISubscription) => {
     setPausedSubscription(subscription);
@@ -65,6 +73,13 @@ const SubscriptionsTable = ({ subscriptions, isLoading, callback, accountId }: I
     setSelectedTags((prev) => prev.filter((t) => t.id !== tag.id));
   };
 
+  const filteredSubscriptions = useMemo(() => {
+    if (status === 'all') return subscriptions
+    return subscriptions.filter(sub =>
+      status === 'active' ? !sub.isCancelled : sub.isCancelled
+    )
+  }, [subscriptions, status])
+
   return (
     <>
       {deletedSubscription && (
@@ -93,6 +108,19 @@ const SubscriptionsTable = ({ subscriptions, isLoading, callback, accountId }: I
         <div className="mb-4 flex justify-between">
           <TableTitle title="Current active subscriptions" />
         </div>
+        <Dropdown
+          title="Subscription status"
+          selectedItem={statusOptions.find(item => item.id === status) ?? statusOptions[0]}
+          items={[
+            { id: 'canceled', label: 'Canceled'},
+            { id: 'active', label: 'Active'},
+            { id: 'all', label: 'All'}
+
+          ]}
+          onSelect={(item) => {
+            setStatus(item.id as 'active' | 'canceled' | 'all')
+          }}
+        />
         <div className="mb-4 h-12 p-2">
           {selectedTags.map((item) => (
             <Tag
@@ -114,7 +142,7 @@ const SubscriptionsTable = ({ subscriptions, isLoading, callback, accountId }: I
           ) : (
             <SubscriptionsList
               isLoading={isLoading}
-              subscriptions={subscriptions}
+              subscriptions={filteredSubscriptions}
               accountId={accountId}
               handleOpenEditSubscription={handleOpenEditSubscription}
               handleOpenDeleteSubscription={handleOpenDeleteSubscription}

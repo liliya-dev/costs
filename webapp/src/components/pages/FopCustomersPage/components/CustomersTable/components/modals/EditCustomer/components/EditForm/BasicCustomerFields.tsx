@@ -41,7 +41,7 @@ const BasicCustomerFields = ({
         isTouched={Boolean(touched.monthlyPayment)}
         errorText={errors.monthlyPayment}
       />
-      <NumberInput
+      <TextInput
         isError={Boolean((errors.tgId && touched.tgId) || requestErr)}
         isTouched={Boolean(touched.tgId)}
         placeholder="15"

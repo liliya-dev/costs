@@ -2,7 +2,6 @@ import { FormikErrors, FormikHelpers, FormikTouched } from 'formik';
 import { useState } from 'react';
 
 import Dropdown from '@/components/atoms/Dropdown/Dropdown';
-import NumberInput from '@/components/atoms/form-elements/NumberInput/NumberInput';
 import TextInput from '@/components/atoms/form-elements/TextInput/TextInput';
 import { CreateFOPCustomerDto, Currency } from '@/types';
 
@@ -34,7 +33,7 @@ const BasicCustomerFields = ({ errors, touched, setFieldValue, requestErr }: Pro
         name="monthlyPayment"
         errorText={errors.monthlyPayment}
       />
-      <NumberInput
+      <TextInput
         isError={Boolean((errors.tgId && touched.tgId) || requestErr)}
         isTouched={Boolean(touched.tgId)}
         placeholder="15"

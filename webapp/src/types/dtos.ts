@@ -12,7 +12,7 @@ export interface CreateCustomerDto {
   accountId: number;
   isCancelled?: boolean;
   phone?: string;
-  tgId?: number | null;
+  tgId?: string | null;
 }
 
 export interface CreateTransactionDto {
@@ -107,7 +107,7 @@ export interface CreateFOPCustomerDto {
   monthlyPayment: number;
   accountId: number;
   approximatelyPaymentDay: number;
-  tgId?: number | null;
+  tgId?: string | null;
 
   bankDetails: {
     edrpou?: string;
