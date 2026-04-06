@@ -26,5 +26,5 @@ export const validationSchema = Yup.object({
     .matches(/^\+380\d{9}$/, 'Phone number must be in the format +380XXXXXXXXX')
     .notRequired(),
 
-  tgId: Yup.number().optional(),
+  tgId: Yup.string().optional(),
 });

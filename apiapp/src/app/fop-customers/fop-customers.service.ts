@@ -27,10 +27,15 @@ export class FOPCustomersService {
         },
         account: true,
       },
+      order: {
+        invoices: {
+          createdAt: 'DESC',
+        },
+      },
     });
   }
 
-  async getOneByTgId(tgId: number): Promise<FOPCustomerEntity> {
+  async getOneByTgId(tgId: string): Promise<FOPCustomerEntity> {
     return this.fopCustomersRepository.findOne({
       where: { tgId },
       relations: {

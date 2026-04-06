@@ -16,7 +16,7 @@ export const validationSchema = Yup.object({
     .min(1, 'Amount must be at least 1')
     .required('Amount is required'),
 
-  tgId: Yup.number().notRequired(),
+  tgId: Yup.string().notRequired(),
 
   bankDetails: Yup.object({
     edrpou: Yup.string().optional(),

@@ -42,7 +42,7 @@ export const getCustomer = (customerId: number): Promise<ICustomer> =>
     'Failed to fetch the customer',
   );
 
-export const getCustomerByTgId = (tgId: number): Promise<CustomerWithRole> =>
+export const getCustomerByTgId = (tgId: string): Promise<CustomerWithRole> =>
   safeApiCall(
     () =>
       apiHelperPublic({

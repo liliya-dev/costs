@@ -181,12 +181,10 @@ export class FOPCustomerDto {
   @IsInt()
   approximatelyPaymentDay: number;
 
-  @ApiProperty({ example: 468546815 })
-  @Type(() => Number)
-  @Min(1)
-  @IsInt()
+  @ApiProperty({ example: '468546815' })
   @IsOptional()
-  tgId?: number;
+  @IsString()
+  tgId?: string;
 }
 
 export class CreateFOPCustomerDto extends FOPCustomerDto {

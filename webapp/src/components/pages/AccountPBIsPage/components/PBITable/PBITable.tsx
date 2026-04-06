@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import Loader from '@/components/atoms/Loader/Loader';
 import TableHeader from '@/components/atoms/table/TableHeader/TableHeader';
@@ -11,6 +11,7 @@ import EditPBI from '../modals/EditPBI/EditPBI';
 import PayPBI from '../modals/PayPBI/PayPBI';
 
 import PBIList from './components/PBIList';
+import Dropdown from '@/components/atoms/Dropdown/Dropdown';
 
 interface IProps {
   pbis: IPBI[];
@@ -20,12 +21,19 @@ interface IProps {
 }
 
 const headers = ['Name', 'Payment', 'Payments done', 'Payment day', 'Tags', ''];
+const statusOptions = [
+  { id: 'active', label: 'Active' },
+  { id: 'paid', label: 'Paid' },
+  { id: 'all', label: 'All' },
+]
+
 
 const PBITable = ({ pbis, isLoading, callback, accountId }: IProps) => {
   const [payedPBI, setPayedPBI] = useState<IPBI | null>(null);
   const [editedPBI, setEditedPBI] = useState<IPBI | null>(null);
   const [deletedPBI, setDeletedPBI] = useState<IPBI | null>(null);
   const [selectedTags, setSelectedTags] = useState<ITag[]>([]);
+  const [status, setStatus] = useState<'active' | 'paid' | 'all'>('active')
 
   const handleOpenPayedPBI = useCallback((pbi: IPBI) => {
     setPayedPBI(pbi);
@@ -65,6 +73,13 @@ const PBITable = ({ pbis, isLoading, callback, accountId }: IProps) => {
     setSelectedTags((prev) => prev.filter((t) => t.id !== tag.id));
   };
 
+  const filteredPbis = useMemo(() => {
+    if (status === 'all') return pbis
+    return pbis.filter(pbi =>
+      status === 'active' ? !pbi.isFullyPaid : pbi.isFullyPaid
+    )
+  }, [pbis, status])
+
   return (
     <>
       {deletedPBI && (
@@ -83,6 +98,19 @@ const PBITable = ({ pbis, isLoading, callback, accountId }: IProps) => {
         <div className="mb-4 flex justify-between">
           <TableTitle title="All payments by installments" />
         </div>
+        <Dropdown
+          title="Payments by installments status"
+          selectedItem={statusOptions.find(item => item.id === status) ?? statusOptions[0]}
+          items={[
+            { id: 'paid', label: 'Paid'},
+            { id: 'active', label: 'Active'},
+            { id: 'all', label: 'All'}
+
+          ]}
+          onSelect={(item) => {
+            setStatus(item.id as 'active' | 'paid' | 'all')
+          }}
+        />
         <div className="mb-4 h-12 p-2">
           {selectedTags.map((item) => (
             <Tag
@@ -103,7 +131,7 @@ const PBITable = ({ pbis, isLoading, callback, accountId }: IProps) => {
             <Loader />
           ) : (
             <PBIList
-              pbis={pbis}
+              pbis={filteredPbis}
               accountId={accountId}
               handleOpenDeletePBI={handleOpenDeletePBI}
               handleOpenEditPBI={handleOpenEditPBI}

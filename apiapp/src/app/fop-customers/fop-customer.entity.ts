@@ -42,8 +42,8 @@ export class FOPCustomerEntity extends PaymentEntity {
     example: 1234,
     description: 'Tg chat id',
   })
-  @Column({ type: 'integer', nullable: true })
-  tgId?: number;
+  @Column({ type: 'varchar', nullable: true })
+  tgId?: string;
 
   @ApiProperty({
     example: false,

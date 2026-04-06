@@ -60,7 +60,6 @@ const PBIDatesPreview = ({
 
   return (
     <div className="mt-6">
-      pb
       {isLoading ? (
         <div className="h-40 w-full">
           <Loader />

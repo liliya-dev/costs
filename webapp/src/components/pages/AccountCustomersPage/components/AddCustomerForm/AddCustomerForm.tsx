@@ -19,7 +19,7 @@ interface FormValues {
   name: string;
   approximatelyPaymentDay: number;
   phone?: string;
-  tgId?: number;
+  tgId?: string;
 }
 
 interface IProps {
@@ -99,7 +99,7 @@ const AddCustomerForm = ({ callback, accountId }: IProps) => {
                   name="phone"
                   errorText={errors.phone}
                 />
-                <NumberInput
+                <TextInput
                   isError={Boolean((errors.tgId && touched.tgId) || requestErr)}
                   isTouched={Boolean(touched.tgId)}
                   placeholder="15"

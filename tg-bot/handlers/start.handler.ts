@@ -22,7 +22,7 @@ export function registerStartHandler(bot: TelegramBot) {
         role = Role.ADMIN;
       } else {
         try {
-          const customerData = await getCustomerByTgId(chatId);
+          const customerData = await getCustomerByTgId(`${chatId}`);
           if (customerData.role === Role.FOP_CUSTOMER) {
             role = Role.FOP_CUSTOMER;
             fopCustomer = customerData as IFOPCustomer;

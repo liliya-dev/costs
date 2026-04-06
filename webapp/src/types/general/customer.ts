@@ -5,7 +5,7 @@ import { BaseEntityPaymentData, BaseRegularPayment } from './base';
 export interface ICustomer extends BaseRegularPayment, BaseEntityPaymentData {
   isCancelled: boolean;
   phone?: string;
-  tgId?: number;
+  tgId?: string;
   isTgSubscribed?: boolean;
 }
 

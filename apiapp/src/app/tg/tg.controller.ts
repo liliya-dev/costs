@@ -34,7 +34,7 @@ export class TgController {
         errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
       }),
     )
-    tgId: number,
+    tgId: string,
   ): Promise<CustomerWithRoleDto> {
     return await this.tgsService.findCustomerByTgId(tgId);
   }

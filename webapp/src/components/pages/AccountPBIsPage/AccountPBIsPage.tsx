@@ -28,6 +28,8 @@ const AccountPBIsPage = ({ accountId }: IProps) => {
     fetchPBIs();
   }, [fetchPBIs]);
 
+  console.log(pbis)
+
   return (
     <div>
       <AddPBI accountId={accountId} callback={fetchPBIs} />

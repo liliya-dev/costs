@@ -32,11 +32,11 @@ export class CustomerEntity extends PaymentEntity {
   readonly account: Relation<AccountEntity>;
 
   @ApiProperty({
-    example: 1234,
+    example: '1234',
     description: 'Tg chat id',
   })
-  @Column({ type: 'integer', nullable: true })
-  tgId?: number;
+  @Column({ type: 'varchar', nullable: true })
+  tgId?: string;
 
   @ApiProperty({
     example: false,
