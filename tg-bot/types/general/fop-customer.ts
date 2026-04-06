@@ -3,7 +3,7 @@ import { InvoiceStatus } from './enums';
 
 export interface IBaseFOPCustomer extends BaseEntityType, BaseEntityPaymentData {
   isCancelled: boolean;
-  tgId?: number;
+  tgId?: string;
   isTgSubscribed: boolean;
 }
 
