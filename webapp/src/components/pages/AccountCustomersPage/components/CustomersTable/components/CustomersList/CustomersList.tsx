@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import IconButton from '@/components/atoms/IconButton/IconButton';
-import TableRow from '@/components/atoms/table/TableRow/TableRow';
+import { TableCell } from '@/components/molecules/DataTable/DataTable';
 import { currencySymbols } from '@/constants';
 import { ICustomer } from '@/types';
 
@@ -31,12 +31,12 @@ const CustomersList = ({
             key={id}
           >
             <Link href={`/account/${accountId}/customers/${id}`} className="contents">
-              <TableRow>{name}</TableRow>
-              <TableRow>{monthlyPayment}</TableRow>
-              <TableRow>{currencySymbols[currency]}</TableRow>
-              <TableRow>{approximatelyPaymentDay}</TableRow>
+              <TableCell>{name}</TableCell>
+              <TableCell>{monthlyPayment}</TableCell>
+              <TableCell>{currencySymbols[currency]}</TableCell>
+              <TableCell>{approximatelyPaymentDay}</TableCell>
             </Link>
-            <TableRow>
+            <TableCell>
               <div className="flex w-full justify-end">
                 <IconButton
                   iconHeight={18}
@@ -59,7 +59,7 @@ const CustomersList = ({
                   onClick={() => handleOpenDeleteCustomer(customers[index])}
                 />
               </div>
-            </TableRow>
+            </TableCell>
           </div>
         ),
       )}

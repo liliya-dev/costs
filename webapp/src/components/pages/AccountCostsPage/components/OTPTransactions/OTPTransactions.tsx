@@ -1,9 +1,11 @@
-import TableTitle from '@/components/atoms/table/TableTitle/TableTitle';
+import Tag from '@/components/atoms/Tag/Tag';
+import DataTable, { ColumnDef } from '@/components/molecules/DataTable/DataTable';
+import { currencySymbols } from '@/constants';
 import { IOTP, Currency, ITag } from '@/types';
+import { convertAmountToCurrency } from '@/utils/helpers/convert-amount-to-currency.helper';
+import { formatDate } from '@/utils/helpers/format-date.helper';
 
-import OTPTransactionRow from './components/OTPTransactionRow';
 import OTPTransactionsEmpty from './components/OTPTransactionsEmpty';
-import OTPTransactionsHeader from './components/OTPTransactionsHeader';
 
 interface IProps {
   accountId: number;
@@ -12,28 +14,85 @@ interface IProps {
   onTagClick: (tag: ITag) => void;
 }
 
-const OTPTransactions = ({ transactions, selectedCurrency, onTagClick }: IProps) => (
-  <div className="mt-12 rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card">
-    <div className="mb-12 flex justify-between">
-      <TableTitle title="One-time payments" />
-    </div>
+const OTPTransactions = ({ transactions, selectedCurrency, onTagClick }: IProps) => {
+  const columns: ColumnDef<IOTP>[] = [
+    {
+      key: 'name',
+      title: 'Name',
+      sortable: true,
+      sortFn: (a, b) => a.name.localeCompare(b.name),
+      render: (t) => (
+        <p className="font-medium">
+          {t.name} ({t.amount}
+          {currencySymbols[t.currency]})
+        </p>
+      ),
+    },
+    {
+      key: 'amount',
+      title: `Amount (${currencySymbols[selectedCurrency]})`,
+      sortable: true,
+      sortFn: (a, b) => a.amount - b.amount,
+      render: (t) =>
+        convertAmountToCurrency({
+          amount: t.amount,
+          selectedCurrency,
+          rateUahToEur: t.rateUahToEur,
+          rateUahToUsd: t.rateUahToUsd,
+          currency: t.currency,
+        }),
+    },
+    {
+      key: 'uahUsd',
+      title: 'UAH-USD',
+      sortable: true,
+      sortFn: (a, b) => a.rateUahToUsd - b.rateUahToUsd,
+      render: (t) => t.rateUahToUsd,
+    },
+    {
+      key: 'uahEur',
+      title: 'UAH-EUR',
+      sortable: true,
+      sortFn: (a, b) => a.rateUahToEur - b.rateUahToEur,
+      render: (t) => t.rateUahToEur,
+    },
+    {
+      key: 'datePaid',
+      title: 'Date paid',
+      sortable: true,
+      sortFn: (a, b) => new Date(a.datePaid).getTime() - new Date(b.datePaid).getTime(),
+      render: (t) => formatDate(t.datePaid),
+    },
+    {
+      key: 'description',
+      title: 'Description',
+      render: (t) => t.description,
+    },
+    {
+      key: 'tags',
+      title: 'Tags',
+      linked: false,
+      render: (t) => (
+        <>
+          {t.tags.map((tag) => (
+            <Tag key={tag.id} label={tag.name} color={tag.color} onClick={() => onTagClick(tag)} />
+          ))}
+        </>
+      ),
+    },
+  ];
 
-    <OTPTransactionsHeader selectedCurrency={selectedCurrency} />
-
-    {transactions.length ? (
-      transactions.map((transaction, index) => (
-        <OTPTransactionRow
-          key={transaction.id}
-          transaction={transaction}
-          selectedCurrency={selectedCurrency}
-          isLast={index === transactions.length - 1}
-          onTagClick={onTagClick}
-        />
-      ))
-    ) : (
-      <OTPTransactionsEmpty />
-    )}
-  </div>
-);
+  return (
+    <DataTable
+      title="One-time payments"
+      data={transactions}
+      isLoading={false}
+      columns={columns}
+      gridCols="grid-cols-3 sm:grid-cols-7"
+      rowKey={(t) => t.id}
+      emptyState={<OTPTransactionsEmpty />}
+    />
+  );
+};
 
 export default OTPTransactions;

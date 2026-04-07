@@ -1,16 +1,15 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
-import Dropdown from '@/components/atoms/Dropdown/Dropdown';
+import DataTable, { ColumnDef } from '@/components/molecules/DataTable/DataTable';
 import LegendItem from '@/components/atoms/LegendItem/LegendItem';
-import Loader from '@/components/atoms/Loader/Loader';
-import TableHeader from '@/components/atoms/table/TableHeader/TableHeader';
-import TableTitle from '@/components/atoms/table/TableTitle/TableTitle';
 import { currencySymbols, StatusColors, StatusTexts } from '@/constants';
+import { convertAmountToCurrency } from '@/utils/helpers/convert-amount-to-currency.helper';
+import { formatDate } from '@/utils/helpers/format-date.helper';
 import { Currency, ICustomer, IIRP, Status } from '@/types';
 
-import IRPsList from './components/IRPsList/IRPsList';
 import DeleteIRPTransaction from './components/modals/DeleteIRPTransaction/DeleteIRPTransaction';
 import EditIRPTransaction from './components/modals/EditIRPTransaction/EditIRPTransaction';
+import IconButton from '@/components/atoms/IconButton/IconButton';
 
 interface IProps {
   irps: IIRP[];
@@ -21,8 +20,17 @@ interface IProps {
   accountId: number;
 }
 
-const headers = ['Name', 'Amount', 'UAH-USD', 'UAH_EUR', 'Date paid', 'Date should be paid'];
-const defaultStatus = { label: 'ALL', id: 'all' };
+const STATUS_ORDER = [
+  Status.PAID_IN_PERIOD,
+  Status.PAID_BEFORE,
+  Status.PAID_IN_ADVANCE,
+  Status.NOT_PAID,
+];
+
+const statusOptions = [
+  { id: 'all', label: 'ALL' },
+  ...Object.values(Status).map((s) => ({ id: s, label: StatusTexts[s] })),
+];
 
 const CustomersTable = ({
   irps,
@@ -32,41 +40,94 @@ const CustomersTable = ({
   handleDataReload,
   accountId,
 }: IProps) => {
-  const [selectedStatus, setSelectedStatus] = useState<Status | null>(null);
-  const handleChangeStatus = (status: Status | null) => setSelectedStatus(status);
-  const [filteredIrps, setFilteredIrps] = useState<IIRP[]>(irps);
   const [editedIrp, setEditedIrp] = useState<IIRP | null>(null);
-  const [deletedIrp, setDelitedIrp] = useState<IIRP | null>(null);
+  const [deletedIrp, setDeletedIrp] = useState<IIRP | null>(null);
 
-  useEffect(() => {
-    const filtered = irps.filter((irp) => (selectedStatus ? irp.status === selectedStatus : irp));
-    setFilteredIrps(filtered);
-  }, [selectedStatus, irps]);
-
-  const onStatusSelect = (item: { label: string; id: string }) => {
-    const status = item.id as Status;
-    if (Object.values(Status).includes(status)) {
-      handleChangeStatus(status);
-    } else {
-      handleChangeStatus(null);
-    }
-  };
-
-  const handleOpenEditIRP = useCallback((irp: IIRP) => {
-    setEditedIrp(irp);
-  }, []);
-
-  const handleCloseEditIRP = useCallback(() => {
-    setEditedIrp(null);
-  }, []);
-
-  const handleOpenDeleteIRP = useCallback((irp: IIRP) => {
-    setDelitedIrp(irp);
-  }, []);
-
-  const handleCloseDeleteIRP = useCallback(() => {
-    setDelitedIrp(null);
-  }, []);
+  const columns: ColumnDef<IIRP>[] = [
+    {
+      key: 'name',
+      title: 'Name',
+      sortable: true,
+      sortFn: (a, b) => a.customerName.localeCompare(b.customerName),
+      render: (irp) => (
+        <div className="flex">
+          <div className="mr-4 flex h-6 w-6 items-center justify-center rounded-full border bg-white">
+            <div
+              className="h-4 w-4 rounded-full"
+              style={{ backgroundColor: StatusColors[irp.status] }}
+            />
+          </div>
+          <p className="font-medium">
+            {irp.customerName} (
+            {Number.isInteger(irp.amount) ? irp.amount.toString() : irp.amount.toFixed(2)}
+            {currencySymbols[irp.currency]})
+          </p>
+        </div>
+      ),
+    },
+    {
+      key: 'amount',
+      title: `Amount (${currencySymbols[selectedCurrency]})`,
+      sortable: true,
+      sortFn: (a, b) => a.amount - b.amount,
+      render: (irp) =>
+        convertAmountToCurrency({
+          amount: irp.amount,
+          selectedCurrency,
+          rateUahToEur: irp.rateUahToEur,
+          rateUahToUsd: irp.rateUahToUsd,
+          currency: irp.currency,
+        }),
+    },
+    {
+      key: 'uahUsd',
+      title: 'UAH-USD',
+      render: (irp) => irp.rateUahToUsd,
+    },
+    {
+      key: 'uahEur',
+      title: 'UAH_EUR',
+      render: (irp) => irp.rateUahToEur,
+    },
+    {
+      key: 'datePaid',
+      title: 'Date paid',
+      sortable: true,
+      sortFn: (a, b) => new Date(a.datePaid).getTime() - new Date(b.datePaid).getTime(),
+      render: (irp) => formatDate(irp.datePaid),
+    },
+    {
+      key: 'dateShouldBePaid',
+      title: 'Date should be paid',
+      sortable: true,
+      sortFn: (a, b) =>
+        new Date(a.dateShouldBePaid).getTime() - new Date(b.dateShouldBePaid).getTime(),
+      render: (irp) => formatDate(irp.dateShouldBePaid),
+    },
+    {
+      key: 'actions',
+      title: '',
+      linked: false,
+      render: (irp) =>
+        irp.datePaid ? (
+          <div className="flex w-full justify-end">
+            <IconButton
+              iconHeight={24}
+              iconColor="LIGHT"
+              icon="Edit"
+              onClick={() => setEditedIrp(irp)}
+            />
+            <div className="ml-4" />
+            <IconButton
+              iconHeight={24}
+              iconColor="RED"
+              icon="Trash"
+              onClick={() => setDeletedIrp(irp)}
+            />
+          </div>
+        ) : null,
+    },
+  ];
 
   return (
     <>
@@ -74,65 +135,43 @@ const CustomersTable = ({
         <EditIRPTransaction
           transactionId={editedIrp.transactionId}
           customers={customers}
-          handleClose={handleCloseEditIRP}
+          handleClose={() => setEditedIrp(null)}
           callback={handleDataReload}
         />
       )}
       {deletedIrp && deletedIrp.transactionId && (
         <DeleteIRPTransaction
           transactionId={deletedIrp.transactionId}
-          handleClose={handleCloseDeleteIRP}
+          handleClose={() => setDeletedIrp(null)}
           callback={handleDataReload}
         />
       )}
-      <div className="mt-12 rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card">
-        <div className="mb-12 flex justify-between">
-          <TableTitle title="Income Payments in current period" />
-          <Dropdown
-            placeholder="Choose payments to display"
-            selectedItem={
-              [
-                defaultStatus,
-                ...Object.values(Status).map((item) => ({ label: StatusTexts[item], id: item })),
-              ].find((item) => item.id === selectedStatus) || defaultStatus
-            }
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            onSelect={onStatusSelect}
-            items={[
-              { label: 'ALL', id: 'all' },
-              ...Object.values(Status).map((item) => ({ label: StatusTexts[item], id: item })),
-            ]}
-          />
-        </div>
-
-        <div className="flex flex-col">
-          <div className="grid grid-cols-3 sm:grid-cols-7">
-            {headers.map((item) => (
-              <TableHeader
-                key={item}
-                title={item !== 'Amount' ? item : `${item} (${currencySymbols[selectedCurrency]})`}
-              />
+      <DataTable
+        title="Income Payments in current period"
+        data={irps}
+        isLoading={isLoading}
+        columns={columns}
+        gridCols="grid-cols-3 sm:grid-cols-7"
+        rowKey={(irp, ) => `${irp.customerId}-${irp.dateShouldBePaid}`}
+        getRowHref={(irp) => `/account/${accountId}/customers/${irp.customerId}`}
+        searchable
+        searchPlaceholder="Search by customer name..."
+        getSearchableText={(irp) => irp.customerName}
+        statusFilter={{
+          title: 'Payment status',
+          options: statusOptions,
+          defaultValue: 'all',
+          filterFn: (irp, value) => (value === 'all' ? true : irp.status === value),
+        }}
+        defaultSort={{ key: 'dateShouldBePaid', direction: 'asc' }}
+        footer={
+          <div className="flex justify-end">
+            {Object.values(Status).map((s) => (
+              <LegendItem key={s} color={StatusColors[s]} text={StatusTexts[s]} />
             ))}
           </div>
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <IRPsList
-              irps={filteredIrps}
-              selectedCurrency={selectedCurrency}
-              handleOpenDeleteIRP={handleOpenDeleteIRP}
-              handleOpenEditIRP={handleOpenEditIRP}
-              accountId={accountId}
-            />
-          )}
-        </div>
-        <div className="flex justify-end pt-4">
-          {Object.values(Status).map((item) => (
-            <LegendItem key={item} color={StatusColors[item]} text={StatusTexts[item]} />
-          ))}
-        </div>
-      </div>
+        }
+      />
     </>
   );
 };

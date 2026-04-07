@@ -1,4 +1,4 @@
-import TableRow from '@/components/atoms/table/TableRow/TableRow';
+import { TableCell } from '@/components/molecules/DataTable/DataTable';
 import Tag from '@/components/atoms/Tag/Tag';
 import { currencySymbols } from '@/constants';
 import { IOTP, Currency, ITag } from '@/types';
@@ -23,13 +23,13 @@ const OTPTransactionRow = ({ transaction, selectedCurrency, isLast, onTagClick }
       }`}
       key={id}
     >
-      <TableRow>
+      <TableCell>
         <p className="font-medium">
           {name} ({amount}
           {currencySymbols[currency]})
         </p>
-      </TableRow>
-      <TableRow>
+      </TableCell>
+      <TableCell>
         {convertAmountToCurrency({
           amount,
           selectedCurrency,
@@ -37,16 +37,16 @@ const OTPTransactionRow = ({ transaction, selectedCurrency, isLast, onTagClick }
           rateUahToUsd,
           currency,
         })}
-      </TableRow>
-      <TableRow>{rateUahToUsd}</TableRow>
-      <TableRow>{rateUahToEur}</TableRow>
-      <TableRow>{formatDate(datePaid)}</TableRow>
-      <TableRow>{description}</TableRow>
-      <TableRow>
+      </TableCell>
+      <TableCell>{rateUahToUsd}</TableCell>
+      <TableCell>{rateUahToEur}</TableCell>
+      <TableCell>{formatDate(datePaid)}</TableCell>
+      <TableCell>{description}</TableCell>
+      <TableCell>
         {tags.map((tag) => (
           <Tag key={tag.id} label={tag.name} color={tag.color} onClick={() => onTagClick(tag)} />
         ))}
-      </TableRow>
+      </TableCell>
     </div>
   );
 };

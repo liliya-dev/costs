@@ -1,17 +1,16 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 
-import Loader from '@/components/atoms/Loader/Loader';
-import TableHeader from '@/components/atoms/table/TableHeader/TableHeader';
-import TableTitle from '@/components/atoms/table/TableTitle/TableTitle';
-import Tag from '@/components/atoms/Tag/Tag';
+import IconButton from '@/components/atoms/IconButton/IconButton';
+import DataTable, { ColumnDef } from '@/components/molecules/DataTable/DataTable';
+import { currencySymbols } from '@/constants';
 import { IPBI, ITag } from '@/types';
 
 import DeletePBI from '../modals/DeletePBI/DeletePBI';
 import EditPBI from '../modals/EditPBI/EditPBI';
 import PayPBI from '../modals/PayPBI/PayPBI';
 
-import PBIList from './components/PBIList';
-import Dropdown from '@/components/atoms/Dropdown/Dropdown';
+import PBITags from './components/PBITags';
+import EmptyPBIs from './components/EmptyPBIs';
 
 interface IProps {
   pbis: IPBI[];
@@ -20,128 +19,137 @@ interface IProps {
   accountId: number;
 }
 
-const headers = ['Name', 'Payment', 'Payments done', 'Payment day', 'Tags', ''];
 const statusOptions = [
   { id: 'active', label: 'Active' },
   { id: 'paid', label: 'Paid' },
   { id: 'all', label: 'All' },
-]
-
+];
 
 const PBITable = ({ pbis, isLoading, callback, accountId }: IProps) => {
   const [payedPBI, setPayedPBI] = useState<IPBI | null>(null);
   const [editedPBI, setEditedPBI] = useState<IPBI | null>(null);
   const [deletedPBI, setDeletedPBI] = useState<IPBI | null>(null);
-  const [selectedTags, setSelectedTags] = useState<ITag[]>([]);
-  const [status, setStatus] = useState<'active' | 'paid' | 'all'>('active')
 
-  const handleOpenPayedPBI = useCallback((pbi: IPBI) => {
-    setPayedPBI(pbi);
-  }, []);
-
-  const handleClosePayedPBI = useCallback(() => {
-    setPayedPBI(null);
-  }, []);
-
-  const handleOpenEditPBI = useCallback((pbi: IPBI) => {
-    setEditedPBI(pbi);
-  }, []);
-
-  const handleCloseEditPBI = useCallback(() => {
-    setEditedPBI(null);
-  }, []);
-
-  const handleOpenDeletePBI = useCallback((pbi: IPBI) => {
-    setDeletedPBI(pbi);
-  }, []);
-
-  const handleCloseDeletePBI = useCallback(() => {
-    setDeletedPBI(null);
-  }, []);
-
-  const addSelectedTag = (tag: ITag) => {
-    setSelectedTags((prev) => {
-      const exists = prev.some((t) => t.id === tag.id);
-      if (!exists) {
-        return [...prev, tag];
-      }
-      return prev;
-    });
-  };
-
-  const removeSelectedTag = (tag: ITag) => {
-    setSelectedTags((prev) => prev.filter((t) => t.id !== tag.id));
-  };
-
-  const filteredPbis = useMemo(() => {
-    if (status === 'all') return pbis
-    return pbis.filter(pbi =>
-      status === 'active' ? !pbi.isFullyPaid : pbi.isFullyPaid
-    )
-  }, [pbis, status])
+  const columns: ColumnDef<IPBI>[] = [
+    {
+      key: 'name',
+      title: 'Name',
+      sortable: true,
+      sortFn: (a, b) => a.name.localeCompare(b.name),
+      render: (pbi) => (
+        <div className="flex">
+          <div className="mr-4 flex h-6 w-6 items-center justify-center rounded-full border bg-white">
+            <div
+              className="h-4 w-4 rounded-full"
+              style={{ backgroundColor: pbi.isFullyPaid ? '#22c55e' : '#f59e0b' }}
+            />
+          </div>
+          <p className="font-medium">{pbi.name}</p>
+        </div>
+      ),
+    },
+    {
+      key: 'payment',
+      title: 'Payment',
+      sortable: true,
+      sortFn: (a, b) => a.monthlyPayment - b.monthlyPayment,
+      render: (pbi) => `${pbi.monthlyPayment} ${currencySymbols[pbi.currency]}`,
+    },
+    {
+      key: 'paymentsDone',
+      title: 'Payments done',
+      sortable: true,
+      sortFn: (a, b) => a.numberOfDownpayments - b.numberOfDownpayments,
+      render: (pbi) =>
+        `${pbi.transactions.length + pbi.numberOfDownpayments} / ${pbi.numberOfPayments}`,
+    },
+    {
+      key: 'paymentDay',
+      title: 'Payment day',
+      sortable: true,
+      sortFn: (a, b) => a.approximatelyPaymentDay - b.approximatelyPaymentDay,
+      render: (pbi) => pbi.approximatelyPaymentDay,
+    },
+    {
+      key: 'tags',
+      title: 'Tags',
+      linked: false,
+      render: (pbi, onTagClick) => <PBITags tags={pbi.tags} onTagClick={onTagClick} />,
+    },
+    {
+      key: 'actions',
+      title: '',
+      linked: false,
+      render: (pbi) => (
+        <div className="flex w-full justify-end">
+          {!pbi.isFullyPaid && (
+            <>
+              <IconButton
+                iconHeight={24}
+                iconColor="DARK"
+                icon="Pay"
+                onClick={() => setPayedPBI(pbi)}
+              />
+              <div className="ml-4" />
+            </>
+          )}
+          <IconButton
+            iconHeight={24}
+            iconColor="LIGHT"
+            icon="Edit"
+            onClick={() => setEditedPBI(pbi)}
+          />
+          <div className="ml-4" />
+          <IconButton
+            iconHeight={24}
+            iconColor="RED"
+            icon="Trash"
+            onClick={() => setDeletedPBI(pbi)}
+          />
+        </div>
+      ),
+    },
+  ];
 
   return (
     <>
       {deletedPBI && (
-        <DeletePBI callback={callback} pbi={deletedPBI} handleClose={handleCloseDeletePBI} />
+        <DeletePBI callback={callback} pbi={deletedPBI} handleClose={() => setDeletedPBI(null)} />
       )}
       {editedPBI && (
         <EditPBI
           accountId={accountId}
           pbi={editedPBI}
           callback={callback}
-          handleClose={handleCloseEditPBI}
+          handleClose={() => setEditedPBI(null)}
         />
       )}
-      {payedPBI && <PayPBI pbi={payedPBI} callback={callback} handleClose={handleClosePayedPBI} />}
-      <div className="mt-12 rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card">
-        <div className="mb-4 flex justify-between">
-          <TableTitle title="All payments by installments" />
-        </div>
-        <Dropdown
-          title="Payments by installments status"
-          selectedItem={statusOptions.find(item => item.id === status) ?? statusOptions[0]}
-          items={[
-            { id: 'paid', label: 'Paid'},
-            { id: 'active', label: 'Active'},
-            { id: 'all', label: 'All'}
-
-          ]}
-          onSelect={(item) => {
-            setStatus(item.id as 'active' | 'paid' | 'all')
-          }}
-        />
-        <div className="mb-4 h-12 p-2">
-          {selectedTags.map((item) => (
-            <Tag
-              key={item.id}
-              label={item.name}
-              color={item.color}
-              onDismiss={() => removeSelectedTag(item)}
-            />
-          ))}
-        </div>
-        <div className="flex flex-col">
-          <div className="grid grid-cols-3 sm:grid-cols-6">
-            {headers.map((item) => (
-              <TableHeader key={item} title={item} />
-            ))}
-          </div>
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <PBIList
-              pbis={filteredPbis}
-              accountId={accountId}
-              handleOpenDeletePBI={handleOpenDeletePBI}
-              handleOpenEditPBI={handleOpenEditPBI}
-              handleOpenPayedPBI={handleOpenPayedPBI}
-              handleUpdateSelectedTags={addSelectedTag}
-              selectedTags={selectedTags}
-            />
-          )}
-        </div>
-      </div>
+      {payedPBI && (
+        <PayPBI pbi={payedPBI} callback={callback} handleClose={() => setPayedPBI(null)} />
+      )}
+      <DataTable
+        title="All payments by installments"
+        data={pbis}
+        isLoading={isLoading}
+        columns={columns}
+        gridCols="grid-cols-3 sm:grid-cols-6"
+        rowKey={(pbi) => pbi.id}
+        getRowHref={(pbi) => `/account/${accountId}/costs/installments/${pbi.id}`}
+        enableTagFilter
+        searchable
+        searchPlaceholder="Search by name..."
+        getSearchableText={(pbi) => pbi.name}
+        statusFilter={{
+          title: 'Payments by installments status',
+          options: statusOptions,
+          defaultValue: 'active',
+          filterFn: (pbi, value) => {
+            if (value === 'all') return true;
+            return value === 'active' ? !pbi.isFullyPaid : pbi.isFullyPaid;
+          },
+        }}
+        emptyState={<EmptyPBIs />}
+      />
     </>
   );
 };

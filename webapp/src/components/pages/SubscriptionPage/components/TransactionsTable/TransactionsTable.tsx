@@ -1,6 +1,4 @@
-import TableHeader from '@/components/atoms/table/TableHeader/TableHeader';
-import TableRow from '@/components/atoms/table/TableRow/TableRow';
-import TableTitle from '@/components/atoms/table/TableTitle/TableTitle';
+import DataTable, { ColumnDef } from '@/components/molecules/DataTable/DataTable';
 import { currencySymbols } from '@/constants';
 import { ISubscriptionTransaction } from '@/types';
 import { formatDate } from '@/utils/helpers/format-date.helper';
@@ -9,48 +7,40 @@ interface IProps {
   transactions: ISubscriptionTransaction[];
 }
 
-const headers = ['Amount paid', 'Currency', 'UAH_USD', 'UAH_EUR', 'Date paid'];
+const columns: ColumnDef<ISubscriptionTransaction>[] = [
+  {
+    key: 'amount',
+    title: 'Amount paid',
+    sortable: true,
+    sortFn: (a, b) => a.amount - b.amount,
+    render: (t) => (Number.isInteger(t.amount) ? t.amount.toString() : t.amount.toFixed(2)),
+  },
+  { key: 'currency', title: 'Currency', render: (t) => currencySymbols[t.currency] },
+  { key: 'uahUsd', title: 'UAH_USD', render: (t) => t.rateUahToUsd },
+  { key: 'uahEur', title: 'UAH_EUR', render: (t) => t.rateUahToEur },
+  {
+    key: 'datePaid',
+    title: 'Date paid',
+    sortable: true,
+    sortFn: (a, b) => new Date(a.datePaid).getTime() - new Date(b.datePaid).getTime(),
+    render: (t) => formatDate(t.datePaid),
+  },
+];
 
-const TransactionsTable = ({ transactions }: IProps) => {
-  return (
-    <div className="mt-12 rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card">
-      <div className="mb-12">
-        <TableTitle title="Current list of made transactions" />
+const TransactionsTable = ({ transactions }: IProps) => (
+  <DataTable
+    title="Current list of made transactions"
+    data={transactions}
+    isLoading={false}
+    columns={columns}
+    gridCols="grid-cols-3 sm:grid-cols-5"
+    rowKey={(t) => t.id}
+    emptyState={
+      <div className="py-6 text-center text-gray-500 dark:text-gray-400">
+        No payments yet for this subscription
       </div>
-
-      {transactions.length === 0 ? (
-        <div className="py-6 text-center text-gray-500 dark:text-gray-400">
-          No payments yet for this subscription
-        </div>
-      ) : (
-        <>
-          <div className="flex flex-col">
-            <div className="grid grid-cols-3 sm:grid-cols-5">
-              {headers.map((item) => (
-                <TableHeader key={item} title={item} />
-              ))}
-            </div>
-          </div>
-          {transactions.map(({ datePaid, currency, rateUahToEur, rateUahToUsd, amount }, id) => (
-            <div
-              className={`grid grid-cols-3 sm:grid-cols-5 ${
-                id === transactions.length - 1 ? '' : 'border-b border-stroke dark:border-dark-3'
-              }`}
-              key={id}
-            >
-              <TableRow>
-                {Number.isInteger(amount) ? amount.toString() : amount.toFixed(2)}
-              </TableRow>
-              <TableRow>{currencySymbols[currency]}</TableRow>
-              <TableRow>{rateUahToUsd}</TableRow>
-              <TableRow>{rateUahToEur}</TableRow>
-              <TableRow>{formatDate(datePaid)}</TableRow>
-            </div>
-          ))}
-        </>
-      )}
-    </div>
-  );
-};
+    }
+  />
+);
 
 export default TransactionsTable;

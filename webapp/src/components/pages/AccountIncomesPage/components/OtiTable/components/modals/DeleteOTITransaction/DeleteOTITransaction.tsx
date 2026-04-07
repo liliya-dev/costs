@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 
 import Loader from '@/components/atoms/Loader/Loader';
-import TableHeader from '@/components/atoms/table/TableHeader/TableHeader';
-import TableRow from '@/components/atoms/table/TableRow/TableRow';
+import TableHeader from '@/components/molecules/DataTable/components/TableHeader';
+import { TableCell } from '@/components/molecules/DataTable/DataTable';
 import FullScreenModal from '@/components/molecules/FullScreenModal/FullScreenModal';
 import { currencySymbols } from '@/constants';
 import { IOTI } from '@/types';
@@ -58,15 +58,15 @@ const DeleteOTITransaction = ({ oti, handleClose, callback }: IProps) => {
           ))}
         </div>
         <div className={`grid grid-cols-4 border-t border-stroke dark:border-dark-3`}>
-          <TableRow>
+          <TableCell>
             <p className="font-medium">{oti.name}</p>
-          </TableRow>
-          <TableRow>
+          </TableCell>
+          <TableCell>
             {oti.amount}
             {currencySymbols[oti.currency]}
-          </TableRow>
-          <TableRow>{formatDate(oti.datePaid)}</TableRow>
-          <TableRow>{oti.description}</TableRow>
+          </TableCell>
+          <TableCell>{formatDate(oti.datePaid)}</TableCell>
+          <TableCell>{oti.description}</TableCell>
         </div>
       </div>
     </FullScreenModal>

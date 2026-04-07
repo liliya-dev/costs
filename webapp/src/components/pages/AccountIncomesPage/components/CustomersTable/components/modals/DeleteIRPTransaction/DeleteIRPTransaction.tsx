@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import Loader from '@/components/atoms/Loader/Loader';
-import TableHeader from '@/components/atoms/table/TableHeader/TableHeader';
-import TableRow from '@/components/atoms/table/TableRow/TableRow';
+import TableHeader from '@/components/molecules/DataTable/components/TableHeader';
+import { TableCell } from '@/components/molecules/DataTable/DataTable';
 import FullScreenModal from '@/components/molecules/FullScreenModal/FullScreenModal';
 import { currencySymbols } from '@/constants';
 import { ITransaction } from '@/types';
@@ -81,14 +81,14 @@ const DeleteIRPTransaction = ({ transactionId, handleClose, callback }: IProps) 
                     : 'border-b border-stroke dark:border-dark-3'
                 }`}
               >
-                <TableRow>
+                <TableCell>
                   <p className="font-medium">
                     {transaction.customer.name} ({amount}
                     {currencySymbols[currency]})
                   </p>
-                </TableRow>
-                <TableRow>{formatDate(dateShouldBePaid)}</TableRow>
-                <TableRow>{formatDate(datePaid)}</TableRow>
+                </TableCell>
+                <TableCell>{formatDate(dateShouldBePaid)}</TableCell>
+                <TableCell>{formatDate(datePaid)}</TableCell>
               </div>
             ))}
           </div>

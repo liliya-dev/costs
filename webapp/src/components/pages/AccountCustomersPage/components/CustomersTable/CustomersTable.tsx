@@ -1,15 +1,13 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 
-import Loader from '@/components/atoms/Loader/Loader';
-import TableHeader from '@/components/atoms/table/TableHeader/TableHeader';
-import TableTitle from '@/components/atoms/table/TableTitle/TableTitle';
+import IconButton from '@/components/atoms/IconButton/IconButton';
+import DataTable, { ColumnDef } from '@/components/molecules/DataTable/DataTable';
+import { currencySymbols } from '@/constants';
 import { ICustomer } from '@/types';
 
 import DeleteCustomer from '../modals/DeleteCustomer/DeleteCustomer';
 import EditCustomer from '../modals/EditCustomer/EditCustomer';
 import PauseCustomer from '../modals/PauseCustomer/PauseCustomer';
-
-import CustomersList from './components/CustomersList/CustomersList';
 
 interface IProps {
   customers: ICustomer[];
@@ -18,36 +16,68 @@ interface IProps {
   accountId: number;
 }
 
-const headers = ['Name', 'Amount per month', 'Currency', 'Approximately payment day'];
-
 const CustomersTable = ({ customers, isLoading, callback, accountId }: IProps) => {
   const [pausedCustomer, setPausedCustomer] = useState<ICustomer | null>(null);
   const [editedCustomer, setEditedCustomer] = useState<ICustomer | null>(null);
   const [deletedCustomer, setDeletedCustomer] = useState<ICustomer | null>(null);
 
-  const handleOpenPauseCustomer = useCallback((customer: ICustomer) => {
-    setPausedCustomer(customer);
-  }, []);
-
-  const handleClosePauseCustomer = useCallback(() => {
-    setPausedCustomer(null);
-  }, []);
-
-  const handleOpenEditCustomer = useCallback((customer: ICustomer) => {
-    setEditedCustomer(customer);
-  }, []);
-
-  const handleCloseEditCustomer = useCallback(() => {
-    setEditedCustomer(null);
-  }, []);
-
-  const handleOpenDeleteCustomer = useCallback((customer: ICustomer) => {
-    setDeletedCustomer(customer);
-  }, []);
-
-  const handleCloseDeleteCustomer = useCallback(() => {
-    setDeletedCustomer(null);
-  }, []);
+  const columns: ColumnDef<ICustomer>[] = [
+    {
+      key: 'name',
+      title: 'Name',
+      sortable: true,
+      sortFn: (a, b) => a.name.localeCompare(b.name),
+      render: (c) => c.name,
+    },
+    {
+      key: 'amount',
+      title: 'Amount per month',
+      sortable: true,
+      sortFn: (a, b) => a.monthlyPayment - b.monthlyPayment,
+      render: (c) => c.monthlyPayment,
+    },
+    {
+      key: 'currency',
+      title: 'Currency',
+      render: (c) => currencySymbols[c.currency],
+    },
+    {
+      key: 'paymentDay',
+      title: 'Approximately payment day',
+      sortable: true,
+      sortFn: (a, b) => a.approximatelyPaymentDay - b.approximatelyPaymentDay,
+      render: (c) => c.approximatelyPaymentDay,
+    },
+    {
+      key: 'actions',
+      title: '',
+      linked: false,
+      render: (c) => (
+        <div className="flex w-full justify-end">
+          <IconButton
+            iconHeight={18}
+            iconColor="LIGHT"
+            icon={c.isCancelled ? 'Play' : 'Pause'}
+            onClick={() => setPausedCustomer(c)}
+          />
+          <div className="ml-4" />
+          <IconButton
+            iconHeight={24}
+            iconColor="LIGHT"
+            icon="Edit"
+            onClick={() => setEditedCustomer(c)}
+          />
+          <div className="ml-4" />
+          <IconButton
+            iconHeight={24}
+            iconColor="RED"
+            icon="Trash"
+            onClick={() => setDeletedCustomer(c)}
+          />
+        </div>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -55,46 +85,35 @@ const CustomersTable = ({ customers, isLoading, callback, accountId }: IProps) =
         <DeleteCustomer
           callback={callback}
           customer={deletedCustomer}
-          handleClose={handleCloseDeleteCustomer}
+          handleClose={() => setDeletedCustomer(null)}
         />
       )}
       {editedCustomer && (
         <EditCustomer
           customer={editedCustomer}
           callback={callback}
-          handleClose={handleCloseEditCustomer}
+          handleClose={() => setEditedCustomer(null)}
         />
       )}
       {pausedCustomer && (
         <PauseCustomer
           customer={pausedCustomer}
           callback={callback}
-          handleClose={handleClosePauseCustomer}
+          handleClose={() => setPausedCustomer(null)}
         />
       )}
-      <div className="mt-12 rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card">
-        <div className="mb-12 flex justify-between">
-          <TableTitle title="Current active customers" />
-        </div>
-        <div className="flex flex-col">
-          <div className="grid grid-cols-3 sm:grid-cols-5">
-            {headers.map((item) => (
-              <TableHeader key={item} title={item} />
-            ))}
-          </div>
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <CustomersList
-              accountId={accountId}
-              customers={customers}
-              handleOpenEditCustomer={handleOpenEditCustomer}
-              handleOpenDeleteCustomer={handleOpenDeleteCustomer}
-              handleOpenPauseCustomer={handleOpenPauseCustomer}
-            />
-          )}
-        </div>
-      </div>
+      <DataTable
+        title="Current active customers"
+        data={customers}
+        isLoading={isLoading}
+        columns={columns}
+        gridCols="grid-cols-3 sm:grid-cols-5"
+        rowKey={(c) => c.id}
+        getRowHref={(c) => `/account/${accountId}/customers/${c.id}`}
+        searchable
+        searchPlaceholder="Search by name..."
+        getSearchableText={(c) => c.name}
+      />
     </>
   );
 };
