@@ -1,15 +1,16 @@
 import { useCallback, useState } from 'react';
 
-import Loader from '@/components/atoms/Loader/Loader';
-import TableHeader from '@/components/atoms/table/TableHeader/TableHeader';
-import TableTitle from '@/components/atoms/table/TableTitle/TableTitle';
-import Tag from '@/components/atoms/Tag/Tag';
+import IconButton from '@/components/atoms/IconButton/IconButton';
+import DataTable, { ColumnDef } from '@/components/molecules/DataTable/DataTable';
+import { currencySymbols } from '@/constants';
 import { IOTP, ITag } from '@/types';
+import { formatDate } from '@/utils/helpers/format-date.helper';
 
 import DeleteOTP from '../modals/DeleteOTP/DeleteOTP';
 import EditOTP from '../modals/EditOTP/EditOTP';
 
-import OTPList from './components/OTPList';
+import OTPTags from './components/OTPTags';
+import EmptyOTPs from './components/EmptyOTPs';
 
 interface IProps {
   otps: IOTP[];
@@ -18,89 +19,93 @@ interface IProps {
   accountId: number;
 }
 
-const headers = ['Name', 'Amount', 'Date Paid', 'Description', 'Tags', ''];
-
 const OTPTable = ({ otps, isLoading, callback, accountId }: IProps) => {
   const [editedOTP, setEditedOTP] = useState<IOTP | null>(null);
   const [deletedOTP, setDeletedOTP] = useState<IOTP | null>(null);
-  const [selectedTags, setSelectedTags] = useState<ITag[]>([]);
 
-  const handleOpenEditOTP = useCallback((otp: IOTP) => {
-    setEditedOTP(otp);
-  }, []);
-
-  const handleCloseEditOTP = useCallback(() => {
-    setEditedOTP(null);
-  }, []);
-
-  const handleOpenDeleteOTP = useCallback((otp: IOTP) => {
-    setDeletedOTP(otp);
-  }, []);
-
-  const handleCloseDeleteOTP = useCallback(() => {
-    setDeletedOTP(null);
-  }, []);
-
-  const addSelectedTag = (tag: ITag) => {
-    setSelectedTags((prev) => {
-      const exists = prev.some((t) => t.id === tag.id);
-      if (!exists) {
-        return [...prev, tag];
-      }
-      return prev;
-    });
-  };
-
-  const removeSelectedTag = (tag: ITag) => {
-    setSelectedTags((prev) => prev.filter((t) => t.id !== tag.id));
-  };
+  const columns: ColumnDef<IOTP>[] = [
+    {
+      key: 'name',
+      title: 'Name',
+      sortable: true,
+      sortFn: (a, b) => a.name.localeCompare(b.name),
+      render: (otp) => <p className="font-medium">{otp.name}</p>,
+    },
+    {
+      key: 'amount',
+      title: 'Amount',
+      sortable: true,
+      sortFn: (a, b) => a.amount - b.amount,
+      render: (otp) => `${otp.amount} ${currencySymbols[otp.currency]}`,
+    },
+    {
+      key: 'datePaid',
+      title: 'Date Paid',
+      sortable: true,
+      sortFn: (a, b) => new Date(a.datePaid).getTime() - new Date(b.datePaid).getTime(),
+      render: (otp) => formatDate(otp.datePaid),
+    },
+    {
+      key: 'description',
+      title: 'Description',
+      render: (otp) => otp.description,
+    },
+    {
+      key: 'tags',
+      title: 'Tags',
+      linked: false,
+      render: (otp, onTagClick) => <OTPTags tags={otp.tags} onTagClick={onTagClick} />,
+    },
+    {
+      key: 'actions',
+      title: '',
+      linked: false,
+      render: (otp) => (
+        <div className="flex w-full justify-end">
+          <IconButton
+            iconHeight={24}
+            iconColor="LIGHT"
+            icon="Edit"
+            onClick={() => setEditedOTP(otp)}
+          />
+          <div className="ml-4" />
+          <IconButton
+            iconHeight={24}
+            iconColor="RED"
+            icon="Trash"
+            onClick={() => setDeletedOTP(otp)}
+          />
+        </div>
+      ),
+    },
+  ];
 
   return (
     <>
       {deletedOTP && (
-        <DeleteOTP callback={callback} otp={deletedOTP} handleClose={handleCloseDeleteOTP} />
+        <DeleteOTP callback={callback} otp={deletedOTP} handleClose={() => setDeletedOTP(null)} />
       )}
       {editedOTP && (
         <EditOTP
           accountId={accountId}
           otp={editedOTP}
           callback={callback}
-          handleClose={handleCloseEditOTP}
+          handleClose={() => setEditedOTP(null)}
         />
       )}
-      <div className="mt-12 rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card">
-        <div className="mb-4 flex justify-between">
-          <TableTitle title="All one time payments" />
-        </div>
-        <div className="mb-4 h-12 p-2">
-          {selectedTags.map((item) => (
-            <Tag
-              key={item.id}
-              label={item.name}
-              color={item.color}
-              onDismiss={() => removeSelectedTag(item)}
-            />
-          ))}
-        </div>
-        <div className="flex flex-col">
-          <div className="grid grid-cols-3 sm:grid-cols-6">
-            {headers.map((item) => (
-              <TableHeader key={item} title={item} />
-            ))}
-          </div>
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <OTPList
-              otps={otps}
-              handleOpenDeleteOTP={handleOpenDeleteOTP}
-              handleOpenEditOTP={handleOpenEditOTP}
-              handleUpdateSelectedTags={addSelectedTag}
-              selectedTags={selectedTags}
-            />
-          )}
-        </div>
-      </div>
+      <DataTable
+        title="All one time payments"
+        data={otps}
+        isLoading={isLoading}
+        columns={columns}
+        gridCols="grid-cols-3 sm:grid-cols-6"
+        rowKey={(otp) => otp.id}
+        enableTagFilter
+        searchable
+        searchPlaceholder="Search by name..."
+        getSearchableText={(otp) => otp.name}
+        emptyState={<EmptyOTPs />}
+      />
     </>
   );
 };

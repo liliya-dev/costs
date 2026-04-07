@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import IconButton from '@/components/atoms/IconButton/IconButton';
-import TableRow from '@/components/atoms/table/TableRow/TableRow';
+import { TableCell } from '@/components/molecules/DataTable/DataTable';
 import { currencySymbols } from '@/constants';
 import { IPBI, ITag } from '@/types';
 
@@ -39,7 +39,7 @@ const PBIRow = ({ pbi, index, total, accountId, onEdit, onDelete, onPay, onTagCl
       }`}
     >
       <Link href={`/account/${accountId}/costs/installments/${id}`} className="contents">
-        <TableRow>
+        <TableCell>
           <div className="flex">
             <div className="mr-4 flex h-6 w-6 items-center justify-center rounded-full border bg-white">
               <div
@@ -51,19 +51,19 @@ const PBIRow = ({ pbi, index, total, accountId, onEdit, onDelete, onPay, onTagCl
             </div>
             <p className="font-medium">{name}</p>
           </div>
-        </TableRow>
-        <TableRow>
+        </TableCell>
+        <TableCell>
           {monthlyPayment} {currencySymbols[currency]}
-        </TableRow>
-        <TableRow>
+        </TableCell>
+        <TableCell>
           {transactions.length + numberOfDownpayments} / {numberOfPayments}
-        </TableRow>
-        <TableRow>{approximatelyPaymentDay}</TableRow>
+        </TableCell>
+        <TableCell>{approximatelyPaymentDay}</TableCell>
       </Link>
-      <TableRow>
+      <TableCell>
         <PBITags tags={tags} onTagClick={onTagClick} />
-      </TableRow>
-      <TableRow>
+      </TableCell>
+      <TableCell>
         <div className="flex w-full justify-end">
           {!isFullyPaid && (
             <>
@@ -75,7 +75,7 @@ const PBIRow = ({ pbi, index, total, accountId, onEdit, onDelete, onPay, onTagCl
           <div className="ml-4" />
           <IconButton iconHeight={24} iconColor="RED" icon="Trash" onClick={() => onDelete(pbi)} />
         </div>
-      </TableRow>
+      </TableCell>
     </div>
   );
 };

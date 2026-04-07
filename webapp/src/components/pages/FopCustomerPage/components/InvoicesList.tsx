@@ -1,7 +1,5 @@
 import IconButton from '@/components/atoms/IconButton/IconButton';
-import TableHeader from '@/components/atoms/table/TableHeader/TableHeader';
-import TableRow from '@/components/atoms/table/TableRow/TableRow';
-import TableTitle from '@/components/atoms/table/TableTitle/TableTitle';
+import DataTable, { ColumnDef } from '@/components/molecules/DataTable/DataTable';
 import { currencySymbols, InvoicesStatusColors } from '@/constants';
 import { IFOPInvoice, InvoiceStatus } from '@/types';
 import { formatDate } from '@/utils/helpers/format-date.helper';
@@ -12,93 +10,107 @@ interface IProps {
   handleSetPayInvoice: (invoice: IFOPInvoice) => void;
 }
 
-const headers = ['Invoice number', 'Amount', 'Date  paid', 'Files'];
-
 const InvoicesList = ({ invoices, handleDeleteInvoice, handleSetPayInvoice }: IProps) => {
-  console.log(invoices)
-  return (
-    <div className="mt-12 rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card">
-      <div className="mb-12">
-        <TableTitle title="List of customer invoices" />
-      </div>
+  const columns: ColumnDef<IFOPInvoice>[] = [
+    {
+      key: 'name',
+      title: 'Invoice number',
+      sortable: true,
+      sortFn: (a, b) => a.name.localeCompare(b.name),
+      render: (inv) => (
+        <div className="flex">
+          <div className="mr-4 flex h-6 w-6 items-center justify-center rounded-full border bg-white">
+            <div
+              className="h-4 w-4 rounded-full"
+              style={{ backgroundColor: InvoicesStatusColors[inv.status] }}
+            />
+          </div>
+          <p>{inv.name}</p>
+        </div>
+      ),
+    },
+    {
+      key: 'amount',
+      title: 'Amount',
+      sortable: true,
+      sortFn: (a, b) => a.amount - b.amount,
+      render: (inv) => `${inv.amount} ${currencySymbols.uah}`,
+    },
+    {
+      key: 'datePaid',
+      title: 'Date  paid',
+      sortable: true,
+      sortFn: (a, b) => {
+        if (!a.datePaid && !b.datePaid) return 0;
+        if (!a.datePaid) return 1;
+        if (!b.datePaid) return -1;
+        return new Date(a.datePaid).getTime() - new Date(b.datePaid).getTime();
+      },
+      render: (inv) => (inv.datePaid ? formatDate(inv.datePaid) : ''),
+    },
+    {
+      key: 'files',
+      title: 'Files',
+      render: (inv) => (
+        <>
+          <a href={`${process.env.BASE_URL}/invoices/${inv.id}/download`} download target="_blank">
+            Download Invoice
+          </a>
+          {inv.act && (
+            <>
+              <br />
+              <a
+                href={`${process.env.BASE_URL}/work-acts/${inv.act.id}/download`}
+                download
+                target="_blank"
+              >
+                Download Act
+              </a>
+            </>
+          )}
+        </>
+      ),
+    },
+    {
+      key: 'actions',
+      title: '',
+      render: (inv) => (
+        <div className="grid w-28 grid-cols-2">
+          {inv.status !== InvoiceStatus.PAID ? (
+            <IconButton
+              iconHeight={24}
+              iconColor="DARK"
+              icon="Pay"
+              onClick={() => handleSetPayInvoice(inv)}
+            />
+          ) : (
+            <span />
+          )}
+          <IconButton
+            iconHeight={24}
+            iconColor="RED"
+            icon="Trash"
+            onClick={() => handleDeleteInvoice(inv.id)}
+          />
+        </div>
+      ),
+    },
+  ];
 
-      {invoices.length === 0 ? (
+  return (
+    <DataTable
+      title="List of customer invoices"
+      data={invoices}
+      isLoading={false}
+      columns={columns}
+      gridCols="grid-cols-3 sm:grid-cols-5"
+      rowKey={(inv) => inv.id}
+      emptyState={
         <div className="py-6 text-center text-gray-500 dark:text-gray-400">
           No invoices yet from this customer
         </div>
-      ) : (
-        <>
-          <div className="flex flex-col">
-            <div className="grid grid-cols-3 sm:grid-cols-5">
-              {headers.map((item) => (
-                <TableHeader key={item} title={item} />
-              ))}
-            </div>
-          </div>
-          {invoices.map(({ datePaid, name, amount, id, status, act }, index) => (
-            <div
-              className={`grid grid-cols-3 sm:grid-cols-5 ${
-                index === invoices.length - 1 ? '' : 'border-b border-stroke dark:border-dark-3'
-              }`}
-              key={id}
-            >
-              <TableRow>
-                <div className="flex">
-                  <div className="mr-4 flex h-6 w-6 items-center justify-center rounded-full border bg-white">
-                    <div
-                      className="h-4 w-4 rounded-full"
-                      style={{ backgroundColor: InvoicesStatusColors[status] }}
-                    />
-                  </div>
-                  <p>{`${name}`}</p>
-                </div>
-              </TableRow>
-              <TableRow>{`${amount} ${currencySymbols.uah}`}</TableRow>
-              <TableRow>{datePaid ? formatDate(datePaid) : ''}</TableRow>
-              <TableRow>
-                <a
-                  href={`${process.env.BASE_URL}/invoices/${id}/download`}
-                  download
-                  target="_blank"
-                >
-                  Download Invoice
-                </a>
-                <br />
-                {act && (
-                  <a
-                    href={`${process.env.BASE_URL}/work-acts/${act.id}/download`}
-                    download
-                    target="_blank"
-                  >
-                    Download Act
-                  </a>
-                )}
-              </TableRow>
-              <TableRow>
-                <div className="grid w-28 grid-cols-2">
-                  {status !== InvoiceStatus.PAID ? (
-                    <IconButton
-                      iconHeight={24}
-                      iconColor="DARK"
-                      icon="Pay"
-                      onClick={() => handleSetPayInvoice(invoices[index])}
-                    />
-                  ) : (
-                    <span />
-                  )}
-                  <IconButton
-                    iconHeight={24}
-                    iconColor="RED"
-                    icon="Trash"
-                    onClick={() => handleDeleteInvoice(id)}
-                  />
-                </div>
-              </TableRow>
-            </div>
-          ))}
-        </>
-      )}
-    </div>
+      }
+    />
   );
 };
 

@@ -9,8 +9,7 @@ interface IProps {
   handleOpenEditRC: (rc: IRC) => void;
   handleOpenDeleteRC: (rc: IRC) => void;
   handleOpenPayRC: (rc: IRC) => void;
-  handleUpdateSelectedTags: (tag: ITag) => void;
-  selectedTags: ITag[];
+  onTagClick: (tag: ITag) => void;
 }
 
 const RCList = ({
@@ -18,32 +17,24 @@ const RCList = ({
   handleOpenDeleteRC,
   handleOpenEditRC,
   handleOpenPayRC,
-  handleUpdateSelectedTags,
-  selectedTags,
+  onTagClick,
   accountId,
 }: IProps) => {
-  const filteredRCs =
-    selectedTags.length > 0
-      ? rcs.filter((rc) =>
-          selectedTags.every((selectedTag) => rc.tags.some((tag) => tag.id === selectedTag.id)),
-        )
-      : rcs;
-
-  if (!filteredRCs.length) return <EmptyRCs />;
+  if (!rcs.length) return <EmptyRCs />;
 
   return (
     <>
-      {filteredRCs.map((rc, index) => (
+      {rcs.map((rc, index) => (
         <RCRow
           key={rc.id}
           rc={rc}
           index={index}
-          total={filteredRCs.length}
+          total={rcs.length}
           accountId={accountId}
           onPay={handleOpenPayRC}
           onEdit={handleOpenEditRC}
           onDelete={handleOpenDeleteRC}
-          onTagClick={handleUpdateSelectedTags}
+          onTagClick={onTagClick}
         />
       ))}
     </>

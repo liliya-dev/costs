@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import TableRow from '@/components/atoms/table/TableRow/TableRow';
+import { TableCell } from '@/components/molecules/DataTable/DataTable';
 import Tag from '@/components/atoms/Tag/Tag';
 import { currencySymbols, StatusColors } from '@/constants';
 import { IPBITransaction, Currency, ITag } from '@/types';
@@ -45,7 +45,7 @@ const PBITransactionRow = ({
         href={`/account/${accountId}/costs/installments/${pbiId}`}
         className="col-span-3 contents sm:col-span-6"
       >
-        <TableRow>
+        <TableCell>
           <div className="flex">
             <div className="mr-4 flex h-6 w-6 items-center justify-center rounded-full border bg-white">
               <div
@@ -58,8 +58,8 @@ const PBITransactionRow = ({
               {currencySymbols[currency]})
             </p>
           </div>
-        </TableRow>
-        <TableRow>
+        </TableCell>
+        <TableCell>
           {convertAmountToCurrency({
             amount,
             selectedCurrency,
@@ -67,18 +67,18 @@ const PBITransactionRow = ({
             rateUahToUsd,
             currency,
           })}
-        </TableRow>
-        <TableRow>{rateUahToUsd}</TableRow>
-        <TableRow>{rateUahToEur}</TableRow>
-        <TableRow>{formatDate(dateShouldBePaid)}</TableRow>
-        <TableRow>{formatDate(datePaid)}</TableRow>
+        </TableCell>
+        <TableCell>{rateUahToUsd}</TableCell>
+        <TableCell>{rateUahToEur}</TableCell>
+        <TableCell>{formatDate(dateShouldBePaid)}</TableCell>
+        <TableCell>{formatDate(datePaid)}</TableCell>
       </Link>
 
-      <TableRow>
+      <TableCell>
         {pbiTags.map((tag) => (
           <Tag key={tag.id} label={tag.name} color={tag.color} onClick={() => onTagClick(tag)} />
         ))}
-      </TableRow>
+      </TableCell>
     </div>
   );
 };

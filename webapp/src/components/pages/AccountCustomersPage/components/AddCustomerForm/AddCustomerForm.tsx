@@ -7,7 +7,7 @@ import FormStateWatcher from '@/components/atoms/form-elements/FormStateWatcher/
 import NumberInput from '@/components/atoms/form-elements/NumberInput/NumberInput';
 import TextInput from '@/components/atoms/form-elements/TextInput/TextInput';
 import Loader from '@/components/atoms/Loader/Loader';
-import TableTitle from '@/components/atoms/table/TableTitle/TableTitle';
+import TableTitle from '@/components/molecules/DataTable/components/TableTitle';
 import { Currency } from '@/types';
 import { createCustomer } from '@/utils/api';
 

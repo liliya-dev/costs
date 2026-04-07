@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import IconButton from '@/components/atoms/IconButton/IconButton';
-import TableRow from '@/components/atoms/table/TableRow/TableRow';
+import { TableCell } from '@/components/molecules/DataTable/DataTable';
 import { currencySymbols, SubscriptionsStatusColors, SubscriptionsStatusTypes } from '@/constants';
 import { ISubscription, ITag } from '@/types';
 
@@ -46,7 +46,7 @@ const SubscriptionRow = ({
       }`}
     >
       <Link href={`/account/${accountId}/costs/subscriptions/${id}`} className="contents">
-        <TableRow>
+        <TableCell>
           <div className="flex">
             <div className="mr-4 flex h-6 w-6 items-center justify-center rounded-full border bg-white">
               <div
@@ -60,17 +60,17 @@ const SubscriptionRow = ({
             </div>
             <p className="font-medium">{name}</p>
           </div>
-        </TableRow>
-        <TableRow>
+        </TableCell>
+        <TableCell>
           {monthlyPayment} {currencySymbols[currency]}
-        </TableRow>
-        <TableRow>{approximatelyPaymentDay}</TableRow>
-        <TableRow>{description}</TableRow>
+        </TableCell>
+        <TableCell>{approximatelyPaymentDay}</TableCell>
+        <TableCell>{description}</TableCell>
       </Link>
-      <TableRow>
+      <TableCell>
         <SubscriptionTags tags={tags} onTagClick={onTagClick} />
-      </TableRow>
-      <TableRow>
+      </TableCell>
+      <TableCell>
         <div className="flex w-full justify-end">
           <IconButton
             iconHeight={18}
@@ -93,7 +93,7 @@ const SubscriptionRow = ({
             onClick={() => onDelete(subscription)}
           />
         </div>
-      </TableRow>
+      </TableCell>
     </div>
   );
 };

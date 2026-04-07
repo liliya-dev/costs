@@ -1,11 +1,10 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 
-import Loader from '@/components/atoms/Loader/Loader';
-import TableHeader from '@/components/atoms/table/TableHeader/TableHeader';
-import TableTitle from '@/components/atoms/table/TableTitle/TableTitle';
+import IconButton from '@/components/atoms/IconButton/IconButton';
+import DataTable, { ColumnDef } from '@/components/molecules/DataTable/DataTable';
+import { currencySymbols } from '@/constants';
 import { IFOPCustomer } from '@/types';
 
-import FopCustomersList from './components/CustomersList/FopCustomersList';
 import DeleteFopCustomer from './components/modals/DeleteFopCustomer/DeleteFopCustomer';
 import EditCustomer from './components/modals/EditCustomer/EditCustomer';
 
@@ -16,27 +15,60 @@ interface IProps {
   accountId: number;
 }
 
-const headers = ['Name', 'Amount per month', 'Currency', 'Approximately payment day'];
-
 const FopCustomersTable = ({ customers, isLoading, callback, accountId }: IProps) => {
   const [editedCustomer, setEditedCustomer] = useState<IFOPCustomer | null>(null);
   const [deletedCustomer, setDeletedCustomer] = useState<IFOPCustomer | null>(null);
 
-  const handleOpenEditCustomer = useCallback((customer: IFOPCustomer) => {
-    setEditedCustomer(customer);
-  }, []);
-
-  const handleCloseEditCustomer = useCallback(() => {
-    setEditedCustomer(null);
-  }, []);
-
-  const handleOpenDeleteCustomer = useCallback((customer: IFOPCustomer) => {
-    setDeletedCustomer(customer);
-  }, []);
-
-  const handleCloseDeleteCustomer = useCallback(() => {
-    setDeletedCustomer(null);
-  }, []);
+  const columns: ColumnDef<IFOPCustomer>[] = [
+    {
+      key: 'name',
+      title: 'Name',
+      sortable: true,
+      sortFn: (a, b) => a.name.localeCompare(b.name),
+      render: (c) => c.name,
+    },
+    {
+      key: 'amount',
+      title: 'Amount per month',
+      sortable: true,
+      sortFn: (a, b) => a.monthlyPayment - b.monthlyPayment,
+      render: (c) => c.monthlyPayment,
+    },
+    {
+      key: 'currency',
+      title: 'Currency',
+      render: (c) => currencySymbols[c.currency],
+    },
+    {
+      key: 'paymentDay',
+      title: 'Approximately payment day',
+      sortable: true,
+      sortFn: (a, b) => a.approximatelyPaymentDay - b.approximatelyPaymentDay,
+      render: (c) => c.approximatelyPaymentDay,
+    },
+    {
+      key: 'actions',
+      title: '',
+      linked: false,
+      render: (c) => (
+        <div className="flex w-full justify-end">
+          <IconButton
+            iconHeight={24}
+            iconColor="LIGHT"
+            icon="Edit"
+            onClick={() => setEditedCustomer(c)}
+          />
+          <div className="ml-4" />
+          <IconButton
+            iconHeight={24}
+            iconColor="RED"
+            icon="Trash"
+            onClick={() => setDeletedCustomer(c)}
+          />
+        </div>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -44,39 +76,29 @@ const FopCustomersTable = ({ customers, isLoading, callback, accountId }: IProps
         <DeleteFopCustomer
           callback={callback}
           customer={deletedCustomer}
-          handleClose={handleCloseDeleteCustomer}
+          handleClose={() => setDeletedCustomer(null)}
         />
       )}
       {editedCustomer && (
         <EditCustomer
           customer={editedCustomer}
           callback={callback}
-          handleClose={handleCloseEditCustomer}
+          handleClose={() => setEditedCustomer(null)}
           accountId={accountId}
         />
       )}
-      <div className="mt-12 rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card">
-        <div className="mb-12 flex justify-between">
-          <TableTitle title="Current active customers" />
-        </div>
-        <div className="flex flex-col">
-          <div className="grid grid-cols-3 sm:grid-cols-5">
-            {headers.map((item) => (
-              <TableHeader key={item} title={item} />
-            ))}
-          </div>
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <FopCustomersList
-              accountId={accountId}
-              customers={customers}
-              handleOpenEditCustomer={handleOpenEditCustomer}
-              handleOpenDeleteCustomer={handleOpenDeleteCustomer}
-            />
-          )}
-        </div>
-      </div>
+      <DataTable
+        title="Current active customers"
+        data={customers}
+        isLoading={isLoading}
+        columns={columns}
+        gridCols="grid-cols-3 sm:grid-cols-5"
+        rowKey={(c) => c.id}
+        getRowHref={(c) => `/account/${accountId}/fop/customers/${c.id}`}
+        searchable
+        searchPlaceholder="Search by name..."
+        getSearchableText={(c) => c.name}
+      />
     </>
   );
 };

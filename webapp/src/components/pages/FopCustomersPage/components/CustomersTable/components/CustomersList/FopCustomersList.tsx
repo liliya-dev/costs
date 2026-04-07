@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import IconButton from '@/components/atoms/IconButton/IconButton';
-import TableRow from '@/components/atoms/table/TableRow/TableRow';
+import { TableCell } from '@/components/molecules/DataTable/DataTable';
 import { currencySymbols } from '@/constants';
 import { IFOPCustomer } from '@/types';
 
@@ -28,12 +28,12 @@ const FopCustomersList = ({
           key={id}
         >
           <Link href={`/account/${accountId}/fop/customers/${id}`} className="contents">
-            <TableRow>{name}</TableRow>
-            <TableRow>{monthlyPayment}</TableRow>
-            <TableRow>{currencySymbols[currency]}</TableRow>
-            <TableRow>{approximatelyPaymentDay}</TableRow>
+            <TableCell>{name}</TableCell>
+            <TableCell>{monthlyPayment}</TableCell>
+            <TableCell>{currencySymbols[currency]}</TableCell>
+            <TableCell>{approximatelyPaymentDay}</TableCell>
           </Link>
-          <TableRow>
+          <TableCell>
             <div className="flex w-full justify-end">
               <div className="ml-4" />
               <IconButton
@@ -50,7 +50,7 @@ const FopCustomersList = ({
                 onClick={() => handleOpenDeleteCustomer(customers[index])}
               />
             </div>
-          </TableRow>
+          </TableCell>
         </div>
       ))}
     </>

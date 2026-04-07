@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import IconButton from '@/components/atoms/IconButton/IconButton';
-import TableRow from '@/components/atoms/table/TableRow/TableRow';
+import { TableCell } from '@/components/molecules/DataTable/DataTable';
 import { currencySymbols, StatusColors } from '@/constants';
 import { IIRP, Currency } from '@/types';
 import { convertAmountToCurrency } from '@/utils/helpers/convert-amount-to-currency.helper';
@@ -63,7 +63,7 @@ const IRPsList = ({
             key={index}
           >
             <Link href={`/account/${accountId}/customers/${customerId}`} className="contents">
-              <TableRow>
+              <TableCell>
                 <div className="flex">
                   <div className="mr-4 flex h-6 w-6 items-center justify-center rounded-full border bg-white">
                     <div
@@ -77,8 +77,8 @@ const IRPsList = ({
                     {currencySymbols[currency]})
                   </p>
                 </div>
-              </TableRow>
-              <TableRow>
+              </TableCell>
+              <TableCell>
                 {convertAmountToCurrency({
                   amount,
                   selectedCurrency,
@@ -86,14 +86,14 @@ const IRPsList = ({
                   rateUahToUsd,
                   currency,
                 })}
-              </TableRow>
-              <TableRow>{rateUahToUsd}</TableRow>
-              <TableRow>{rateUahToEur}</TableRow>
-              <TableRow>{formatDate(datePaid)}</TableRow>
-              <TableRow>{formatDate(dateShouldBePaid)}</TableRow>
+              </TableCell>
+              <TableCell>{rateUahToUsd}</TableCell>
+              <TableCell>{rateUahToEur}</TableCell>
+              <TableCell>{formatDate(datePaid)}</TableCell>
+              <TableCell>{formatDate(dateShouldBePaid)}</TableCell>
             </Link>
             {datePaid && (
-              <TableRow>
+              <TableCell>
                 <div className="flex w-full justify-end">
                   <IconButton
                     iconHeight={24}
@@ -109,7 +109,7 @@ const IRPsList = ({
                     onClick={() => handleOpenDeleteIRP(sortedIrps[index])}
                   />
                 </div>
-              </TableRow>
+              </TableCell>
             )}
           </div>
         ),

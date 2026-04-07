@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import TableRow from '@/components/atoms/table/TableRow/TableRow';
+import { TableCell } from '@/components/molecules/DataTable/DataTable';
 import Tag from '@/components/atoms/Tag/Tag';
 import { currencySymbols, StatusColors } from '@/constants';
 import { Currency, ISubscriptionTransaction, ITag } from '@/types';
@@ -44,7 +44,7 @@ const SubscriptionsTransactionsRow = ({
         href={`/account/${accountId}/costs/subscriptions/${subscriptionId}`}
         className="col-span-3 contents sm:col-span-5"
       >
-        <TableRow>
+        <TableCell>
           <div className="flex">
             <div className="mr-4 flex h-6 w-6 items-center justify-center rounded-full border bg-white">
               <div
@@ -59,8 +59,8 @@ const SubscriptionsTransactionsRow = ({
               {currencySymbols[currency]})
             </p>
           </div>
-        </TableRow>
-        <TableRow>
+        </TableCell>
+        <TableCell>
           {convertAmountToCurrency({
             amount,
             selectedCurrency,
@@ -68,17 +68,17 @@ const SubscriptionsTransactionsRow = ({
             rateUahToUsd,
             currency,
           })}
-        </TableRow>
-        <TableRow>{rateUahToUsd}</TableRow>
-        <TableRow>{rateUahToEur}</TableRow>
-        <TableRow>{formatDate(dateShouldBePaid)}</TableRow>
+        </TableCell>
+        <TableCell>{rateUahToUsd}</TableCell>
+        <TableCell>{rateUahToEur}</TableCell>
+        <TableCell>{formatDate(dateShouldBePaid)}</TableCell>
       </Link>
 
-      <TableRow>
+      <TableCell>
         {subscriptionTags.map((tag) => (
           <Tag key={tag.id} label={tag.name} color={tag.color} onClick={() => onTagClick(tag)} />
         ))}
-      </TableRow>
+      </TableCell>
     </div>
   );
 };

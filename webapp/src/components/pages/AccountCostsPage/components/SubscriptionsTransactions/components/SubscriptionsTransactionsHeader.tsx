@@ -1,4 +1,4 @@
-import TableHeader from '@/components/atoms/table/TableHeader/TableHeader';
+import TableHeader from '@/components/molecules/DataTable/components/TableHeader';
 import { currencySymbols } from '@/constants';
 import { Currency } from '@/types';
 

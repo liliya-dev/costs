@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import IconButton from '@/components/atoms/IconButton/IconButton';
-import TableRow from '@/components/atoms/table/TableRow/TableRow';
+import { TableCell } from '@/components/molecules/DataTable/DataTable';
 import { currencySymbols } from '@/constants';
 import { IRC, ITag } from '@/types';
 
@@ -29,19 +29,19 @@ const RCRow = ({ rc, index, total, accountId, onPay, onEdit, onDelete, onTagClic
       }`}
     >
       <Link href={`/account/${accountId}/costs/regular/${id}`} className="contents">
-        <TableRow>
+        <TableCell>
           <p className="font-medium">{name}</p>
-        </TableRow>
-        <TableRow>
+        </TableCell>
+        <TableCell>
           {monthlyPayment} {currencySymbols[currency]}
-        </TableRow>
-        <TableRow>{approximatelyPaymentDay}</TableRow>
-        <TableRow>{isPermanentAmount ? 'Yes' : 'No'}</TableRow>
+        </TableCell>
+        <TableCell>{approximatelyPaymentDay}</TableCell>
+        <TableCell>{isPermanentAmount ? 'Yes' : 'No'}</TableCell>
       </Link>
-      <TableRow>
+      <TableCell>
         <RCListTags tags={tags} onTagClick={onTagClick} />
-      </TableRow>
-      <TableRow>
+      </TableCell>
+      <TableCell>
         <div className="flex w-full justify-end">
           <IconButton iconHeight={24} iconColor="DARK" icon="Pay" onClick={() => onPay(rc)} />
           <div className="ml-4" />
@@ -49,7 +49,7 @@ const RCRow = ({ rc, index, total, accountId, onPay, onEdit, onDelete, onTagClic
           <div className="ml-4" />
           <IconButton iconHeight={24} iconColor="RED" icon="Trash" onClick={() => onDelete(rc)} />
         </div>
-      </TableRow>
+      </TableCell>
     </div>
   );
 };
